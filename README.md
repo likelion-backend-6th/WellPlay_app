@@ -1,6 +1,3 @@
 # WellPlay_app
 
-ddrgre
-진호의 테스트
-test - juwon
-jykim
+1팀 프로젝트입니다
