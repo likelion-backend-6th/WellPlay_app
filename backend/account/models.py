@@ -15,3 +15,14 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
+
+    # superuser는 프로필 이름이 필요 없을 것 같아서 제외
+    def create_superuser(self, user_id, email,  password=None):
+        user = self.model(
+            email=email,
+            user_id=user_id,
+            password=password,
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
