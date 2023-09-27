@@ -44,7 +44,9 @@ INSTALLED_APPS = [
 INSTALLED_APPS += []
 
 # Created Apps
-INSTALLED_APPS += []
+INSTALLED_APPS += [
+    "feed",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
