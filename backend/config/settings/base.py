@@ -146,4 +146,4 @@ SPECTACULAR_SETTINGS = {
 }
 
 # Set custom user model
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = "account.User"
