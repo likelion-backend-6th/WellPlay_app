@@ -7,8 +7,8 @@ class Feed(models.Model):
     content = models.TextField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    feed_img = models.URLField(null=True)
-    feed_video = models.URLField(null=True)
+    feed_img = models.URLField(null=True, blank=True)
+    feed_video = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return f"Feed by {self.owner.username}"
