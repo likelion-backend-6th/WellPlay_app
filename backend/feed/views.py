@@ -34,6 +34,12 @@ class FeedViewSet(viewsets.ModelViewSet):
         pass
 
 
+def check_permission(request, comment):
+    if request.user != comment.owner:
+        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+    return None
+
+
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -48,9 +54,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         comment = get_object_or_404(Comment, pk=pk)
-
-        if request.user != comment.owner:
-            return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+        response = check_permission(request, comment)
+        if response:  # 403Forbidden?
+            return response
 
         serializer = CommentSerializer(instance=comment, data=request.data)
         if serializer.is_valid():
@@ -64,9 +70,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         comment = get_object_or_404(Comment, pk=pk)
-
-        if request.user != comment.owner:
-            return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+        response = check_permission(request, comment)
+        if response:  # 403Forbidden?
+            return response
 
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
