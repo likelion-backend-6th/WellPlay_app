@@ -1,0 +1,38 @@
+#!/bin/bash
+
+USERNAME="lion"
+PASSWORD="${password}"
+REMOTE_DIRECTORY="/home/$USERNAME/"
+
+echo "Add user"
+useradd -s /bin/bash -d $REMOTE_DIRECTORY -m $USERNAME
+
+echo "Set password"
+echo "$USERNAME:$PASSWORD" | chpasswd
+
+echo "Set sudo"
+usermod -aG sudo $USERNAME
+echo "$USERNAME ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers.d/$USERNAME
+
+echo "Update apt and Install docker"
+sudo apt-get update
+sudo apt install -y docker.io
+
+echo "Start docker"
+sudo service docker start && sudo service docker enable
+
+echo "Add user to docker group"
+sudo usermod -aG docker $USERNAME
+
+# create .env file
+echo "create .env"
+
+ENV_PATH=/home/$USERNAME/.env
+touch $ENV_PATH
+
+echo "POSTGRES_DB=${POSTGRES_DB}" >> $ENV_PATH
+echo "POSTGRES_USER=${POSTGRES_USER}" >> $ENV_PATH
+echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> $ENV_PATH
+echo "POSTGRES_PORT=${POSTGRES_PORT}" >> $ENV_PATH
+
+echo "done"
