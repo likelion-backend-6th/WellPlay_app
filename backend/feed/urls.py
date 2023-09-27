@@ -5,7 +5,7 @@ from feed import views
 
 
 feed_router = DefaultRouter()
-feed_router.register("", views.FeedViewset, basename="feed")
+feed_router.register("", views.FeedViewSet, basename="feed")
 
 comment_router = DefaultRouter()
-comment_router.register("", views.CommentViewset, basename="comment")
+comment_router.register("", views.CommentViewSet, basename="comment")
