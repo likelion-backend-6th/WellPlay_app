@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
+
 
 
 class Feed(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,7 +16,7 @@ class Feed(models.Model):
 
 
 class Comment(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)  # 무슨 feed의 댓글인지
     content = models.TextField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,5 +27,5 @@ class Comment(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
