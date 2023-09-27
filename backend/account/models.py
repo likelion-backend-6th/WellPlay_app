@@ -29,8 +29,33 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    user_id = models.CharField(max_length=20, null=False)
+    user_id = models.CharField(max_length=20, null=False, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=256)
     profile_name = models.CharField(max_length=20, null=True)
     profile_img = models.ImageField(null=True)
+    lol_name = models.CharField(null=True)
+    lol_tier = models.CharField(null=True)
+
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'user_id'
+
+    # 슈퍼유저 만들 때 입력받을 정보
+    REQUIRED_FIELDS = ['email']
+
+    objects = UserManager()
+
+    def __str__(self):
+        return f"{self.user_id} / {self.email} 의 계정"
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        return self.is_admin
