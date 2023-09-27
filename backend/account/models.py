@@ -21,11 +21,12 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=email,
             user_id=user_id,
-            password=password,
         )
+        user.set_password(password)
         user.is_admin = True
         user.save(using=self._db)
         return user
+
 
 
 class User(AbstractBaseUser):
@@ -33,9 +34,8 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=256)
     profile_name = models.CharField(max_length=20, null=True)
-    profile_img = models.ImageField(null=True)
-    lol_name = models.CharField(null=True)
-    lol_tier = models.CharField(null=True)
+    profile_img = models.ImageField(null=True, blank=True)
+    lol_userinfo = models.JSONField(null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
