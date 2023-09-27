@@ -37,27 +37,3 @@ class FeedViewset(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = CommentSerializer
-
-    # 댓글 불러오기
-    @action(detail=True, methods=["get"])
-    def comments(self, request, pk=None):
-        pass
-
-    # 댓글 입력, 수정, 삭제
-    @action(detail=True, methods=["post"])
-    def comment(self, request, pk=None):
-        pass
-
-    # 댓글 수정
-    @action(detail=True, methods=["put"])
-    def comment(self, request, pk=None):
-        pass
-
-    # 댓글 삭제
-    @action(detail=True, methods=["delete"])
-    def comment(self, request, pk=None):
-        pass
-
-    @action(detail=True, methods=["post"])
-    def like(self, request, pk=None):
-        pass
