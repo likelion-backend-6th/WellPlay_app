@@ -41,10 +41,15 @@ INSTALLED_APPS = [
 ]
 
 # Third party Apps
-INSTALLED_APPS += []
+INSTALLED_APPS += [
+    "rest_framework",
+    "drf_spectacular",
+]
 
 # Created Apps
-INSTALLED_APPS += []
+INSTALLED_APPS += [
+    "feed",
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -131,3 +136,19 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# for spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "WellPlay API",
+    "DESCRIPTION": "Likelion backend school 6th project Team 1",
+    "VERSION": "0.0.1",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # OTHER SETTINGS
+}
