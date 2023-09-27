@@ -1,4 +1,4 @@
-from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
 
 
@@ -17,7 +17,7 @@ class UserManager(BaseUserManager):
         return user
 
     # superuser는 프로필 이름이 필요 없을 것 같아서 제외
-    def create_superuser(self, user_id, email,  password=None):
+    def create_superuser(self, user_id, email, password=None):
         user = self.model(
             email=email,
             user_id=user_id,
@@ -26,3 +26,11 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
+
+class User(AbstractBaseUser):
+    user_id = models.CharField(max_length=20, null=False)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=256)
+    profile_name = models.CharField(max_length=20, null=True)
+    profile_img = models.ImageField(null=True)
