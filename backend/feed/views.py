@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets, status
 from .serializers import FeedSerializer, CommentSerializer
 from rest_framework.response import Response
@@ -6,11 +6,11 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 
-from .models import Feed
+from .models import Comment, Feed
 
 
 # Create your views here.
-class FeedViewset(viewsets.ModelViewSet):
+class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
@@ -35,5 +35,38 @@ class FeedViewset(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Feed.objects.all()
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def create(self, request):
+        # 댓글 생성시 사용자에게 알림 보내는 로직 추가 구현
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)  # 현재 사용자로 owner 설정
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def update(self, request, pk=None):
+        comment = get_object_or_404(Comment, pk=pk)
+
+        if request.user != comment.owner:
+            return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = CommentSerializer(instance=comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(deprecated=True)
+    def partial_update(self, request, pk=None):
+        return Response(status=status.HTTP_400_BAD_REQUEST, data="Deprecated API")
+
+    def destroy(self, request, pk=None):
+        comment = get_object_or_404(Comment, pk=pk)
+
+        if request.user != comment.owner:
+            return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
