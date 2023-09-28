@@ -10,7 +10,7 @@ from .models import Comment, Feed
 
 
 # Create your views here.
-class FeedViewset(viewsets.ModelViewSet):
+class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
