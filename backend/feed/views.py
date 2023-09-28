@@ -10,15 +10,15 @@ from .models import Comment, Feed
 
 
 # Create your views here.
-class FeedViewSet(viewsets.ModelViewSet):
+class FeedViewset(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
-    def list(self, request):
-        pass
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-    def create(self, request):
-        pass
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
     def retrieve(self, request, pk=None):
         pass
@@ -33,6 +33,10 @@ class FeedViewSet(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         pass
 
+    @action(detail=True, methods=["post"])
+    def like(self, request, pk=None):
+        pass
+
 
 def check_permission(request, comment):
     if request.user != comment.owner:
@@ -45,7 +49,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def create(self, request):
-        # 댓글 생성시 사용자에게 알림 보내는 로직 추가 구현
+        # 댓글 생성시 사용자에게 알림 보내는 로직 추가 구현 예정
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)  # 현재 사용자로 owner 설정
