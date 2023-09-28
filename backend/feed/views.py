@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status
-from .serializers import FeedSerializer, CommentSerializer
+from .serializers import FeedSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
@@ -14,11 +14,11 @@ class FeedViewset(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
-    def list(self, request):
-        pass
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
-    def create(self, request):
-        pass
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
 
     def retrieve(self, request, pk=None):
         pass
@@ -33,7 +33,10 @@ class FeedViewset(viewsets.ModelViewSet):
     def destroy(self, request, pk=None):
         pass
 
+    @action(detail=True, methods=["post"])
+    def like(self, request, pk=None):
+        pass
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Feed.objects.all()
-    serializer_class = CommentSerializer
+
+class CommentViewset(viewsets.ModelViewSet):
+    pass

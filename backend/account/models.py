@@ -1,61 +1,80 @@
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
+
+from common.models import CommonModel
 
 
-# Create your models here.
+# Helper Class
 class UserManager(BaseUserManager):
-    def create_user(self, user_id, email, profile_name, password=None):
+    def create_user(self, user_id, email, password, **kwargs):
         if not user_id:
-            raise ValueError('ID를 입력해야 합니다.')
+            raise ValueError("Please enter your user_id")
+        if not email:
+            raise ValueError("Please enter your email")
+        if not password:
+            raise ValueError("Please enter your password")
         user = self.model(
-            email=email,
             user_id=user_id,
-            profile_name=profile_name,
+            email=email,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    # superuser는 프로필 이름이 필요 없을 것 같아서 제외
-    def create_superuser(self, user_id, email, password=None):
-        user = self.model(
-            email=email,
+    def create_superuser(self, user_id, email, password):
+        superuser = self.create_user(
             user_id=user_id,
+            email=email,
+            password=password,
         )
-        user.set_password(password)
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+
+        superuser.is_staff = True
+        superuser.is_superuser = True
+        superuser.is_active = True
+
+        superuser.save(using=self._db)
+        return superuser
 
 
-
-class User(AbstractBaseUser):
-    user_id = models.CharField(max_length=20, null=False, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=256)
-    profile_name = models.CharField(max_length=20, null=True)
-    profile_img = models.ImageField(null=True, blank=True)
-    lol_userinfo = models.JSONField(null=True, blank=True)
-
+# AbstractBaseUser를 상속해서 유저 커스텀
+class User(CommonModel, AbstractBaseUser, PermissionsMixin):
+    user_id = models.CharField(max_length=30, unique=True, null=False, blank=False)
+    email = models.EmailField(max_length=30, unique=True, null=False, blank=False)
+    is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-
-    USERNAME_FIELD = 'user_id'
-
-    # 슈퍼유저 만들 때 입력받을 정보
-    REQUIRED_FIELDS = ['email']
+    is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = [
+        "user_id",
+    ]
 
     def __str__(self):
-        return f"{self.user_id} / {self.email} 의 계정"
+        return self.user_id
 
-    def has_perm(self, perm, obj=None):
-        return True
 
-    def has_module_perms(self, app_label):
-        return True
+# Profile 모델로 분리
+class Profile(CommonModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=30, null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True)
+    lol_info = models.JSONField(null=True, blank=True)
 
-    @property
-    def is_staff(self):
-        return self.is_admin
+    def __str__(self):
+        return f"{self.user.user_id} Profile"
+
+
+# follow
+class Follow(CommonModel):
+    from_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="from_user"
+    )
+    to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="to_user")
+
+    def __str__(self):
+        return f"{self.from_user} Follow {self.to_user}"
