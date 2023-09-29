@@ -147,3 +147,11 @@ SPECTACULAR_SETTINGS = {
 
 # Set custom user model
 AUTH_USER_MODEL = "account.User"
+
+# Celery 설정
+CELERY_BROKER_URL = "redis://localhost:6379/0"  # Redis 메시지 브로커 URL
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Celery 결과 저장소 설정
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
