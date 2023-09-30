@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
-from ..common.models import CommonModel
+from common.models import CommonModel
 
 
 # Helper Class
