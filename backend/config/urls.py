@@ -11,6 +11,7 @@ from feed.urls import feed_router, comment_router
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth", include("rest_framework.urls")),
+    path("account/", include('account.urls')),
     path("feed/", include(feed_router.urls)),
     path("comment/", include(comment_router.urls)),
     # drf-spectacular
