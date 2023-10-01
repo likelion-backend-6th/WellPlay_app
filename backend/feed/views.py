@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets, status
-from .serializers import FeedSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 
-from .models import Comment, Feed
+from .serializers import FeedSerializer, CommentSerializer, NotificationSerializer
+from .models import Comment, Feed, Notification
 
 
 # Create your views here.
@@ -49,10 +49,25 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     def create(self, request):
-        # 댓글 생성시 사용자에게 알림 보내는 로직 추가 구현 예정
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user)  # 현재 사용자로 owner 설정
+            comment = serializer.instance
+
+            sender = request.user
+            receiver = comment.feed.owner
+            message = f"{sender}님이 피드에 댓글을 남겼습니다."
+            notification_type = "comment"
+            # 알림 저장
+            notification_data = {
+                "sender": sender,
+                "receiver": receiver,
+                "message": message,
+                "notification_type": notification_type,
+            }
+            notification_serializer = NotificationSerializer(data=notification_data)
+            if notification_serializer.is_valid():
+                notification_serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
