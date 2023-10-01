@@ -37,6 +37,7 @@ class FeedViewSet(viewsets.ModelViewSet):
     def like(self, request, pk=None):
         pass
 
+
 def check_permission(request, comment):
     if request.user != comment.owner:
         return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
