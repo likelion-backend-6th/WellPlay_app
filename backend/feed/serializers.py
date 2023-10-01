@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Feed, Comment
+from .models import Feed, Comment, Notification
 
 
 class FeedSerializer(serializers.ModelSerializer):
@@ -25,3 +25,9 @@ class CommentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = "__all__"

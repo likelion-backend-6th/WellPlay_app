@@ -6,3 +6,6 @@ boto3==1.28.55
 gunicorn==21.2.0
 djangorestframework-simplejwt==5.3.0
 Pillow==10.0.1
+celery==5.3.4 #celery 설치
+requests==2.26.0 #파이썬 라이브러리
+redis==3.6.5 #셀러리 메세지 브로커로 사용

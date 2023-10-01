@@ -186,3 +186,11 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+# Celery 설정
+CELERY_BROKER_URL = "redis://localhost:6379/0"  # Redis 메시지 브로커 URL
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Celery 결과 저장소 설정
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
