@@ -157,9 +157,9 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
 
     @extend_schema(summary="댓글 작성")
-    def create(self, request, feed_id):
+    def create(self, request, id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
-        feed = get_object_or_404(Feed, pk=feed_id)
+        feed = get_object_or_404(Feed, pk=id)
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=request.user, feed=feed)  # owner와 feed 설정
@@ -182,10 +182,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(summary="댓글 수정")
-    def update(self, request, feed_id, pk):
+    def update(self, request, id, comment_id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
-        feed = get_object_or_404(Feed, pk=feed_id)
-        comment = get_object_or_404(Comment, pk=pk, feed=feed)  # 해당 피드의 댓글만 가져옴
+        feed = get_object_or_404(Feed, pk=id)
+        comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
         response = check_permission(request, comment)
         if response:  # 403Forbidden?
             return response
@@ -196,10 +196,10 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(summary="댓글 삭제")
-    def destroy(self, request, feed_id, pk):
+    def destroy(self, request, id, comment_id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
-        feed = get_object_or_404(Feed, pk=feed_id)
-        comment = get_object_or_404(Comment, pk=pk, feed=feed)  # 해당 피드의 댓글만 가져옴
+        feed = get_object_or_404(Feed, pk=id)
+        comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
         response = check_permission(request, comment)
         if response:  # 403Forbidden?
             return response
