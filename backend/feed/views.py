@@ -156,6 +156,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    @extend_schema(summary="댓글 목록 조회")
+    def list(self, request, id):
+        feed = get_object_or_404(Feed, pk=id)
+        comments = Comment.objects.filter(feed=feed)
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
     @extend_schema(summary="댓글 작성")
     def create(self, request, id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
