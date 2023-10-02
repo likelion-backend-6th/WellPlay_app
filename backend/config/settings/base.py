@@ -147,3 +147,8 @@ SPECTACULAR_SETTINGS = {
 
 # Set custom user model
 AUTH_USER_MODEL = "account.User"
+
+
+# NCP
+NCP_ACCESS_KEY = os.getenv("NCP_ACCESS_KEY", "")
+NCP_SECRET_KEY = os.getenv("NCP_SECRET_KEY", "")

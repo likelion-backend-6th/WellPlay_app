@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Feed, Comment
+from .models import Feed, Comment, Like
 
 
 class FeedSerializer(serializers.ModelSerializer):
@@ -14,6 +14,20 @@ class FeedSerializer(serializers.ModelSerializer):
         )
 
 
+class FeedUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feed
+        fields = [
+            "content",
+            "image",
+            "video",
+        ]
+        read_only_fields = ("owner", "created_at", "updated_at")
+
+    image = serializers.ImageField(use_url=True)
+    video = serializers.FileField(use_url=True)
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
@@ -25,3 +39,10 @@ class CommentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = "__all__"
+        read_only_fields = ("user", "feed", "created_at")
