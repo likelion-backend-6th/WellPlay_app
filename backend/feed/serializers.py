@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Feed, Comment, Like
+from .models import Feed, Comment, Notification, Like
 
 
 class FeedSerializer(serializers.ModelSerializer):
@@ -46,3 +46,9 @@ class LikeSerializer(serializers.ModelSerializer):
         model = Like
         fields = "__all__"
         read_only_fields = ("user", "feed", "created_at")
+
+        
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = "__all__"

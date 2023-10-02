@@ -15,6 +15,11 @@ class Feed(CommonModel):
     ]
     ordering = ["-created_at"]
 
+    indexes = [
+        models.Index(fields=["-created_at"]),
+    ]
+    ordering = ["-created_at"]
+
     def __str__(self):
         return f"Feed by {self.owner.user_id}"
 
@@ -40,3 +45,18 @@ class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, related_name="likes")
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Notification(models.Model):
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sent_notifications",
+    )
+    receiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="received_notifications",
+    )
+    message = models.CharField(max_length=255)
+    notification_type = models.CharField(max_length=32)
