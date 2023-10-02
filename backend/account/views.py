@@ -1,4 +1,5 @@
 import jwt
+from django.contrib.auth import authenticate
 from django.urls import path, include
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
@@ -7,7 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, viewsets, routers
 from rest_framework.response import Response
 
-#celery viewset
+# celery viewset
 from django.http import HttpResponse
 from django.shortcuts import render
 from .tasks import update_lol_info
@@ -55,3 +56,42 @@ def update_lol_info_view(request):
 
     else:
         return HttpResponse("로그인이 필요합니다.")
+
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        user = authenticate(
+            email=request.data.get("email"), password=request.data.get("password")
+        )
+        if user is not None:
+            serializer = UserSerializer(user)
+            token = TokenObtainPairSerializer.get_token(user)
+            refresh_token = str(token)
+            access_token = str(token.access_token)
+            res = Response(
+                {
+                    "user": serializer.data,
+                    "message": "login success",
+                    "token": {
+                        "access": access_token,
+                        "refresh": refresh_token,
+                    },
+                },
+                status=status.HTTP_200_OK,
+            )
+            res.set_cookie("access", access_token, httponly=True)
+            res.set_cookie("refresh", refresh_token, httponly=True)
+            return res
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutAPIView(APIView):
+    def delete(self, request):
+        # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
+        response = Response({
+            "message": "Logout success"
+        }, status=status.HTTP_202_ACCEPTED)
+        response.delete_cookie("access")
+        response.delete_cookie("refresh")
+        return response
