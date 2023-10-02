@@ -1,5 +1,6 @@
 import jwt
 from django.urls import path, include
+from django.views.decorators.http import require_POST
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from .serializers import *
@@ -7,9 +8,9 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, viewsets, routers
 from rest_framework.response import Response
 
-#celery viewset
+# celery viewset
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .tasks import update_lol_info
 
 
@@ -55,3 +56,24 @@ def update_lol_info_view(request):
 
     else:
         return HttpResponse("로그인이 필요합니다.")
+
+
+@require_POST
+def follow(request, user_id):
+    if request.user.is_authenticated:
+        users = User.objects.get(id=user_id)
+        if users != request.user:
+            if users.from_user.filter(id=request.user.id).exists():
+                users.to_user.remove(request.user)
+            else:
+                users.from_user.add(request.user)
+        return redirect('profile', users.id)
+    return redirect('login')
+
+
+def profile(request):
+    pass
+
+
+def login(request):
+    pass
