@@ -21,7 +21,7 @@ class FeedUploadSerializer(serializers.ModelSerializer):
             "content",
             "image",
             "video",
-        ]
+        ]  # 이미지랑 비디오 read_only에 추가하는게 낫지 않을까요?
         read_only_fields = ("owner", "created_at", "updated_at")
 
     image = serializers.ImageField(use_url=True)
@@ -47,7 +47,7 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ("user", "feed", "created_at")
 
-        
+
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification

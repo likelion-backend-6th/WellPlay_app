@@ -9,16 +9,28 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 from django.urls import include
+from feed.views import CommentViewSet
 
 from feed.urls import feed_router, comment_router
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api-auth", include("rest_framework.urls")),
+    path("api-auth/", include("rest_framework.urls")),
     path("account/", include("account.urls")),
     path("feed/", include(feed_router.urls)),
-    path("comment/", include(comment_router.urls)),
+    # comment get,post
+    path(
+        "feed/<int:id>/comments/",
+        CommentViewSet.as_view({"get": "list", "post": "create"}),
+        name="list-create-comments",
+    ),
+    # comment put, delete
+    path(
+        "feed/<int:id>/comments/<int:pk>/",
+        CommentViewSet.as_view({"put": "update", "delete": "destroy"}),
+        name="update-delete-comment",
+    ),
     # jwt
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
