@@ -10,6 +10,8 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 
+from backend.common.uploader import FileUploader
+
 from .serializers import (
     FeedSerializer,
     FeedUploadSerializer,
@@ -29,11 +31,13 @@ class FeedViewSet(viewsets.ModelViewSet):
             return FeedUploadSerializer
         return super().get_serializer_class()
 
+    @extend_schema(summary="최신순 피드 리스트")
     def list(self, request, *args, **kwargs):
         feeds = Feed.objects.order_by("-created_at")
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(summary="추천순 피드 리스트")
     @action(detail=False, methods=["get"])
     def recommend(self, request, *args, **kwargs):
         feeds = Feed.objects.filter(Like__isnull=False).order_by("-like__count")
@@ -43,54 +47,20 @@ class FeedViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args, **kwargs):
         image_url = None
         video_url = None
-        # if image exist
+        # if file exist
         if image := request.data.get("image"):
             image: File
-            service_name = "s3"
-            endpoint_url = "https://kr.object.ncloudstorage.com"
-            access_key = settings.NCP_ACCESS_KEY
-            secret_key = settings.NCP_SECRET_KEY
-            bucket_name = "wellplay"
-
-            s3 = boto3.client(
-                service_name,
-                endpoint_url=endpoint_url,
-                aws_access_key_id=access_key,
-                aws_secret_access_key=secret_key,
+            uploader = FileUploader(
+                settings.NCP_ACCESS_KEY, settings.NCP_SECRET_KEY, image
             )
-
-            # s3 upload
-            image_id = str(uuid.uuid4())
-            ext = image.name.split(".")[-1]
-            image_filename = f"{image_id}.{ext}"
-            s3.upload_fileobj(image.file, bucket_name, image_filename)
-
-            # get image url
-            s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=image_filename)
-            image_url = f"{endpoint_url}/{bucket_name}/{image_filename}"
+            image_url = uploader.upload()
 
         if video := request.data.get("video"):
             video: File
-            service_name = "s3"
-            endpoint_url = "https://kr.object.ncloudstorage.com"
-            access_key = settings.NCP_ACCESS_KEY
-            secret_key = settings.NCP_SECRET_KEY
-            bucket_name = "wellplay"
-
-            s3 = boto3.client(
-                service_name,
-                endpoint_url=endpoint_url,
-                aws_access_key_id=access_key,
-                aws_secret_access_key=secret_key,
+            uploader = FileUploader(
+                settings.NCP_ACCESS_KEY, settings.NCP_SECRET_KEY, video
             )
-
-            video_id = str(uuid.uuid4())
-            ext = video.name.split(".")[-1]
-            video_filename = f"{video_id}.{ext}"
-            s3.upload_fileobj(video.file, bucket_name, video_filename)
-
-            s3.put_object_acl(ACL="public-read", Bucket=bucket_name, Key=video_filename)
-            video_url = f"{endpoint_url}/{bucket_name}/{video_filename}"
+            video_url = uploader.upload()
 
         serializer = FeedSerializer(data=request.data)
         if serializer.is_valid():
