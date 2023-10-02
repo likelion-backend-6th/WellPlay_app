@@ -10,11 +10,17 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 
-from .serializers import FeedSerializer, FeedUploadSerializer, LikeSerializer, CommentSerializer, NotificationSerializer
+from .serializers import (
+    FeedSerializer,
+    FeedUploadSerializer,
+    LikeSerializer,
+    CommentSerializer,
+    NotificationSerializer,
+)
 from .models import Comment, Feed, Notification, Like
 
 
-class FeedViewset(viewsets.ModelViewSet):
+class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
@@ -150,14 +156,16 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
-    def create(self, request):
+    @extend_schema(summary="댓글 작성")
+    def create(self, request, feed_id):
+        # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
+        feed = get_object_or_404(Feed, pk=feed_id)
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=request.user)  # 현재 사용자로 owner 설정
+            serializer.save(owner=request.user, feed=feed)  # owner와 feed 설정
             comment = serializer.instance
-
             sender = request.user
-            receiver = comment.feed.owner
+            receiver = feed.owner  # 피드의 소유자가 수신자가 됨
             message = f"{sender}님이 피드에 댓글을 남겼습니다."
             notification_type = "comment"
             # 알림 저장
@@ -173,28 +181,31 @@ class CommentViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def update(self, request, pk=None):
-        comment = get_object_or_404(Comment, pk=pk)
+    @extend_schema(summary="댓글 수정")
+    def update(self, request, feed_id, pk):
+        # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
+        feed = get_object_or_404(Feed, pk=feed_id)
+        comment = get_object_or_404(Comment, pk=pk, feed=feed)  # 해당 피드의 댓글만 가져옴
         response = check_permission(request, comment)
         if response:  # 403Forbidden?
             return response
-
         serializer = CommentSerializer(instance=comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @extend_schema(deprecated=True)
-    def partial_update(self, request, pk=None):
-        return Response(status=status.HTTP_400_BAD_REQUEST, data="Deprecated API")
-
-    def destroy(self, request, pk=None):
-        comment = get_object_or_404(Comment, pk=pk)
+    @extend_schema(summary="댓글 삭제")
+    def destroy(self, request, feed_id, pk):
+        # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
+        feed = get_object_or_404(Feed, pk=feed_id)
+        comment = get_object_or_404(Comment, pk=pk, feed=feed)  # 해당 피드의 댓글만 가져옴
         response = check_permission(request, comment)
         if response:  # 403Forbidden?
             return response
-
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @extend_schema(deprecated=True)
+    def partial_update(self, request, pk=None):
+        return Response(status=status.HTTP_400_BAD_REQUEST, data="Deprecated API")
