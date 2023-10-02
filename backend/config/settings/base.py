@@ -155,6 +155,11 @@ SPECTACULAR_SETTINGS = {
 # Set custom user model
 AUTH_USER_MODEL = "account.User"
 
+
+# NCP
+NCP_ACCESS_KEY = os.getenv("NCP_ACCESS_KEY", "")
+NCP_SECRET_KEY = os.getenv("NCP_SECRET_KEY", "")
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
@@ -194,3 +199,4 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"  # Redis 메시지 브로커 URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+
