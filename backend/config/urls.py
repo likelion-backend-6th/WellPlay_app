@@ -27,7 +27,7 @@ urlpatterns = [
     ),
     # comment put, delete
     path(
-        "feed/<int:id>/comments/<int:pk>/",
+        "feed/<int:id>/comments/<int:comment_id>/",
         CommentViewSet.as_view({"put": "update", "delete": "destroy"}),
         name="update-delete-comment",
     ),
