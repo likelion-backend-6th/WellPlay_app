@@ -10,11 +10,17 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 
-from .serializers import FeedSerializer, FeedUploadSerializer, LikeSerializer, CommentSerializer, NotificationSerializer
+from .serializers import (
+    FeedSerializer,
+    FeedUploadSerializer,
+    LikeSerializer,
+    CommentSerializer,
+    NotificationSerializer,
+)
 from .models import Comment, Feed, Notification, Like
 
 
-class FeedViewset(viewsets.ModelViewSet):
+class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
@@ -197,4 +203,3 @@ class CommentViewSet(viewsets.ModelViewSet):
 
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
