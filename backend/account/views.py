@@ -55,3 +55,20 @@ def update_lol_info_view(request):
 
     else:
         return HttpResponse("로그인이 필요합니다.")
+
+
+class FollowAPIView(APIView):
+    def post(self, request, format=None):
+        serializer = FollowSerializer(data=request.data)
+        if serializer.is_valid():
+            to_user = serializer.validated_data["to_user"]
+            qs = Follow.objects.filter(from_user=request.user, to_user=to_user)
+            if qs.exists():
+                qs.delete()
+                return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                Follow.objects.create(from_user=request.user,
+                                      to_user=to_user,)
+                return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
