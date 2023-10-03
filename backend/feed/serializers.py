@@ -13,6 +13,15 @@ class FeedSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
+    like = serializers.SerializerMethodField()
+    comment = serializers.SerializerMethodField()
+
+    def get_like(self, obj) -> int:
+        return Like.objects.filter(feed=obj).count()
+
+    def get_comment(self, obj) -> int:
+        return Comment.objects.filter(feed=obj).count()
+
 
 class FeedUploadSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +30,7 @@ class FeedUploadSerializer(serializers.ModelSerializer):
             "content",
             "image",
             "video",
-        ]  # 이미지랑 비디오 read_only에 추가하는게 낫지 않을까요?
+        ]
         read_only_fields = ("owner", "created_at", "updated_at")
 
     image = serializers.ImageField(use_url=True)
@@ -45,7 +54,7 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = "__all__"
-        read_only_fields = ("user", "feed", "created_at")
+        read_only_fields = ("created_at",)
 
 
 class NotificationSerializer(serializers.ModelSerializer):

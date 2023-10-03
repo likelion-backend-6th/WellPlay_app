@@ -1,17 +1,16 @@
-import uuid
+from datetime import datetime, timedelta
 
-import boto3
 from django.core.files.base import File
-from django.shortcuts import get_object_or_404, render
-from rest_framework import viewsets, status
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
+from django.db.models import Count
 
 from common.uploader import FileUploader
-
 from .serializers import (
     FeedSerializer,
     FeedUploadSerializer,
@@ -40,10 +39,17 @@ class FeedViewSet(viewsets.ModelViewSet):
     @extend_schema(summary="추천순 피드 리스트")
     @action(detail=False, methods=["get"])
     def recommend(self, request, *args, **kwargs):
-        feeds = Feed.objects.filter(Like__isnull=False).order_by("-like__count")
+        ordering = ["-like_count", "-created_at"]
+        today = datetime.now().date()
+        feeds = (
+            Feed.objects.annotate(like_count=Count("likes"))
+            .order_by(*ordering)
+            .filter(created_at__gte=(today - timedelta(days=7)))
+        )
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(summary="피드 글 생성")
     def create(self, request: Request, *args, **kwargs):
         image_url = None
         video_url = None
@@ -75,9 +81,11 @@ class FeedViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
+    @extend_schema(summary="피드 글 디테일")
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    @extend_schema(summary="피드 글 수정")
     def update(self, request: Request, *args, **kwargs):
         user = request.user
         feed: Feed = self.get_object()
@@ -91,6 +99,7 @@ class FeedViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, pk=None):
         return Response(status=status.HTTP_400_BAD_REQUEST, data="Deprecated API")
 
+    @extend_schema(summary="피드 글 삭제")
     def destroy(self, request: Request, *args, **kwargs):
         user = request.user
         feed: Feed = self.get_object()
@@ -100,18 +109,24 @@ class FeedViewSet(viewsets.ModelViewSet):
             )
         return super().destroy(request, *args, **kwargs)
 
-    @action(detail=True, methods=["post"])
-    def like(self, request: Request, pk=None):
-        serializer = LikeSerializer(data=request.data)
+
+class LikeView(generics.CreateAPIView):
+    serializer_class = LikeSerializer
+    queryset = Like.objects.all()
+
+    def post(self, request: Request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             feed = serializer.validated_data["feed"]
+            print(feed)
             qs = Like.objects.filter(feed=feed, user=request.user)
+            print(qs)
             if qs.exists():
                 qs.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             else:
                 Like.objects.create(feed=feed, user=request.user)
-                return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_201_CREATED, data=serializer.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
