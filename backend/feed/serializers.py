@@ -13,6 +13,15 @@ class FeedSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
+    like = serializers.SerializerMethodField()
+    comment = serializers.SerializerMethodField()
+
+    def get_like(self, obj):
+        return Like.objects.filter(feed=obj).count()
+
+    def get_comment(self, obj):
+        return Comment.objects.filter(feed=obj).count()
+
 
 class FeedUploadSerializer(serializers.ModelSerializer):
     class Meta:

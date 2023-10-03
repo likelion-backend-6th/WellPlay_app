@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core.files.base import File
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, generics
@@ -6,9 +8,9 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
+from django.db.models import Count
 
 from common.uploader import FileUploader
-
 from .serializers import (
     FeedSerializer,
     FeedUploadSerializer,
@@ -37,7 +39,13 @@ class FeedViewSet(viewsets.ModelViewSet):
     @extend_schema(summary="추천순 피드 리스트")
     @action(detail=False, methods=["get"])
     def recommend(self, request, *args, **kwargs):
-        feeds = Feed.objects.filter(Like__isnull=False).order_by("-like__count")
+        ordering = ["-like_count", "-created_at"]
+        today = datetime.now().date()
+        feeds = (
+            Feed.objects.annotate(like_count=Count("likes"))
+            .order_by(*ordering)
+            .filter(created_at__gte=(today - timedelta(days=7)))
+        )
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
