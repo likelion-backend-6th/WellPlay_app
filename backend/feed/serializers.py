@@ -16,10 +16,10 @@ class FeedSerializer(serializers.ModelSerializer):
     like = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
 
-    def get_like(self, obj):
+    def get_like(self, obj) -> int:
         return Like.objects.filter(feed=obj).count()
 
-    def get_comment(self, obj):
+    def get_comment(self, obj) -> int:
         return Comment.objects.filter(feed=obj).count()
 
 
