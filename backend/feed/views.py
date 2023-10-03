@@ -114,13 +114,12 @@ class LikeView(generics.CreateAPIView):
     serializer_class = LikeSerializer
     queryset = Like.objects.all()
 
+    @extend_schema(summary="피드 글 좋아요")
     def post(self, request: Request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             feed = serializer.validated_data["feed"]
-            print(feed)
             qs = Like.objects.filter(feed=feed, user=request.user)
-            print(qs)
             if qs.exists():
                 qs.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
