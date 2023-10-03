@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 
-from backend.common.uploader import FileUploader
+from common.uploader import FileUploader
 
 from .serializers import (
     FeedSerializer,
