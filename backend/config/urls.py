@@ -11,14 +11,12 @@ from rest_framework_simplejwt.views import (
 from django.urls import include
 from feed.views import CommentViewSet
 
-from feed.urls import feed_router, comment_router
-
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
     path("account/", include("account.urls")),
-    path("feed/", include(feed_router.urls)),
+    path("feed/", include("feed.urls")),
     # comment get,post
     path(
         "feed/<int:id>/comments/",
