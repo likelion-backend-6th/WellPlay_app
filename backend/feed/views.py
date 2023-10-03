@@ -109,21 +109,6 @@ class FeedViewSet(viewsets.ModelViewSet):
             )
         return super().destroy(request, *args, **kwargs)
 
-    # @action(detail=True, methods=["post"])
-    # def like(self, request: Request, pk=None):
-    #     serializer = LikeSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         feed = serializer.validated_data["feed"]
-    #         qs = Like.objects.filter(feed=feed, user=request.user)
-    #         if qs.exists():
-    #             qs.delete()
-    #             return Response(status=status.HTTP_204_NO_CONTENT)
-    #         else:
-    #             Like.objects.create(feed=feed, user=request.user)
-    #             return Response(status=status.HTTP_201_CREATED)
-    #     else:
-    #         return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
-
 
 class LikeView(generics.CreateAPIView):
     serializer_class = LikeSerializer
