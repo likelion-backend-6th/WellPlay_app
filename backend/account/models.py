@@ -7,8 +7,6 @@ from django.contrib.auth.models import (
 
 from common.models import CommonModel
 
-
-# Helper Class
 class UserManager(BaseUserManager):
     def create_user(self, user_id, email, password, **kwargs):
         if not user_id:
