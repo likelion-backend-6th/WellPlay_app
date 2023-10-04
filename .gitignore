@@ -240,9 +240,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Vue CLI의 설정 파일
-vue.config.js
-
 # 생성된 테스트 파일
 /tests/unit/coverage/
 
