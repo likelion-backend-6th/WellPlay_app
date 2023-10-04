@@ -172,7 +172,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         feed = get_object_or_404(Feed, pk=id)
         comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
         user = request.user  # 현재 로그인한 사용자
-        if not comment.access_by_feed(user):
+        if not comment.access_by_comment(user):
             return Response(
                 status=status.HTTP_403_FORBIDDEN, data="You do not have permission"
             )
@@ -188,7 +188,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         feed = get_object_or_404(Feed, pk=id)
         comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
         user = request.user  # 현재 로그인한 사용자
-        if not comment.access_by_feed(user):
+        if not comment.access_by_comment(user):
             return Response(
                 status=status.HTTP_403_FORBIDDEN, data="You do not have permission"
             )
