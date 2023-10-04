@@ -19,7 +19,7 @@ urlpatterns = [
         name="list-create-comments",
     ),
     path(
-        "feed/<int:id>/comments/<int:comment_id>/",
+        "<int:id>/comments/<int:comment_id>/",
         views.CommentViewSet.as_view({"put": "update", "delete": "destroy"}),
         name="update-delete-comment",
     ),

@@ -130,12 +130,6 @@ class LikeView(generics.CreateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
 
-def check_permission(request, comment):
-    if request.user != comment.owner:
-        return Response({"detail": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
-    return None
-
-
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -173,13 +167,15 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(summary="댓글 수정")
-    def update(self, request, id, comment_id):
+    def update(self, request: Request, id, comment_id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
         feed = get_object_or_404(Feed, pk=id)
         comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
-        response = check_permission(request, comment)
-        if response:  # 403Forbidden?
-            return response
+        user = request.user  # 현재 로그인한 사용자
+        if not comment.access_by_feed(user):
+            return Response(
+                status=status.HTTP_403_FORBIDDEN, data="You do not have permission"
+            )
         serializer = CommentSerializer(instance=comment, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -187,13 +183,15 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @extend_schema(summary="댓글 삭제")
-    def destroy(self, request, id, comment_id):
+    def destroy(self, request: Request, id, comment_id):
         # 해당 피드를 가져오거나 존재하지 않으면 404 에러 반환
         feed = get_object_or_404(Feed, pk=id)
         comment = get_object_or_404(Comment, pk=comment_id, feed=feed)  # 해당 피드의 댓글만 가져옴
-        response = check_permission(request, comment)
-        if response:  # 403Forbidden?
-            return response
+        user = request.user  # 현재 로그인한 사용자
+        if not comment.access_by_feed(user):
+            return Response(
+                status=status.HTTP_403_FORBIDDEN, data="You do not have permission"
+            )
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
