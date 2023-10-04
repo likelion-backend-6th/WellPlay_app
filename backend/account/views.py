@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
 from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, generics
@@ -11,7 +12,7 @@ from .tasks import update_lol_info
 
 
 class RegisterAPIView(APIView):
-    @extend_schema(request=None, responses=UserSerializer, summary="회원가입 - user_id, email, password 필드 필요")
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="회원가입 - user_id, email, password 필드 필요")
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -96,9 +97,23 @@ class LogoutAPIView(APIView):
         return response
 
 class ProfileAPIView(APIView):
-    def post(self, request):
-        serializer = ProfileSerializer(data=request.data)
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProfileSerializer
 
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def patch(self, request, *args, **kwargs):
+        serializer_data = request.data
+        serializer = self.serializer_class(
+            request.user, data=serializer_data, partial=True
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class FollowAPIView(generics.CreateAPIView):
     serializer_class = FollowSerializer
