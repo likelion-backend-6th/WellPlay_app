@@ -5,6 +5,7 @@ from .models import User, Follow
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         "user_id",
         "email",
         "is_superuser",
@@ -16,4 +17,4 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ("from_user", "to_user",)
+    list_display = ("id", "from_user", "to_user",)
