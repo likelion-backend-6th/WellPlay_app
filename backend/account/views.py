@@ -134,7 +134,7 @@ class FollowAPIView(generics.CreateAPIView):
                 return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 Follow.objects.create(from_user=request.user,
-                                      to_user=to_user, )
+                                      to_user=to_user,)
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
