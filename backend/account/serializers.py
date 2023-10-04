@@ -24,7 +24,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def update(self, instance, validated_data):
-        pass
+        for (key, value) in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        return instance
 
 
 class FollowSerializer(serializers.ModelSerializer):
