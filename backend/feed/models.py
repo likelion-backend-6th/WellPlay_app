@@ -36,6 +36,9 @@ class Comment(CommonModel):
     def __str__(self):
         return f"Comment by {self.owner.user_id}"
 
+    def access_by_feed(self, user: settings.AUTH_USER_MODEL):
+        return self.owner == user or user.is_superuser
+
 
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
