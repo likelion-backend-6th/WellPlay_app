@@ -215,3 +215,57 @@ override.tf.json
 .terraformrc
 terraform.rc
 # End of https://www.toptal.com/developers/gitignore/api/terraform
+
+# Node.js
+/node_modules
+
+# 로컬 개발 환경 파일
+/.env.local
+/.env.development.local
+/.env.test.local
+/.env.production.local
+
+# 로그와 빌드 파일
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/dist/
+/.nuxt/
+
+# macOS 디렉토리 파일
+.DS_Store
+
+# 개발 환경에 따라서 제외할 파일 추가
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vue CLI의 설정 파일
+vue.config.js
+
+# 생성된 테스트 파일
+/tests/unit/coverage/
+
+# 소스 맵 파일
+*.map
+
+# 환경 설정 파일
+.env
+
+# 플러그인 설치 디렉토리 (옵션)
+/plugins/
+
+.DS_Store
+node_modules
+/dist
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
