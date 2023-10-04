@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['user_id', 'email', 'password']
+        read_only_fields = ('refresh',)
         # read_only_field = ('last_login', 'is_superuser', ' is_active', 'is_staff', 'groups', 'user_permissions')
 
     def create(self, validated_data):
@@ -21,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = '__all__'
+        fields = ('id', 'nickname', 'image_url', 'lol_info')
 
     def update(self, instance, validated_data):
         for (key, value) in validated_data.items():

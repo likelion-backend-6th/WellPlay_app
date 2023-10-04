@@ -96,18 +96,21 @@ class LogoutAPIView(APIView):
         response.delete_cookie("refresh")
         return response
 
+
 class ProfileAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileSerializer
 
     def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
+        profile = request.user.profile
+        serializer = self.serializer_class(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def patch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
         serializer_data = request.data
         serializer = self.serializer_class(
-            request.user, data=serializer_data, partial=True
+            profile, data=serializer_data, partial=True
         )
 
         serializer.is_valid(raise_exception=True)
@@ -115,9 +118,11 @@ class ProfileAPIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class FollowAPIView(generics.CreateAPIView):
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
+
     @extend_schema(request=None, responses=FollowSerializer)
     def post(self, request):
         serializer = FollowSerializer(data=request.data)
@@ -129,7 +134,7 @@ class FollowAPIView(generics.CreateAPIView):
                 return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 Follow.objects.create(from_user=request.user,
-                                      to_user=to_user,)
+                                      to_user=to_user, )
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
