@@ -96,24 +96,28 @@ class LogoutAPIView(APIView):
         response.delete_cookie("refresh")
         return response
 
+
 class ProfileAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileSerializer
 
     def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
+        profile = request.user.profile
+        serializer = self.serializer_class(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def patch(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
         serializer_data = request.data
         serializer = self.serializer_class(
-            request.user, data=serializer_data, partial=True
+            profile, data=serializer_data, partial=True
         )
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class FollowAPIView(generics.CreateAPIView):
     serializer_class = FollowSerializer
