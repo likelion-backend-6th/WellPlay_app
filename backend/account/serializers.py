@@ -21,3 +21,21 @@ class FollowSerializer(serializers.ModelSerializer):
         model = Follow
         fields = '__all__'
         read_only_fields = ("from_user",)
+
+
+class FollowingListSerializer(serializers.ModelSerializer):
+    from_user = serializers.ReadOnlyField(source='from_user.user_id')
+    to_user = serializers.ReadOnlyField(source='to_user.user_id')
+
+    class Meta:
+        model = Follow
+        fields = '__all__'
+
+
+class FollowerListSerializer(serializers.ModelSerializer):
+    to_user = serializers.ReadOnlyField(source='to_user.user_id')
+    from_user = serializers.ReadOnlyField(source='from_user.user_id')
+
+    class Meta:
+        model = Follow
+        fields = '__all__'

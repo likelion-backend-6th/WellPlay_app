@@ -9,7 +9,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, viewsets, routers, generics
 from rest_framework.response import Response
 
-#celery viewset
+# celery viewset
 from django.http import HttpResponse
 from django.shortcuts import render
 from .tasks import update_lol_info
@@ -101,7 +101,8 @@ class LogoutAPIView(APIView):
 class FollowAPIView(generics.CreateAPIView):
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
-    @extend_schema(request=None, responses=FollowSerializer)
+
+    @extend_schema(request=FollowSerializer, responses=FollowSerializer)
     def post(self, request):
         serializer = FollowSerializer(data=request.data)
         if serializer.is_valid():
@@ -112,7 +113,27 @@ class FollowAPIView(generics.CreateAPIView):
                 return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 Follow.objects.create(from_user=request.user,
-                                      to_user=to_user,)
+                                      to_user=to_user, )
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class FollowingList(generics.CreateAPIView):
+    serializer_class = FollowingListSerializer
+
+    @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer)
+    def get(self, request):
+        queryset = Follow.objects.filter(to_user=self.request.user)
+        serializer = FollowingListSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class FollowerList(generics.CreateAPIView):
+    serializer_class = FollowerListSerializer
+
+    @extend_schema(request=FollowerListSerializer, responses=FollowingListSerializer)
+    def get(self, request):
+        queryset = Follow.objects.filter(from_user=self.request.user)
+        serializer = FollowerListSerializer(queryset, many=True)
+        return Response(serializer.data)
