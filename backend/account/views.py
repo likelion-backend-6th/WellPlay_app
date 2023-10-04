@@ -1,14 +1,15 @@
 import jwt
 from django.contrib.auth import authenticate
 from django.urls import path, include
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import status, viewsets, routers
+from rest_framework import status, viewsets, routers, generics
 from rest_framework.response import Response
 
-# celery viewset
+#celery viewset
 from django.http import HttpResponse
 from django.shortcuts import render
 from .tasks import update_lol_info
@@ -95,3 +96,23 @@ class LogoutAPIView(APIView):
         response.delete_cookie("access")
         response.delete_cookie("refresh")
         return response
+
+
+class FollowAPIView(generics.CreateAPIView):
+    serializer_class = FollowSerializer
+    queryset = Follow.objects.all()
+    @extend_schema(request=None, responses=FollowSerializer)
+    def post(self, request):
+        serializer = FollowSerializer(data=request.data)
+        if serializer.is_valid():
+            to_user = serializer.validated_data["to_user"]
+            qs = Follow.objects.filter(from_user=request.user, to_user=to_user)
+            if qs.exists():
+                qs.delete()
+                return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                Follow.objects.create(from_user=request.user,
+                                      to_user=to_user,)
+                return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
