@@ -1,21 +1,18 @@
-import jwt
+from django.http import HttpResponse
 from django.contrib.auth import authenticate
-from django.urls import path, include
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import status, viewsets, routers, generics
+from rest_framework import status, generics
 from rest_framework.response import Response
 
-# celery viewset
-from django.http import HttpResponse
-from django.shortcuts import render
+from .serializers import *
 from .tasks import update_lol_info
 
 
 class RegisterAPIView(APIView):
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="회원가입 - user_id, email, password 필드 필요")
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -60,6 +57,7 @@ def update_lol_info_view(request):
 
 
 class LoginAPIView(APIView):
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그인 - email, password 필드 필요")
     def post(self, request):
         user = authenticate(
             email=request.data.get("email"), password=request.data.get("password")
@@ -88,6 +86,7 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그아웃")
     def delete(self, request):
         # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
         response = Response({
@@ -96,6 +95,28 @@ class LogoutAPIView(APIView):
         response.delete_cookie("access")
         response.delete_cookie("refresh")
         return response
+
+
+class ProfileAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProfileSerializer
+
+    def get(self, request, *args, **kwargs):
+        profile = request.user.profile
+        serializer = self.serializer_class(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        profile = request.user.profile
+        serializer_data = request.data
+        serializer = self.serializer_class(
+            profile, data=serializer_data, partial=True
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class FollowAPIView(generics.CreateAPIView):
@@ -113,7 +134,7 @@ class FollowAPIView(generics.CreateAPIView):
                 return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 Follow.objects.create(from_user=request.user,
-                                      to_user=to_user, )
+                                      to_user=to_user,)
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
