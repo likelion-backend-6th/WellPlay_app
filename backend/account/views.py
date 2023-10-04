@@ -1,10 +1,12 @@
 import jwt
+from django.contrib.auth import authenticate
 from django.urls import path, include
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
 from .serializers import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import status, viewsets, routers
+from rest_framework import status, viewsets, routers, generics
 from rest_framework.response import Response
 
 #celery viewset
@@ -96,8 +98,11 @@ class LogoutAPIView(APIView):
         return response
 
 
-class FollowAPIView(APIView):
-    def post(self, request, format=None):
+class FollowAPIView(generics.CreateAPIView):
+    serializer_class = FollowSerializer
+    queryset = Follow.objects.all()
+    @extend_schema(request=None, responses=FollowSerializer)
+    def post(self, request):
         serializer = FollowSerializer(data=request.data)
         if serializer.is_valid():
             to_user = serializer.validated_data["to_user"]
