@@ -1,17 +1,12 @@
-import jwt
+from django.http import HttpResponse
 from django.contrib.auth import authenticate
-from django.urls import path, include
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from .serializers import *
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework import status, viewsets, routers, generics
+from rest_framework import status, generics
 from rest_framework.response import Response
 
-# celery viewset
-from django.http import HttpResponse
-from django.shortcuts import render
+from .serializers import *
 from .tasks import update_lol_info
 
 
@@ -61,7 +56,7 @@ def update_lol_info_view(request):
 
 
 class LoginAPIView(APIView):
-    @extend_schema(request=None, responses=UserSerializer, summary="로그인 - email, password 필드 필요")
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그인 - email, password 필드 필요")
     def post(self, request):
         user = authenticate(
             email=request.data.get("email"), password=request.data.get("password")
@@ -90,7 +85,7 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
-    @extend_schema(request=None, responses=UserSerializer, summary="로그아웃")
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그아웃")
     def delete(self, request):
         # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
         response = Response({
@@ -99,6 +94,10 @@ class LogoutAPIView(APIView):
         response.delete_cookie("access")
         response.delete_cookie("refresh")
         return response
+
+class ProfileAPIView(APIView):
+    def post(self, request):
+        serializer = ProfileSerializer(data=request.data)
 
 
 class FollowAPIView(generics.CreateAPIView):
