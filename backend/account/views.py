@@ -16,6 +16,7 @@ from .tasks import update_lol_info
 
 
 class RegisterAPIView(APIView):
+    @extend_schema(request=None, responses=UserSerializer, summary="회원가입 - user_id, email, password 필드 필요")
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -60,6 +61,7 @@ def update_lol_info_view(request):
 
 
 class LoginAPIView(APIView):
+    @extend_schema(request=None, responses=UserSerializer, summary="로그인 - email, password 필드 필요")
     def post(self, request):
         user = authenticate(
             email=request.data.get("email"), password=request.data.get("password")
@@ -88,6 +90,7 @@ class LoginAPIView(APIView):
 
 
 class LogoutAPIView(APIView):
+    @extend_schema(request=None, responses=UserSerializer, summary="로그아웃")
     def delete(self, request):
         # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
         response = Response({
