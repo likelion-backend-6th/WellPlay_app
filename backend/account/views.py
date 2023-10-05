@@ -156,7 +156,7 @@ class FollowAPIView(generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FollowingList(generics.CreateAPIView):
+class FollowingList(generics.ListAPIView):
     serializer_class = FollowingListSerializer
 
     @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer)
@@ -166,7 +166,7 @@ class FollowingList(generics.CreateAPIView):
         return Response(serializer.data)
 
 
-class FollowerList(generics.CreateAPIView):
+class FollowerList(generics.ListAPIView):
     serializer_class = FollowerListSerializer
 
     @extend_schema(request=FollowerListSerializer, responses=FollowingListSerializer)
