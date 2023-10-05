@@ -57,6 +57,7 @@ INSTALLED_APPS += [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -195,3 +196,10 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"  # Redis 메시지 브로커 URL
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # 리액트 주소 열어주기
+    # 다른 허용할 주소들 추가
+]
+
+CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
