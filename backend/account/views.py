@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
+from django.core.files import File
+from django.conf import settings
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -9,6 +11,7 @@ from rest_framework.response import Response
 
 from .serializers import *
 from .tasks import update_lol_info
+from common.uploader import FileUploader
 
 
 class RegisterAPIView(APIView):
@@ -101,14 +104,27 @@ class ProfileAPIView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileSerializer
 
+    @extend_schema(request=None, responses=ProfileSerializer, summary="로그인한 유저 프로필 보기")
     def get(self, request, *args, **kwargs):
         profile = request.user.profile
         serializer = self.serializer_class(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(request=ProfileSerializer, responses=ProfileSerializer, summary="로그인한 유저 프로필 수정")
     def post(self, request, *args, **kwargs):
+        image_url = None
         profile = request.user.profile
-        serializer_data = request.data
+        serializer_data = request.data.copy()
+        if image := request.data.get("image"):
+            image: File
+            uploader = FileUploader(
+                settings.NCP_ACCESS_KEY, settings.NCP_SECRET_KEY, image
+            )
+            image_url = uploader.upload()
+
+            # 이미지 URL을 프로필 데이터에 추가
+            serializer_data["image_url"] = image_url
+
         serializer = self.serializer_class(
             profile, data=serializer_data, partial=True
         )
@@ -134,7 +150,7 @@ class FollowAPIView(generics.CreateAPIView):
                 return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 Follow.objects.create(from_user=request.user,
-                                      to_user=to_user,)
+                                      to_user=to_user, )
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
