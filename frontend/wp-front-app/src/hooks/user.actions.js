@@ -39,7 +39,7 @@ function useUserActions() {
 
   function logout() {
     localStorage.removeItem('auth');
-    navigate('/login');
+    navigate('/');
   }
 
   function edit(data, userId) {
