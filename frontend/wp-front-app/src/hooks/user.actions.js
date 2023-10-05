@@ -4,7 +4,7 @@ import axiosService from '../helpers/axios';
 
 function useUserActions() {
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_API_URL;
+  const baseURL = "http://localhost:8000";
   return {
     login,
     register,
@@ -16,22 +16,22 @@ function useUserActions() {
     localStorage.setItem(
         'auth',
         JSON.stringify({
-          access: data.access,
-          refresh: data.refresh,
+          access: data.token.access,
+          refresh: data.token.refresh,
           user: data.user,
         }),
     );
   }
 
   function register(data) {
-    return axios.post(`${baseURL}/auth/register/`, data).then((res) => {
+    return axios.post(`${baseURL}/account/register/`, data).then((res) => {
       setUserData(res.data);
       navigate('/');
     });
   }
 
   function login(data) {
-    return axios.post(`${baseURL}/auth/login/`, data).then((res) => {
+    return axios.post(`${baseURL}/account/login/`, data).then((res) => {
       setUserData(res.data);
       navigate('/');
     });
@@ -43,7 +43,7 @@ function useUserActions() {
   }
 
   function edit(data, userId) {
-    return axiosService.patch(`${baseURL}/user/${userId}/`,
+    return axiosService.patch(`${baseURL}//${userId}/`,
         data, {
           headers: {'Content-Type': 'multipart/form-data'},
         }).then((res) => {

@@ -1,5 +1,5 @@
 {
-  "name": "social-media-app",
+  "name": "wp-front-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,7 +11,7 @@
     "axios-auth-refresh": "^3.3.6",
     "bootstrap": "^5.3.2",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.8.0",
+    "react-bootstrap": "^2.9.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
