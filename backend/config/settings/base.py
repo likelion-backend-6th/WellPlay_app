@@ -198,7 +198,7 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Vue.js 개발 서버 주소
+    "http://localhost:3000",  # 리액트 주소 열어주기
     # 다른 허용할 주소들 추가
 ]
 
