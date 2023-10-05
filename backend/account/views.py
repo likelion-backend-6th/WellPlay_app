@@ -43,6 +43,19 @@ class RegisterAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserQuitAPIView(APIView):
+    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="회원탈퇴")
+    def delete(self, request):
+        if request.user.is_authenticated:
+            request.user.delete()
+            response = Response({
+                "message": "user quit success"
+            }, status=status.HTTP_202_ACCEPTED)
+            response.delete_cookie("access")
+            response.delete_cookie("refresh")
+            return response
+
+
 def update_lol_info_view(request):
     if request.user.is_authenticated:  # 로그인한 사용자인가?
         profile_id = request.user.profile.id  # 현재 로그인한 사용자의 프로필에 엑세스
