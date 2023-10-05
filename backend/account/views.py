@@ -135,6 +135,15 @@ class ProfileAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class UserProfileAPIView(APIView):
+    @extend_schema(request=None, responses=ProfileSerializer, summary="유저 프로필 보기")
+    def get(self, request, user_id):
+        user = User.objects.get(user_id=user_id)
+        profile = user.profile
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class FollowAPIView(generics.CreateAPIView):
     serializer_class = FollowSerializer
     queryset = Follow.objects.all()
