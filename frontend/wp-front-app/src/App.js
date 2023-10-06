@@ -1,7 +1,6 @@
 import React from 'react';
 import {Route, Routes} from 'react-router-dom';
 import Home from './pages/Home';
-import Registration from './pages/Registration';
 import ProtectedRoute from './routes/ProtectedRoute';
 import SinglePost from './pages/SinglePost';
 import Profile from './pages/Profile';
@@ -34,7 +33,6 @@ function App() {
               </ProtectedRoute>
             }
         />
-        <Route path="/register/" element={<Registration/>}/>
       </Routes>
   );
 }
