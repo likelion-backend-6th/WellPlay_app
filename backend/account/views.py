@@ -15,7 +15,11 @@ from common.uploader import FileUploader
 
 
 class RegisterAPIView(APIView):
-    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="회원가입 - user_id, email, password 필드 필요")
+    @extend_schema(
+        request=UserSerializer,
+        responses=UserSerializer,
+        summary="회원가입 - user_id, email, password 필드 필요",
+    )
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -48,9 +52,9 @@ class UserQuitAPIView(APIView):
     def delete(self, request):
         if request.user.is_authenticated:
             request.user.delete()
-            response = Response({
-                "message": "user quit success"
-            }, status=status.HTTP_202_ACCEPTED)
+            response = Response(
+                {"message": "user quit success"}, status=status.HTTP_202_ACCEPTED
+            )
             response.delete_cookie("access")
             response.delete_cookie("refresh")
             return response
@@ -73,11 +77,21 @@ def update_lol_info_view(request):
 
 
 class LoginAPIView(APIView):
-    @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그인 - email, password 필드 필요")
+    @extend_schema(
+        request=UserSerializer,
+        responses=UserSerializer,
+        summary="로그인 - email, password 필드 필요",
+    )
     def post(self, request):
+        obj = User.objects.filter(email=request.data.get("email")).exists()
+        data = None
+        if not obj:
+            data = {"message": "email not exists"}
+
         user = authenticate(
             email=request.data.get("email"), password=request.data.get("password")
         )
+
         if user is not None:
             serializer = UserSerializer(user)
             token = TokenObtainPairSerializer.get_token(user)
@@ -98,16 +112,17 @@ class LoginAPIView(APIView):
             res.set_cookie("refresh", refresh_token, httponly=True)
             return res
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            print(user)
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutAPIView(APIView):
     @extend_schema(request=UserSerializer, responses=UserSerializer, summary="로그아웃")
     def delete(self, request):
         # 쿠키에 저장된 토큰 삭제 => 로그아웃 처리
-        response = Response({
-            "message": "Logout success"
-        }, status=status.HTTP_202_ACCEPTED)
+        response = Response(
+            {"message": "Logout success"}, status=status.HTTP_202_ACCEPTED
+        )
         response.delete_cookie("access")
         response.delete_cookie("refresh")
         return response
@@ -123,7 +138,9 @@ class ProfileAPIView(APIView):
         serializer = self.serializer_class(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @extend_schema(request=ProfileSerializer, responses=ProfileSerializer, summary="로그인한 유저 프로필 수정")
+    @extend_schema(
+        request=ProfileSerializer, responses=ProfileSerializer, summary="로그인한 유저 프로필 수정"
+    )
     def post(self, request, *args, **kwargs):
         image_url = None
         profile = request.user.profile
@@ -138,9 +155,7 @@ class ProfileAPIView(APIView):
             # 이미지 URL을 프로필 데이터에 추가
             serializer_data["image_url"] = image_url
 
-        serializer = self.serializer_class(
-            profile, data=serializer_data, partial=True
-        )
+        serializer = self.serializer_class(profile, data=serializer_data, partial=True)
 
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -169,10 +184,14 @@ class FollowAPIView(generics.CreateAPIView):
             qs = Follow.objects.filter(from_user=request.user, to_user=to_user)
             if qs.exists():
                 qs.delete()
-                return Response({"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT)
+                return Response(
+                    {"message": "Unfollow"}, status=status.HTTP_204_NO_CONTENT
+                )
             else:
-                Follow.objects.create(from_user=request.user,
-                                      to_user=to_user, )
+                Follow.objects.create(
+                    from_user=request.user,
+                    to_user=to_user,
+                )
                 return Response({"message": "Follow"}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
