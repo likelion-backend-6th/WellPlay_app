@@ -6,6 +6,7 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 from django.db.models import Count
@@ -30,6 +31,11 @@ class FeedViewSet(viewsets.ModelViewSet):
             return FeedUploadSerializer
         return super().get_serializer_class()
 
+    def get_permissions(self):
+        if self.action == "list" or self.action == "recommend":
+            return [AllowAny()]
+        return super().get_permissions()
+
     @extend_schema(summary="최신순 피드 리스트")
     def list(self, request, *args, **kwargs):
         feeds = Feed.objects.order_by("-created_at")
@@ -46,6 +52,13 @@ class FeedViewSet(viewsets.ModelViewSet):
             .order_by(*ordering)
             .filter(created_at__gte=(today - timedelta(days=7)))
         )
+        serializer = FeedSerializer(feeds, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(summary="내 피드 리스트")
+    @action(detail=False, methods=["get"])
+    def myfeed(self, request, *args, **kwargs):
+        feeds = Feed.objects.filter(owner=request.user).order_by("-created_at")
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -133,6 +146,11 @@ class LikeView(generics.CreateAPIView):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_permissions(self):
+        if self.action == "list":
+            return [AllowAny()]
+        return super().get_permissions()
 
     @extend_schema(summary="댓글 목록 조회")
     def list(self, request, id):
