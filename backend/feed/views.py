@@ -147,6 +147,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    def get_permissions(self):
+        if self.action == "list":
+            return [AllowAny()]
+        return super().get_permissions()
+
     @extend_schema(summary="댓글 목록 조회")
     def list(self, request, id):
         feed = get_object_or_404(Feed, pk=id)
