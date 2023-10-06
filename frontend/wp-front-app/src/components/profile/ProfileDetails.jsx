@@ -2,85 +2,51 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Image} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
-import {getUser} from '../../hooks/user.actions';
+import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
 
-// function ProfileDetails(props) {
-//   const {user} = props;
-//   const navigate = useNavigate();
-//
-//   if(!user) {
-//     return <div>Loading!</div>
-//   }
-//
-//   return (
-//     <div>
-//       <div className="d-flex flex-row border-bottom p-5">
-//         <Image
-//             src={user.avatar}
-//             roundedCircle
-//             width={120}
-//             height={120}
-//             className="me-5 border border-primary border-2"
-//         />
-//         <div className="d-flex flex-column justify-content-start align-self-center mt-2">
-//           <p className="fs-4 m-0">{user.username}</p>
-//           <p className="fs-5">{user.bio ? user.bio : "(No bio.)"}</p>
-//           <p className="fs-6">
-//             <small>{user.posts_count} posts</small>
-//           </p>
-//           {user.id === getUser().id && (
-//               <Button
-//                   variant="primary"
-//                   size="sm"
-//                   onClick={() => navigate(`/profile/${user.id}/edit/`)}
-//               >
-//                 Edit
-//               </Button>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
 
-function Test(props) {
+function UserProfile(props) {
+    const {getProfile} = useUserActions();
     const user = getUser();
-    return (
-        <div>
-            <h1>유저 정보</h1>
-            <p>이름: {user.user_id}</p>
-            <p>이메일: {user.email}</p>
-        </div>
-
-    );
-}
-
-function UserProfile() {
     const [profile, setProfile] = useState({});
     useEffect(() => {
-        axiosService.get(`${serverUrl}/account/profile/current/`)
-            .then(response => {
-                const profileData = response.data;
-                console.log('API로부터 가져온 데이터:', profileData);
-                // API 응답이 비어있지 않은 경우에만 상태 업데이트
-                if (response.data) {
-                    setProfile(response.data);
-                }
+        // 프로필 정보를 가져오기
+        getProfile()
+            .then((response) => {
+                setProfile(response.data);
             })
-            .catch(error => {
-                console.error('API 요청 중 오류 발생:', error);
+            .catch((error) => {
+                console.error('프로필 정보를 가져오는 중 오류 발생:', error);
             });
     }, []);
-
     return (
-        <div>
-            <h1>프로필 정보</h1>
-            <p>닉네임: {profile.nickname || '없음'}</p>
-            <p>이미지 URL: {profile.image_url || '없음'}</p>
+        <div className="container mt-5">
+            <div className="row">
+                <div className="col-md-2">
+                    <div className="d-flex flex-column align-items-center">
+                        <Image
+                            src={profile.image_url}
+                            roundedCircle
+                            width={100}
+                            height={100}
+                            alt="프로필 이미지"
+                        />
+                    </div>
+                </div>
+                <div className="col-md-8">
+                    <div className="border-bottom pb-3">
+                        <h2 className="mb-3">{profile.nickname}</h2>
+                        <p>
+                            <strong>@{user.user_id}</strong>
+                        </p>
+                        {/* 다른 프로필 정보 필드를 추가할 수 있음 */}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
 
-// export default ProfileDetails;
+
 export default UserProfile;
