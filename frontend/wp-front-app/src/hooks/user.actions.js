@@ -12,6 +12,8 @@ function useUserActions() {
         logout,
         edit,
         getProfile,
+        getFollowing,
+        getFollower,
     };
 
     function setUserData(data) {
@@ -68,6 +70,22 @@ function useUserActions() {
             return Promise.reject('액세스 토큰이 없습니다.');
         }
         return axiosService.get(`${baseURL}/account/profile/current/`, {});
+    }
+
+    function getFollowing() {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            return Promise.reject('액세스 토큰이 없습니다.');
+        }
+        return axiosService.get(`${baseURL}/account/following/`, {});
+    }
+
+    function getFollower() {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            return Promise.reject('액세스 토큰이 없습니다.');
+        }
+        return axiosService.get(`${baseURL}/account/follower/`, {});
     }
 }
 

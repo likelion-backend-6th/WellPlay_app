@@ -7,9 +7,12 @@ import {serverUrl} from '../../config'
 
 
 function UserProfile(props) {
-    const {getProfile} = useUserActions();
+    const {getProfile, getFollowing, getFollower} = useUserActions();
     const user = getUser();
     const [profile, setProfile] = useState({});
+    const [following, setFollowing] = useState({});
+    const [follower, setFollower] = useState({});
+
     useEffect(() => {
         // 프로필 정보를 가져오기
         getProfile()
@@ -19,7 +22,24 @@ function UserProfile(props) {
             .catch((error) => {
                 console.error('프로필 정보를 가져오는 중 오류 발생:', error);
             });
+
+        getFollowing()
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+
+        getFollower()
+            .then((response) => {
+                setFollower(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
     }, []);
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -44,6 +64,7 @@ function UserProfile(props) {
                     </div>
                 </div>
             </div>
+            <div> &nbsp; 팔로워 {following.following_count} &nbsp; 팔로잉 {follower.follower_count}</div>
         </div>
     );
 }
