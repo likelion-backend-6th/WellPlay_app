@@ -6,7 +6,7 @@ from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 from django.db.models import Count
@@ -25,6 +25,7 @@ from .models import Comment, Feed, Notification, Like
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
+    permission_classes = IsAuthenticated
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -146,6 +147,7 @@ class LikeView(generics.CreateAPIView):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    permission_classes = IsAuthenticated
 
     def get_permissions(self):
         if self.action == "list":
