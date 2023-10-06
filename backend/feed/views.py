@@ -25,7 +25,7 @@ from .models import Comment, Feed, Notification, Like
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -147,7 +147,7 @@ class LikeView(generics.CreateAPIView):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = (IsAuthenticated,)
 
     def get_permissions(self):
         if self.action == "list":
