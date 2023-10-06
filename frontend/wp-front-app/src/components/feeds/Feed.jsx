@@ -6,12 +6,12 @@ import { CommentOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import { Link } from "react-router-dom"
 
-function Post(props) {
-	const { post, refresh, isSinglePost } = props
+function Feed(props) {
+	const { feed, refresh, isSingleFeed } = props
 
 	const handleLikeClick = (action) => {
 		axiosService
-			.post(`/post/${post.id}/${action}/`)
+			.post(`/feed/${feed.id}/${action}/`)
 			.then(() => {
 				refresh()
 			})
@@ -25,7 +25,7 @@ function Post(props) {
 					<Card.Title className="d-flex flex-row justify-content-between">
 						<div className="d-flex flex-row">
 							<Image
-								src={post.author.avatar}
+								src={feed.owner.image_url}
 								roundedCircle
 								width={48}
 								height={48}
@@ -33,21 +33,21 @@ function Post(props) {
                           border-2"
 							/>
 							<div className="d-flex flex-column justify-content-start align-self-center mt-2">
-								<p className="fs-6 m-0">{post.author.username}</p>
+								<p className="fs-6 m-0">{feed.owner.username}</p>
 								<p className="fs-6 fw-lighter">
-									<small>{format(post.created)}</small>
+									<small>{format(feed.created_at)}</small>
 								</p>
-								{!isSinglePost && (
+								{/* {!isSingleFeed && (
 									<p className="ms-1 fs-6">
 										<small>
-											<Link>{post.comments_count} comments</Link>
+											<Link>{feed.comments_count} comments</Link>
 										</small>
 									</p>
-								)}
+								)} */}
 							</div>
 						</div>
 					</Card.Title>
-					<Card.Text>{post.body}</Card.Text>
+					<Card.Text>{feed.content}</Card.Text>
 					<div className="d-flex flex-row">
 						<LikeFilled
 							style={{
@@ -62,7 +62,7 @@ function Post(props) {
 							}}
 						/>
 						<p className="ms-1 fs-6">
-							<small>{post.likes_count} like</small>
+							<small>{feed.like} like</small>
 						</p>
 					</div>
 				</Card.Body>
@@ -74,10 +74,10 @@ function Post(props) {
 								height: "24px",
 								padding: "2px",
 								fontSize: "20px",
-								color: post.liked ? "#0D6EFD" : "#C4C4C4",
+								color: feed.liked ? "#0D6EFD" : "#C4C4C4",
 							}}
 							onClick={() => {
-								if (post.liked) {
+								if (feed.liked) {
 									handleLikeClick("remove_like")
 								} else {
 									handleLikeClick("like")
@@ -88,7 +88,7 @@ function Post(props) {
 							<small>Like</small>
 						</p>
 					</div>
-					{!isSinglePost && (
+					{!isSingleFeed && (
 						<div className="d-flex flex-row">
 							<CommentOutlined
 								style={{
@@ -100,7 +100,7 @@ function Post(props) {
 								}}
 							/>
 							<p className="ms-1 mb-0">
-								<small>Comment</small>
+								<small>{feed.comment} Comment</small>
 							</p>
 						</div>
 					)}
@@ -110,4 +110,4 @@ function Post(props) {
 	)
 }
 
-export default Post
+export default Feed

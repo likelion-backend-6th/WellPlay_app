@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import {Col, Row} from 'react-bootstrap';
-import Post from '../components/posts/Post';
+import Post from '../components/feeds/Feed';
 import {useParams} from 'react-router-dom';
 import {fetcher} from '../helpers/axios';
 import useSWR from 'swr';

@@ -4,7 +4,7 @@ import useSWR from "swr"
 import { fetcher } from "../helpers/axios"
 import Layout from "../components/Layout"
 import { Col, Row } from "react-bootstrap"
-import Post from "../components/posts/Post"
+import Post from "../components/feeds/Feed"
 import Comment from "../components/comments/Comment"
 import CreateComment from "../components/comments/CreateComment"
 
