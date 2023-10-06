@@ -1,45 +1,73 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Image} from 'react-bootstrap';
-import {getUser} from '../../hooks/user.actions';
+import axiosService from "../../helpers/axios";
+import {getUser, useUserActions} from '../../hooks/user.actions';
+import {serverUrl} from '../../config'
 
-function ProfileDetails(props) {
-  const {user} = props;
-  const navigate = useNavigate();
 
-  if(!user) {
-    return <div>Loading!</div>
-  }
+function UserProfile(props) {
+    const {getProfile, getFollowing, getFollower} = useUserActions();
+    const user = getUser();
+    const [profile, setProfile] = useState({});
+    const [following, setFollowing] = useState({});
+    const [follower, setFollower] = useState({});
 
-  return (
-    <div>
-      <div className="d-flex flex-row border-bottom p-5">
-        <Image
-            src={user.avatar}
-            roundedCircle
-            width={120}
-            height={120}
-            className="me-5 border border-primary border-2"
-        />
-        <div className="d-flex flex-column justify-content-start align-self-center mt-2">
-          <p className="fs-4 m-0">{user.username}</p>
-          <p className="fs-5">{user.bio ? user.bio : "(No bio.)"}</p>
-          <p className="fs-6">
-            <small>{user.posts_count} posts</small>
-          </p>
-          {user.id === getUser().id && (
-              <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => navigate(`/profile/${user.id}/edit/`)}
-              >
-                Edit
-              </Button>
-          )}
+    useEffect(() => {
+        // 프로필 정보를 가져오기
+        getProfile()
+            .then((response) => {
+                setProfile(response.data);
+            })
+            .catch((error) => {
+                console.error('프로필 정보를 가져오는 중 오류 발생:', error);
+            });
+
+        getFollowing()
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+
+        getFollower()
+            .then((response) => {
+                setFollower(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+    }, []);
+
+    return (
+        <div className="container mt-5">
+            <div className="row">
+                <div className="col-md-2">
+                    <div className="d-flex flex-column align-items-center">
+                        <Image
+                            src={profile.image_url}
+                            roundedCircle
+                            width={100}
+                            height={100}
+                            alt="프로필 이미지"
+                        />
+                    </div>
+                </div>
+                <div className="col-md-8">
+                    <div className="border-bottom pb-3">
+                        <h2 className="mb-3">{profile.nickname}</h2>
+                        <p>
+                            <strong>@{user.user_id}</strong>
+                        </p>
+                        {/* 다른 프로필 정보 필드를 추가할 수 있음 */}
+                    </div>
+                </div>
+            </div>
+            <div> &nbsp; 팔로워 {following.following_count} &nbsp; 팔로잉 {follower.follower_count}</div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
-export default ProfileDetails;
+
+export default UserProfile;
