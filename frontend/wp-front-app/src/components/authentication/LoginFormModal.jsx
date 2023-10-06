@@ -47,8 +47,13 @@ function LoginFormModal() {
         setShowModal(false); // 로그인 성공 시 모달을 닫습니다.
       })
       .catch((err) => {
+        console.log(err.response.data.message)
         if (err.message) {
-          setError("아이디 또는 비밀번호가 잘못되었습니다.");
+          if (err.response.data.message && err.response.data.message.includes("email not exists")) {
+            setError("이메일이 존재하지 않습니다.");
+          }else{
+            setError("비밀번호가 잘못되었습니다.");
+          }
         }
       });
   };

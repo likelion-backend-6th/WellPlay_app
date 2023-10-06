@@ -40,17 +40,26 @@ function RegisterFormModal(props) {
       })
       .catch((err) => {
         if (err.message) {
-            if (err.message) {
-                // 이미 존재하는 이메일에 대한 에러 처리
-                setToaster({
-                  type: "danger",
-                  message: "이메일 또는 닉네임 중복!",
-                  show: true,
-                  title: "다시 시도해주세요",
-                });
-              } else {
-                setError(err.request.response);
-              }
+          if (err.response.data.email && err.response.data.email[0].includes("email already exists")) {
+            setToaster({
+              type: "danger",
+              message: "이메일 중복!",
+              show: true,
+              title: "다른 이메일을 사용해주세요",
+            });
+            setForm({ ...form, email: ""}); // 필드 초기화
+          } else if (err.response.data.user_id && err.response.data.user_id[0].includes("user id already exists")) {
+            setToaster({
+              type: "danger",
+              message: "닉네임 중복!",
+              show: true,
+              title: "다른 닉네임을 사용해주세요",
+            });
+            setForm({ ...form, nickname: ""}); // 필드 초기화
+          } else {
+            setError(err.request.response);
+            setForm({ ...form, email: "", nickname: "", password: "" }); // 필드 초기화
+          }
         }
       });
 
@@ -79,7 +88,7 @@ function RegisterFormModal(props) {
               placeholder="Enter email"
             />
             <Form.Control.Feedback type="invalid">
-              This field is required.
+                올바른 이메일 형식이 필요해요!
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3">
@@ -91,9 +100,6 @@ function RegisterFormModal(props) {
               type="text"
               placeholder="Enter nickname"
             />
-            <Form.Control.Feedback type="invalid">
-                올바른 이메일 형식이 필요해요!
-            </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
