@@ -1,61 +1,65 @@
-import React from "react"
-import { Col, Image, Row } from "react-bootstrap"
-import useSWR from "swr"
-import Layout from "../components/Layout"
-import CreatePost from "../components/posts/CreatePost"
-import Post from "../components/posts/Post"
-import { fetcher } from "../helpers/axios"
-import { getUser } from "../hooks/user.actions"
-
+import React, { useState, useEffect } from "react";
+import { Col, Image, Row } from "react-bootstrap";
+import Layout from "../components/Layout";
+import CreateFeed from "../components/feeds/CreateFeed";
+import Feed from "../components/feeds/Feed";
 import ProfileCard from '../components/profile/ProfileCard';
 
 function Home() {
-	const posts = useSWR("/post/", fetcher, {
-		refreshInterval: 20000,
-	})
+  const [feeds, setFeeds] = useState([]);
 
-	const profiles = useSWR("/user/?limit=5", fetcher);
+  useEffect(() => {
+    async function fetchFeeds() {
+      try {
+        // API 엔드포인트 URL 설정
+        const apiUrl = "http://127.0.0.1:8000/feed/"; // 실제 경로에 맞게 수정해야 합니다.
 
-	const user = getUser()
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            // 필요하면 헤더 설정 (e.g., 인증 토큰)
+          },
+        });
 
-	return (
-		<Layout>
-		  <Row className="justify-content-evenly">
-			<Col sm={7}>
-			  <Row className="border rounded align-items-center">
-				{user && ( // user 객체가 존재할 때 아바타를 렌더링합니다.
-				  <Col className="flex-shrink-1">
-					<Image
-					  src={user.avatar}
-					  roundedCircle
-					  width={52}
-					  height={52}
-					  className="my-2"
-					/>
-				  </Col>
-				)}
-				<Col sm={10} className="flex-grow-1">
-				  <CreatePost />
-				</Col>
-			  </Row>
-			  <Row className="my-4">
-				{user && // user 객체가 존재할 때 게시물을 렌더링합니다.
-				  posts.data?.results.map((post, index) => (
-					<Post key={index} post={post} refresh={posts.mutate} />
-				  ))}
-			  </Row>
-			</Col>
-			<Col sm={3} className="border rounded py-4 h-50">
-			  <h4 className="font-weight-bold text-center">Suggested people</h4>
-			  <div className="d-flex flex-column">
-				{profiles.data &&
-				  profiles.data.results.map((profile, index) => (
-					<ProfileCard key={index} user={profile} />
-				  ))}
-			  </div>
-			</Col>
-		  </Row>
-		</Layout>
-	  );
+        if (!response.ok) {
+          throw new Error("API 요청이 실패했습니다.");
+        }
+
+        const data = await response.json();
+        setFeeds(data);
+      } catch (error) {
+        console.error("API 요청 오류:", error);
+      }
+    }
+
+    fetchFeeds(); // 데이터 불러오기 함수 호출
+  }, []);
+
+  return (
+    <Layout>
+      <Row className="justify-content-evenly">
+        <Col sm={7}>
+          <Row className="border rounded align-items-center">
+            {(
+              <Col className="flex-shrink-1">
+              </Col>
+            )}
+            <Col sm={10} className="flex-grow-1">
+              <CreateFeed />
+            </Col>
+          </Row>
+          <Row className="my-4">
+            {feeds.map((feed, index) => (
+              <Feed key={index} feed={feed} refresh={feeds.mutate} />
+            ))}
+          </Row>
+        </Col>
+        <Col sm={3} className="border rounded py-4 h-50">
+          <h4 className="font-weight-bold text-center">Suggested people</h4>
+        </Col>
+      </Row>
+    </Layout>
+  );
 }
-export default Home
+
+export default Home;
