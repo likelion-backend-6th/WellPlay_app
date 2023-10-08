@@ -76,6 +76,7 @@ function UserProfile(props) {
                             roundedCircle
                             width={100}
                             height={100}
+                            border = {3}
                             alt="프로필 이미지"
                         />
                     </div>
