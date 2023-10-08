@@ -26,7 +26,7 @@ function Navigationbar() {
               <NavDropdown
                 title={<Image src={user.avatar} roundedCircle width={36} height={36} />}
               >
-                <NavDropdown.Item as={Link} to={`/profile/${user.id}/`}>
+                <NavDropdown.Item as={Link} to={`/profile/${user.user_id}/`}>
                   Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
