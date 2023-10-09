@@ -66,6 +66,14 @@ function UserProfile(props) {
             })
     }, []);
 
+    const goFollowerList = () => {
+        navigate('/follower');
+    };
+
+    const goFollwingList = () => {
+        navigate('/following');
+    };
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -95,7 +103,14 @@ function UserProfile(props) {
                     <Button variant="primary" onClick={openModal}>편집</Button>
                 </div>
             </div>
-            <div> &nbsp; 팔로워 {following.following_count} &nbsp; 팔로잉 {follower.follower_count}</div>
+            <div>
+                <span onClick={goFollowerList} style={{ cursor: 'pointer' }}>
+                    &nbsp; 팔로워 {follower.follower_count}
+                </span>
+                <span onClick={goFollwingList} style={{ cursor: 'pointer' }}>
+                    &nbsp; 팔로잉 {following.following_count}
+                </span>
+            </div>
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile} onSave={handleSaveModal} />
         </div>
     );
