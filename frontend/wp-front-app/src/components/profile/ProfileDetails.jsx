@@ -70,7 +70,7 @@ function UserProfile(props) {
         navigate('/follower');
     };
 
-    const goFollwingList = () => {
+    const goFollowingList = () => {
         navigate('/following');
     };
 
@@ -107,7 +107,7 @@ function UserProfile(props) {
                 <span onClick={goFollowerList} style={{ cursor: 'pointer' }}>
                     &nbsp; 팔로워 {follower.follower_count}
                 </span>
-                <span onClick={goFollwingList} style={{ cursor: 'pointer' }}>
+                <span onClick={goFollowingList} style={{ cursor: 'pointer' }}>
                     &nbsp; 팔로잉 {following.following_count}
                 </span>
             </div>
