@@ -9,7 +9,7 @@ import {useNavigate} from "react-router-dom";
 
 
 function UserProfile(props) {
-    const { getProfile, getFollowing, getFollower, updateUsernameLol } = useUserActions();
+    const { getProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -58,9 +58,21 @@ function UserProfile(props) {
     
         const newLolName = inputValue;
         const requestData = { summoner_name: newLolName };
+        console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
+
+        // 백그라운드 작업 시작을 서버에 요청
+        apiUsernameLol(requestData)
+            .then((response) => {
+            setSuccessMessage(response.data.message);
+            })
+            .catch((error) => {
+            setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
 
     
-        // axios를 사용하여 요청 보내기
+        // DB에 게임 닉네임 보내기
         updateUsernameLol(requestData)
             .then(response => {
                 setSuccessMessage(response.data.message);
@@ -72,7 +84,7 @@ function UserProfile(props) {
                 setIsLoading(false);
             });
     
-        console.log("연동하기 버튼을 클릭하였습니다. 입력값: ", inputValue);
+        console.log("연동이 종료되었습니다.");
     };
     
     useEffect(() => {
@@ -178,7 +190,7 @@ function UserProfile(props) {
             <Form.Group>
                 <Form.Control
                     type="text"
-                    placeholder="라이엇 닉네임"
+                    placeholder="닉네임"
                     value={inputValue}
                     onChange={handleInputChange}
                 />
