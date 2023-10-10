@@ -14,7 +14,12 @@ function useUserActions() {
         getProfile,
         getFollowing,
         getFollower,
+        updateUsernameLol,
     };
+
+    function updateUsernameLol(data, axiosConfig) {
+        return axiosService.post(`${baseURL}/account/LOLinfo/`, data, axiosConfig);
+    }
 
     function setUserData(data) {
         localStorage.setItem(

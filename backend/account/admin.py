@@ -1,11 +1,17 @@
 from django.contrib import admin
-from .models import User, Follow, Profile
+from .models import User, Follow, Profile, Infolol
 
 
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
-    verbose_name_plural = "profile"
+    verbose_name_plural = "Profile"
+
+
+class InfololInline(admin.StackedInline):
+    model = Infolol
+    can_delete = False
+    verbose_name_plural = "Infolol"
 
 
 @admin.register(User)
@@ -19,9 +25,13 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
-    inlines = (ProfileInline,)
+    inlines = (ProfileInline, InfololInline)
 
 
 @admin.register(Follow)
 class FollowAdmin(admin.ModelAdmin):
-    list_display = ("id", "from_user", "to_user",)
+    list_display = (
+        "id",
+        "from_user",
+        "to_user",
+    )
