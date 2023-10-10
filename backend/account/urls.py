@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from account.views import RegisterAPIView, LoginAPIView, LogoutAPIView, ProfileAPIView, FollowAPIView, FollowingList, FollowerList, UserProfileAPIView, UserQuitAPIView
+from account.views import *
 
 
 urlpatterns = [

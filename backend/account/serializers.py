@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Profile, Follow
+from .models import User, Profile, Follow, Infolol
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,10 +19,41 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+# class ProfileLOLSerializer(serializers.ModelSerializer):
+#     info_lol = InfoLolSerializer()  # InfoLol 정보를 포함
+
+#     class Meta:
+#         model = Profile
+#         fields = ("id", "nickname", "image_url", "username_lol", "info_lol")
+
+#     def update(self, instance, validated_data):
+#         # Profile 모델의 필드 업데이트
+#         for key, value in validated_data.items():
+#             setattr(instance, key, value)
+
+#         # InfoLol 모델의 json_lol 필드 업데이트
+#         info_lol_data = validated_data.get("info_lol")
+#         if info_lol_data:
+#             info_lol, created = Infolol.objects.get_or_create(profile=instance)
+#             for key, value in info_lol_data.items():
+#                 setattr(info_lol, key, value)
+#             info_lol.save()
+
+#         instance.save()
+
+#         return instance
+
+
+class InfoLolSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Infolol
+        fields = "__all__"
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("id", "nickname", "image_url", "lol_info")
+        fields = ("id", "nickname", "image_url", "username_lol")
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():

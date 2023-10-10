@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+import requests
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate
 from django.core.files import File
 from django.conf import settings
@@ -8,9 +9,10 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, generics
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
 
 from .serializers import *
-from .tasks import update_lol_info
+from .tasks import *  # Celery 작업 import
 from common.uploader import FileUploader
 
 
@@ -58,22 +60,6 @@ class UserQuitAPIView(APIView):
             response.delete_cookie("access")
             response.delete_cookie("refresh")
             return response
-
-
-def update_lol_info_view(request):
-    if request.user.is_authenticated:  # 로그인한 사용자인가?
-        profile_id = request.user.profile.id  # 현재 로그인한 사용자의 프로필에 엑세스
-
-        result = update_lol_info.apply_async(
-            args=[profile_id],
-        )  # 작업을 비동기적으로 실행(worker)
-        if result.successful():
-            return HttpResponse("라이엇 정보 업데이트 작업이 예약되었습니다.")
-        else:
-            return HttpResponse("라이엇 정보 업데이트 작업 예약 중 오류가 발생했습니다.")
-
-    else:
-        return HttpResponse("로그인이 필요합니다.")
 
 
 class LoginAPIView(APIView):
@@ -206,8 +192,8 @@ class FollowerList(generics.ListAPIView):
 
         follower_count = queryset.count()
         response_data = {
-            'follower_count': follower_count,
-            'follower_list': serializer.data
+            "follower_count": follower_count,
+            "follower_list": serializer.data,
         }
         return Response(response_data)
 

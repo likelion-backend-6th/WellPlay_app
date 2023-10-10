@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image} from 'react-bootstrap';
+import {Button, Image, Form, Spinner} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -8,8 +8,7 @@ import ProfileFormModal from "./ProfileFormModal";
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower} = useUserActions();
-    const user = getUser();
+    const { getProfile, getFollowing, getFollower, updateUsernameLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -40,7 +39,40 @@ function UserProfile(props) {
       closeModal();
       fetchProfile();
   }
+    const [inputValue, setInputValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
 
+    const user = getUser();
+
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+        setError(null);
+    };
+
+    const handleConnectClick = () => {
+        setIsLoading(true);
+    
+        const newLolName = inputValue;
+        const requestData = { username_lol: newLolName };
+
+    
+        // axios를 사용하여 요청 보내기
+        updateUsernameLol(requestData)
+            .then(response => {
+                setSuccessMessage(response.data.message);
+            })
+            .catch(error => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    
+        console.log("연동하기 버튼을 클릭하였습니다. 입력값: ", inputValue);
+    };
+    
     useEffect(() => {
         // 프로필 정보를 가져오기
         getProfile()
@@ -139,9 +171,25 @@ function UserProfile(props) {
                 </span>
             </div>
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile} onSave={handleSaveModal} />
+
+            {/* 연동하기 텍스트 필드와 버튼 */}
+            <Form.Group>
+                <Form.Control
+                    type="text"
+                    placeholder="라이엇 닉네임"
+                    value={inputValue}
+                    onChange={handleInputChange}
+                />
+            </Form.Group>
+            <Button variant="primary" onClick={handleConnectClick} disabled={isLoading}>
+                {isLoading ? (
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                ) : (
+                    '연동하기'
+                )}
+            </Button>
         </div>
     );
 }
-
 
 export default UserProfile;
