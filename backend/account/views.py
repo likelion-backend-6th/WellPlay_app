@@ -196,33 +196,33 @@ class FollowAPIView(generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class FollowerList(generics.ListAPIView):
+    serializer_class = FollowerListSerializer
+
+    @extend_schema(request=FollowerListSerializer, responses=FollowerListSerializer)
+    def get(self, request):
+        queryset = Follow.objects.filter(to_user=self.request.user)
+        serializer = FollowerListSerializer(queryset, many=True)
+
+        follower_count = queryset.count()
+        response_data = {
+            'follower_count': follower_count,
+            'follower_list': serializer.data
+        }
+        return Response(response_data)
+
+
 class FollowingList(generics.ListAPIView):
     serializer_class = FollowingListSerializer
 
     @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer)
     def get(self, request):
-        queryset = Follow.objects.filter(to_user=self.request.user)
-        serializer = FollowingListSerializer(queryset, many=True)
+        queryset = Follow.objects.filter(from_user=self.request.user)
+        serializer = FollowerListSerializer(queryset, many=True)
 
         following_count = queryset.count()
         response_data = {
             "following_count": following_count,
             "following_list": serializer.data,
-        }
-        return Response(response_data)
-
-
-class FollowerList(generics.ListAPIView):
-    serializer_class = FollowerListSerializer
-
-    @extend_schema(request=FollowerListSerializer, responses=FollowingListSerializer)
-    def get(self, request):
-        queryset = Follow.objects.filter(from_user=self.request.user)
-        serializer = FollowerListSerializer(queryset, many=True)
-
-        follower_count = queryset.count()
-        response_data = {
-            "follower_count": follower_count,
-            "follower_list": serializer.data,
         }
         return Response(response_data)

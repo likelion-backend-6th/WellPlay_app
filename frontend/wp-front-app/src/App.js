@@ -5,36 +5,52 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import SinglePost from './pages/SinglePost';
 import Profile from './pages/Profile';
 import EditProfile from './pages/EditProfile';
+import FollowerList from "./components/follow/Follower";
+import FollowingList from "./components/follow/Following";
 
 function App() {
-  return (
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-            path="/post/:postId/"
-            element={
-              <ProtectedRoute>
-                <SinglePost/>
-              </ProtectedRoute>
-            }
-        />
-        <Route
-            path="/profile/:profileId/"
-            element={
-              <ProtectedRoute>
-                <Profile/>
-              </ProtectedRoute>
-            }/>
-        <Route
-            path="/profile/:profileId/edit/"
-            element={
-              <ProtectedRoute>
-                <EditProfile />
-              </ProtectedRoute>
-            }
-        />
-      </Routes>
-  );
+    return (
+        <Routes>
+            <Route path="/" element={<Home/>}/>
+            <Route
+                path="/post/:postId/"
+                element={
+                    <ProtectedRoute>
+                        <SinglePost/>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/profile/:profileId/"
+                element={
+                    <ProtectedRoute>
+                        <Profile/>
+                    </ProtectedRoute>
+                }/>
+            <Route
+                path="/profile/:profileId/edit/"
+                element={
+                    <ProtectedRoute>
+                        <EditProfile/>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="/follower"
+                element={
+                    <ProtectedRoute>
+                        <FollowerList/>
+                    </ProtectedRoute>
+                }/>
+            <Route
+                path="/following"
+                element={
+                    <ProtectedRoute>
+                        <FollowingList/>
+                    </ProtectedRoute>
+                }/>
+        </Routes>
+    );
 }
 
 export default App;
