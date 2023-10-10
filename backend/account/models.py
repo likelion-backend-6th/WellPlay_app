@@ -65,27 +65,30 @@ class Profile(CommonModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     nickname = models.CharField(max_length=30, null=True, blank=True)
     image_url = models.URLField(null=True, blank=True)
-    username_lol = models.CharField(max_length=30, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.user_id} Profile"
 
 
-# 팔로워 모델의 username_lol에 대한 JSON파일을 저장하는 모델 Infolol
 class Infolol(models.Model):
-    profile = models.OneToOneField(
-        Profile, on_delete=models.CASCADE, related_name="info_lol"
-    )
-    json_lol = models.JSONField(null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infolol")
+    summoner_name = models.CharField(max_length=30, null=True, blank=True)
+    summoner_json = models.JSONField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.profile.user.username_lol}'s LoL Info"
+        return f"{self.summoner_name}'s LoL Info"
 
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance, nickname=instance.user_id)
+
+
+@receiver(post_save, sender=User)
+def create_user_lolinfo(sender, instance, created, **kwargs):
+    if created:
+        Infolol.objects.create(user=instance)
 
 
 # follow

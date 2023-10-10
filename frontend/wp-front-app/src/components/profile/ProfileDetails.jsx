@@ -55,7 +55,7 @@ function UserProfile(props) {
         setIsLoading(true);
     
         const newLolName = inputValue;
-        const requestData = { username_lol: newLolName };
+        const requestData = { summoner_name: newLolName };
 
     
         // axios를 사용하여 요청 보내기

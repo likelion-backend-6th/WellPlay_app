@@ -212,3 +212,58 @@ class FollowingList(generics.ListAPIView):
             "following_list": serializer.data,
         }
         return Response(response_data)
+
+
+class LOLinfoAPIView(APIView):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    serializer_class = InfoLolSerializer
+
+    @extend_schema(
+        request=InfoLolSerializer, responses=InfoLolSerializer, summary="LOL 정보 업데이트"
+    )
+    def post(self, request, *args, **kwargs):
+        infolol = request.user.infolol
+        serializer_data = request.data.copy()
+
+        serializer = self.serializer_class(infolol, data=serializer_data, partial=True)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RiotApiIntegrationView(APIView):
+    def post(self, request):
+        # 클라이언트에서 보낸 username_lol 값을 가져옵니다.
+        username_lol = request.data.get("username_lol")
+
+        # 라이엇 API에 요청을 보내기 위한 설정
+        api_key = "YOUR_RIOT_API_KEY"  # 라이엇 API 키를 입력하세요
+        base_url = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
+
+        # 라이엇 API에 요청을 보냅니다.
+        response = requests.get(
+            f"{base_url}{username_lol}", headers={"X-Riot-Token": api_key}
+        )
+
+        # API 응답을 확인하고 처리합니다.
+        if response.status_code == 200:
+            data = response.json()
+
+            # 응답을 InfoLol 모델에 데이터를 저장
+            info_lol, created = Infolol.objects.get_or_create(
+                profile=request.user.profile, defaults={"json_lol": data}
+            )
+
+            # 백그라운드 작업을 비동기적으로 실행
+            process_lol_data.delay(info_lol.id, data)
+
+            # 응답을 클라이언트에게 반환합니다.
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            # API 응답이 실패한 경우, 에러 메시지를 반환합니다.
+            return Response(
+                {"error": "API 요청이 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST
+            )

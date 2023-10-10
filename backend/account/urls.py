@@ -15,4 +15,5 @@ urlpatterns = [
     path("profile/current/", ProfileAPIView.as_view()),
     path("profile/<str:user_id>/", UserProfileAPIView.as_view()),
     path("quit/", UserQuitAPIView.as_view()),
+    path("LOLinfo/", LOLinfoAPIView.as_view()),
 ]

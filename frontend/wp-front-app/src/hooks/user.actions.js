@@ -18,7 +18,7 @@ function useUserActions() {
     };
 
     function updateUsernameLol(data, axiosConfig) {
-        return axiosService.post(`${baseURL}/account/profile/current/`, data, axiosConfig);
+        return axiosService.post(`${baseURL}/account/LOLinfo/`, data, axiosConfig);
     }
 
     function setUserData(data) {

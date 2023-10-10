@@ -49,11 +49,18 @@ class InfoLolSerializer(serializers.ModelSerializer):
         model = Infolol
         fields = "__all__"
 
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        return instance
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("id", "nickname", "image_url", "username_lol")
+        fields = ("id", "nickname", "image_url")
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():

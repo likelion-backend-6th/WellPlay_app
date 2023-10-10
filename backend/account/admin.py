@@ -2,17 +2,16 @@ from django.contrib import admin
 from .models import User, Follow, Profile, Infolol
 
 
-class InfololInline(admin.StackedInline):  # 나중에 알아보고 추가.
-    model = Infolol
-    can_delete = False
-    verbose_name_plural = "Infolol"
-
-
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = "Profile"
-    inlines = (InfololInline,)
+
+
+class InfololInline(admin.StackedInline):
+    model = Infolol
+    can_delete = False
+    verbose_name_plural = "Infolol"
 
 
 @admin.register(User)
@@ -26,7 +25,7 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
-    inlines = (ProfileInline,)
+    inlines = (ProfileInline, InfololInline)
 
 
 @admin.register(Follow)
