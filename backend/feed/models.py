@@ -5,7 +5,9 @@ from common.models import CommonModel
 
 
 class Feed(CommonModel):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="feed_owner"
+    )
     content = models.TextField(max_length=256)
     image_url = models.URLField(null=True, blank=True)
     video_url = models.URLField(null=True, blank=True)

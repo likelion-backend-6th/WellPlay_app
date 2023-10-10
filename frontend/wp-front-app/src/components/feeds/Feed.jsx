@@ -5,13 +5,16 @@ import { format } from "timeago.js"
 import { CommentOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import { Link } from "react-router-dom"
+import { getUser } from "../../hooks/user.actions"
 
 function Feed(props) {
 	const { feed, refresh, isSingleFeed } = props
+	const user = getUser();
 
-	const handleLikeClick = (action) => {
+	const handleLikeClick = (action, data) => {
+		console.log(feed)
 		axiosService
-			.post(`/feed/${feed.id}/${action}/`)
+			.post(`/feed/${feed.id}/${action}/`, data)
 			.then(() => {
 				refresh()
 			})
@@ -29,42 +32,40 @@ function Feed(props) {
 								roundedCircle
 								width={48}
 								height={48}
-								className="me-2 border border-primary
+								className="me-2 border border-dark
                           border-2"
 							/>
 							<div className="d-flex flex-column justify-content-start align-self-center mt-2">
-								<p className="fs-6 m-0">{feed.owner.username}</p>
+								<p className="fs-6 m-0">{feed.owner}</p>
 								<p className="fs-6 fw-lighter">
 									<small>{format(feed.created_at)}</small>
 								</p>
-								{/* {!isSingleFeed && (
-									<p className="ms-1 fs-6">
-										<small>
-											<Link>{feed.comments_count} comments</Link>
-										</small>
-									</p>
-								)} */}
 							</div>
 						</div>
 					</Card.Title>
-					<Card.Text>{feed.content}</Card.Text>
-					<div className="d-flex flex-row">
-						<LikeFilled
-							style={{
-								color: "#fff",
-								backgroundColor: "#0D6EFD",
-								borderRadius: "50%",
-								width: "18px",
-								height: "18px",
-								fontSize: "75%",
-								padding: "2px",
-								margin: "3px",
-							}}
-						/>
-						<p className="ms-1 fs-6">
-							<small>{feed.like} like</small>
-						</p>
-					</div>
+					<Card.Text>
+						<p> {feed.content} </p>
+						{feed.image_url && (
+							<Image
+								src={feed.image_url}
+								width={48}
+								height={48}
+								className="me-2 border border-dark border-2"
+							/>
+						)}
+						{feed.video_url && (
+							<video
+								src={feed.video_url}
+								controls={true}
+								className="border border-dark border-2"
+								width="100%"
+								height="100%"
+								autoPlay={true}
+								loop={false}
+								muted={false}
+							/>
+						)}
+					</Card.Text>
 				</Card.Body>
 				<Card.Footer className="d-flex bg-white w-50 justify-content-between border-0">
 					<div className="d-flex flex-row">
@@ -74,18 +75,14 @@ function Feed(props) {
 								height: "24px",
 								padding: "2px",
 								fontSize: "20px",
-								color: feed.liked ? "#0D6EFD" : "#C4C4C4",
+								color: feed.like ? "#0D6EFD" : "#C4C4C4",
 							}}
 							onClick={() => {
-								if (feed.liked) {
-									handleLikeClick("remove_like")
-								} else {
-									handleLikeClick("like")
-								}
+								handleLikeClick("like", {"user": user.id, "feed": feed.id})
 							}}
 						/>
 						<p className="ms-1">
-							<small>Like</small>
+							<small>{feed.like} Like</small>
 						</p>
 					</div>
 					{!isSingleFeed && (
