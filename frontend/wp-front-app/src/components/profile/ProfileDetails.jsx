@@ -5,6 +5,7 @@ import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
 import axios from 'axios';
 import ProfileFormModal from "./ProfileFormModal";
+import {useNavigate} from "react-router-dom";
 
 
 function UserProfile(props) {
@@ -14,6 +15,7 @@ function UserProfile(props) {
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
     const fetchProfile = () => {
     getProfile()
