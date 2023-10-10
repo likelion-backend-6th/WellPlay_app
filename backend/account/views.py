@@ -112,7 +112,6 @@ class LoginAPIView(APIView):
             res.set_cookie("refresh", refresh_token, httponly=True)
             return res
         else:
-            print(user)
             return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -207,8 +206,8 @@ class FollowingList(generics.ListAPIView):
 
         following_count = queryset.count()
         response_data = {
-            'following_count': following_count,
-            'following_list': serializer.data
+            "following_count": following_count,
+            "following_list": serializer.data,
         }
         return Response(response_data)
 
@@ -223,7 +222,7 @@ class FollowerList(generics.ListAPIView):
 
         follower_count = queryset.count()
         response_data = {
-            'follower_count': follower_count,
-            'follower_list': serializer.data
+            "follower_count": follower_count,
+            "follower_list": serializer.data,
         }
         return Response(response_data)

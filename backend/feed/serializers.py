@@ -22,6 +22,9 @@ class FeedSerializer(serializers.ModelSerializer):
     def get_comment(self, obj) -> int:
         return Comment.objects.filter(feed=obj).count()
 
+    def get_owner(self, obj) -> str:
+        return "123"
+
 
 class FeedUploadSerializer(serializers.ModelSerializer):
     class Meta:
