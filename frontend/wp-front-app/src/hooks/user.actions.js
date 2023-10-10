@@ -17,6 +17,7 @@ function useUserActions() {
         getFollower,
         updateUsernameLol,
         apiUsernameLol,
+        apiUsernameLol,
     };
 
     function updateUsernameLol(data, axiosConfig) {
