@@ -10,8 +10,7 @@ function Home() {
 
   const fetchFeeds =  async function() {
 	try {
-	  // API 엔드포인트 URL 설정
-	  const apiUrl = "http://127.0.0.1:8000/feed/"; // 실제 경로에 맞게 수정해야 합니다.
+	  const apiUrl = "http://127.0.0.1:8000/feed/";
 
 	  const response = await fetch(apiUrl, {
 		method: "GET",
