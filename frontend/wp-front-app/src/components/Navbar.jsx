@@ -17,20 +17,17 @@ function Navigationbar() {
   return (
     <Navbar bg="primary" variant="dark">
       <Container>
-        <Navbar.Brand className="fw-bold" href="#home">
+        <Navbar.Brand className="fw-bold" href="/">
           Well Play
         </Navbar.Brand>
         <Navbar.Collapse className="justify-content-end">
           <Nav>
-            {user ? ( // 사용자가 로그인한 경우에만 아바타와 로그아웃 버튼을 표시
-              <NavDropdown
-                title={<Image src={user.avatar} roundedCircle width={36} height={36} />}
-              >
-                <NavDropdown.Item as={Link} to={`/profile/${user.user_id}/`}>
-                  Profile
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-              </NavDropdown>
+            {user ? ( // 사용자가 로그인한 경우에만 아바타표시
+              <Nav>
+                <Nav.Item as={Link} to={`/profile/${user.user_id}/`}>
+                  <Image src={user.avatar} roundedCircle width={36} height={36} />
+                </Nav.Item>
+              </Nav>
             ) : (
               <Nav.Item>
                 {/*로그인 안했을때 Nav바 비워두기*/}
