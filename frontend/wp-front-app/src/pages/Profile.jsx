@@ -9,19 +9,30 @@ import ProfileDetails from '../components/profile/ProfileDetails';
 
 function Profile() {
   const {profileId} = useParams();
-  const user = useSWR(`/acouunt/profile/${profileId}/`, fetcher);
+  const user = useSWR(`/account/profile/${profileId}/`, fetcher);
 
 
   return (
-      <Layout hasNavigationBack>
-        <Row className="justify-content-evenly">
-          <Col sm={9}>
-            <ProfileDetails user={user.data}/>
-            <div>
-            </div>
-          </Col>
-        </Row>
-      </Layout>
+       <Layout hasNavigationBack>
+      <Row className="justify-content-evenly">
+        <Col sm={9}>
+          {user ? (
+            <>
+              {profileId === 'myprofile' ? (
+                // 로그인한 사용자의 프로필 정보를 표시
+                <ProfileDetails user={user} />
+              ) : (
+                // 다른 유저의 프로필 정보를 표시
+                <ProfileDetails user={user} />
+              )}
+              {/* 다른 프로필 정보 표시 */}
+            </>
+          ) : (
+            <div>Loading...</div>
+          )}
+        </Col>
+      </Row>
+    </Layout>
   );
 }
 

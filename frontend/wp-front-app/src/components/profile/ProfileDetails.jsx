@@ -5,17 +5,18 @@ import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
 import axios from 'axios';
 import ProfileFormModal from "./ProfileFormModal";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 
 function UserProfile(props) {
-    const { getProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
+    const {getUserProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const {profileId} = useParams();
     const [previousRequestTime, setPreviousRequestTime] = useState(null);
     const [remainingTime, setRemainingTime] = useState(0); // 남은 시간 상태 추가
     const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
@@ -27,30 +28,30 @@ function UserProfile(props) {
 
     const user = getUser();
 
-    const fetchProfile = () => {
-    getProfile()
-      .then((response) => {
-        setProfile(response.data);
-      })
-      .catch((error) => {
-        console.error('프로필 정보를 가져오는 중 오류 발생:', error);
-      });
-  };
+    const fetchProfile = (profileId) => {
+        getUserProfile(profileId)
+            .then((response) => {
+                setProfile(response.data);
+            })
+            .catch((error) => {
+                console.error('프로필 정보를 가져오는 중 오류 발생:', error);
+            });
+    };
 
-  // 모달 열기 함수
-  const openModal = () => {
-    setShowModal(true);
-  };
+    // 모달 열기 함수
+    const openModal = () => {
+        setShowModal(true);
+    };
 
-  // 모달 닫기 함수
-  const closeModal = () => {
-    setShowModal(false);
-  };
+    // 모달 닫기 함수
+    const closeModal = () => {
+        setShowModal(false);
+    };
 
-  const handleSaveModal = () => {
-      closeModal();
-      fetchProfile();
-  }
+    const handleSaveModal = () => {
+        closeModal();
+        fetchProfile();
+    }
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -80,7 +81,7 @@ function UserProfile(props) {
             .finally(() => {
             });
 
-    
+
         // DB에 게임 닉네임 보내기
         updateUsernameLol(requestData)
             .then(response => {
@@ -120,16 +121,10 @@ function UserProfile(props) {
             }
         }
     }, [previousRequestTime]);
-    
+
     useEffect(() => {
         // 프로필 정보를 가져오기
-        getProfile()
-            .then((response) => {
-                setProfile(response.data);
-            })
-            .catch((error) => {
-                console.error('프로필 정보를 가져오는 중 오류 발생:', error);
-            });
+        fetchProfile(profileId);
 
         getFollowing()
             .then((response) => {
@@ -159,11 +154,11 @@ function UserProfile(props) {
     const toggleFollow = () => {
         const toUserId = profile.user_id;
 
-        if(isFollowing) {
+        if (isFollowing) {
             axios
-                .post(`/account/unfollow/`, { to_user: toUserId })
-                .then((response) =>
-                    {setIsFollowing(false);
+                .post(`/account/unfollow/`, {to_user: toUserId})
+                .then((response) => {
+                    setIsFollowing(false);
                     console.log('unfollow')
                 })
                 .catch((error) => {
@@ -171,7 +166,7 @@ function UserProfile(props) {
                 });
         } else {
             axios
-                .post(`/account/follow/`, { to_user: toUserId })
+                .post(`/account/follow/`, {to_user: toUserId})
                 .then((response) => {
                     setIsFollowing(true);
                     console.log('follow')
@@ -192,7 +187,7 @@ function UserProfile(props) {
                             roundedCircle
                             width={100}
                             height={100}
-                            border = {3}
+                            border={3}
                             alt="프로필 이미지"
                         />
                     </div>
@@ -201,7 +196,8 @@ function UserProfile(props) {
                     <div className="border-bottom pb-3">
                         <h2 className="mb-3">{profile.nickname}</h2>
                         <p>
-                            <strong>@{user.user_id}</strong> <Button onClick={toggleFollow} size="sm">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                            <strong>@{user.user_id}</strong> <Button onClick={toggleFollow}
+                                                                     size="sm">{isFollowing ? '언팔로우' : '팔로우'}</Button>
                         </p>
                     </div>
                 </div>
@@ -211,14 +207,15 @@ function UserProfile(props) {
                 </div>
             </div>
             <div>
-                <span onClick={goFollowerList} style={{ cursor: 'pointer' }}>
+                <span onClick={goFollowerList} style={{cursor: 'pointer'}}>
                     &nbsp; 팔로워 {follower.follower_count}
                 </span>
-                <span onClick={goFollowingList} style={{ cursor: 'pointer' }}>
+                <span onClick={goFollowingList} style={{cursor: 'pointer'}}>
                     &nbsp; 팔로잉 {following.following_count}
                 </span>
             </div>
-            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile} onSave={handleSaveModal} />
+            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
+                              onSave={handleSaveModal}/>
 
             {/* 연동하기 텍스트 필드와 버튼 */}
             <Form.Group>
