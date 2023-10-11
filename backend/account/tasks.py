@@ -1,4 +1,4 @@
-from backend.config.settings.base import RIOT_API_KEY
+from django.conf import settings
 from celery import shared_task
 import requests
 from .models import Infolol
@@ -13,7 +13,7 @@ def summoner_v4(user_infolol_id, summoner_name):
 
         apiDefault = {
             "region": "https://kr.api.riotgames.com",
-            "key": RIOT_API_KEY,
+            "key": settings.RIOT_API_KEY,
             "summonerName": summoner_name,
         }
         url = f"{apiDefault['region']}/lol/summoner/v4/summoners/by-name/{apiDefault['summonerName']}?api_key={apiDefault['key']}"
@@ -45,7 +45,7 @@ def summoner_league(user_infolol_id):
 
         apiDefault = {
             "region": "https://kr.api.riotgames.com",
-            "key": RIOT_API_KEY,
+            "key": settings.RIOT_API_KEY,
         }
         url = f"{apiDefault['region']}/lol/league/v4/entries/by-summoner/{summoner_id}?api_key={apiDefault['key']}"
         response = requests.get(url)
