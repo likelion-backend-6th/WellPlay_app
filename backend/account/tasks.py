@@ -6,30 +6,65 @@ import logging
 
 @shared_task
 def summoner_v4(user_infolol_id, summoner_name):
-    logging.info("작업 시작 로그")
+    logging.info("start summoner_v4")
     try:
-        logging.info("현재 로그인한 사용자의 Infolol 모델 가져오기")
         user_infolol = Infolol.objects.get(id=user_infolol_id)
 
         apiDefault = {
             "region": "https://kr.api.riotgames.com",
-            "key": "RGAPI-66807ebb-30d8-49bf-9e1b-55e42b86a13c",
+            "key": "RGAPI-fe4d392c-c1ec-41e0-8a1e-850388e49ecf",
             "summonerName": summoner_name,
         }
         url = f"{apiDefault['region']}/lol/summoner/v4/summoners/by-name/{apiDefault['summonerName']}?api_key={apiDefault['key']}"
         response = requests.get(url)
-        logging.info("요청이 성공했는지 보러가기")
         if response.status_code == 200:
+            logging.info(f"summoner_v4 요청 성공.{response.status_code}")
             data = response.json()
-            user_infolol.summoner_json = data
+            user_infolol.summoner_id = data["id"]
+            user_infolol.summoner_puuid = data["puuid"]
             user_infolol.save()
 
-            logging.info(f"JSON 데이터 저장 완료: {data}")
+            summoner_league.delay(user_infolol_id)
             return True
         else:
-            logging.info(f"API 요청 실패. 상태 코드: {response.status_code}")
+            logging.info(f"summoner_v4 요청 실패.{response.status_code}")
             return False
 
     except Infolol.DoesNotExist:
-        logging.info("Infolol 모델이 존재하지 않습니다.")
+        logging.info("Dose not exist Infolol.")
+        return False
+
+
+@shared_task
+def summoner_league(user_infolol_id):
+    logging.info("start summoner_league")
+    try:
+        user_infolol = Infolol.objects.get(id=user_infolol_id)
+        summoner_id = user_infolol.summoner_id  # 사용자의 summoner_id 가져오기
+
+        apiDefault = {
+            "region": "https://kr.api.riotgames.com",
+            "key": "RGAPI-fe4d392c-c1ec-41e0-8a1e-850388e49ecf",
+        }
+        url = f"{apiDefault['region']}/lol/league/v4/entries/by-summoner/{summoner_id}?api_key={apiDefault['key']}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            logging.info(f"summoner_league 요청 성공.{response.status_code}")
+            league_data = response.json()
+            logging.info(f"리그데이터.{league_data}")
+            if league_data:
+                user_infolol.summoner_tier = league_data[0]["tier"]
+                user_infolol.summoner_rank = league_data[0]["rank"]
+                user_infolol.summoner_lp = league_data[0]["leaguePoints"]
+                user_infolol.summoner_win = league_data[0]["wins"]
+                user_infolol.summoner_loss = league_data[0]["losses"]
+                user_infolol.save()
+            return True
+        else:
+            logging.info(f"summoner_league 요청 실패.{response.status_code}")
+            return False
+
+    except Infolol.DoesNotExist:
+        logging.info("Dose not exist Infolol.")
         return False
