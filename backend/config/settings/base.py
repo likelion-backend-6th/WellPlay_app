@@ -208,3 +208,5 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
+
+RIOT_API_KEY = os.getenv("RIOT_API_KEY", "")
