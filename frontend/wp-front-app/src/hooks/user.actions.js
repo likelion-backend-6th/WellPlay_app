@@ -12,6 +12,7 @@ function useUserActions() {
         logout,
         edit,
         getProfile,
+        getUserProfile,
         getFollowing,
         getFollower,
         updateUsernameLol,
@@ -80,6 +81,10 @@ function useUserActions() {
             return Promise.reject('액세스 토큰이 없습니다.');
         }
         return axiosService.get(`${baseURL}/account/profile/current/`, {});
+    }
+
+    function getUserProfile(userId) {
+        return axios.get(`${baseURL}/account/profile/${userId}/`, {});
     }
 
     function getFollowing() {
