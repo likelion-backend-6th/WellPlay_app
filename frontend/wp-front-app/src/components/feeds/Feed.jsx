@@ -1,7 +1,6 @@
 import React from "react"
 import { Card, Image } from "react-bootstrap"
 import { format } from "timeago.js"
-
 import { CommentOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import { Link } from "react-router-dom"
@@ -12,7 +11,6 @@ function Feed(props) {
 	const user = getUser();
 
 	const handleLikeClick = (action, data) => {
-		console.log(feed)
 		axiosService
 			.post(`/feed/${feed.id}/${action}/`, data)
 			.then(() => {
@@ -28,7 +26,7 @@ function Feed(props) {
 					<Card.Title className="d-flex flex-row justify-content-between">
 						<div className="d-flex flex-row">
 							<Image
-								src={feed.owner.image_url}
+								src={feed.profile_image}
 								roundedCircle
 								width={48}
 								height={48}
@@ -36,7 +34,7 @@ function Feed(props) {
                           border-2"
 							/>
 							<div className="d-flex flex-column justify-content-start align-self-center mt-2">
-								<p className="fs-6 m-0">{feed.owner}</p>
+								<p className="fs-6 m-0">{feed.user_id}</p>
 								<p className="fs-6 fw-lighter">
 									<small>{format(feed.created_at)}</small>
 								</p>
@@ -50,7 +48,7 @@ function Feed(props) {
 								src={feed.image_url}
 								width={48}
 								height={48}
-								className="me-2 border border-dark border-2"
+								className="me-2 mb-3 border border-dark border-2"
 							/>
 						)}
 						{feed.video_url && (

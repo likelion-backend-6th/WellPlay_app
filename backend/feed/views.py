@@ -20,6 +20,7 @@ from .serializers import (
     NotificationSerializer,
 )
 from .models import Comment, Feed, Notification, Like
+from django.contrib.auth.models import User
 
 
 class FeedViewSet(viewsets.ModelViewSet):
