@@ -45,8 +45,7 @@ INSTALLED_APPS += [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "corsheaders",
-    "django_celery_beat",
-    "django_celery_results",
+    "celery",
 ]
 
 # Created Apps
@@ -194,6 +193,9 @@ SIMPLE_JWT = {
 
 # Celery 설정
 CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_TIMEZONE = "Asia/Seoul"
+CELERY_ENABLE_UTC = False
+
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]

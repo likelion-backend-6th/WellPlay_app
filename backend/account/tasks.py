@@ -3,25 +3,17 @@ import requests
 from .models import Infolol
 import logging
 
-from typing import List
-
 
 @shared_task
-def test_task(a: int, b: int):
-    print("test Celery task : ", a + b)
-    return a + b
-
-
-@shared_task
-def process_lol_data(user_infolol_id, summoner_name):
+def summoner_v4(user_infolol_id, summoner_name):
     logging.info("작업 시작 로그")
     try:
         logging.info("현재 로그인한 사용자의 Infolol 모델 가져오기")
         user_infolol = Infolol.objects.get(id=user_infolol_id)
 
         apiDefault = {
-            "region": "https://kr.api.riotgames.com",  # 한국서버를 대상으로 호출
-            "key": "RGAPI-c313a68f-4e62-45ce-9922-e6eca6ad9118",  # API KEY
+            "region": "https://kr.api.riotgames.com",
+            "key": "RGAPI-66807ebb-30d8-49bf-9e1b-55e42b86a13c",
             "summonerName": summoner_name,
         }
         url = f"{apiDefault['region']}/lol/summoner/v4/summoners/by-name/{apiDefault['summonerName']}?api_key={apiDefault['key']}"
@@ -33,17 +25,11 @@ def process_lol_data(user_infolol_id, summoner_name):
             user_infolol.save()
 
             logging.info(f"JSON 데이터 저장 완료: {data}")
-
-            # 작업이 성공적으로 완료되었으므로 True 반환
             return True
         else:
             logging.info(f"API 요청 실패. 상태 코드: {response.status_code}")
-
-            # 작업이 실패했으므로 False 반환
             return False
 
     except Infolol.DoesNotExist:
         logging.info("Infolol 모델이 존재하지 않습니다.")
-
-        # 작업이 실패했으므로 False 반환
         return False

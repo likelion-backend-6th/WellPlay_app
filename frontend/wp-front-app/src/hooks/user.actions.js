@@ -23,7 +23,7 @@ function useUserActions() {
     }
 
     function apiUsernameLol(data, axiosConfig) {
-        return axiosService.post(`${baseURL}/account/start-background-job/`, data, axiosConfig);
+        return axiosService.post(`${baseURL}/account/riot_summoner_info/`, data, axiosConfig);
     }
 
     function setUserData(data) {

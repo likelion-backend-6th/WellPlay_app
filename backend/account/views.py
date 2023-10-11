@@ -235,36 +235,16 @@ class LOLinfoAPIView(APIView):
 
 
 @api_view(["POST"])
-def start_background_job(request):
+def riot_summoner_info(request):
     permission_classes = [
         IsAuthenticated,
     ]
     summoner_name = request.data.get("summoner_name")
 
     try:
-        # 현재 로그인한 사용자의 Infolol 모델 가져오기
-        user_infolol = request.user.infolol
-        print(user_infolol.id)  # 정수형 나오더라
-        # Celery 작업 시작
-        print(summoner_name + "님")
-        # print("Celery 작업을 비동기로 시작합니다.")
-        # process_lol_data.delay(user_infolol.id, summoner_name)
-        # print("Celery 작업을 비동기로 돌아가는중입니다.")
-        # 응답
-        user_infolol = Infolol.objects.get(id=user_infolol.id)
-
-        apiDefault = {
-            "region": "https://kr.api.riotgames.com",  # 한국서버를 대상으로 호출
-            "key": "RGAPI-c313a68f-4e62-45ce-9922-e6eca6ad9118",  # API KEY
-            "summonerName": summoner_name,
-        }
-        url = f"{apiDefault['region']}/lol/summoner/v4/summoners/by-name/{apiDefault['summonerName']}?api_key={apiDefault['key']}"
-        response = requests.get(url)
-        if response.status_code == 200:
-            data = response.json()
-            user_infolol.summoner_json = data
-            user_infolol.save()
-            print("샐러리 안쓰고 작업완료~")
+        user_infolol = request.user.infolol  # 현재 로그인한 사용자의 Infolol
+        print(user_infolol.id, "Celery tasks async start")  # 정수형 (장고유저ID)
+        summoner_v4.delay(user_infolol.id, summoner_name)
 
         return Response({"message": "백그라운드 작업이 시작되었습니다."}, status=status.HTTP_200_OK)
     except Infolol.DoesNotExist:
@@ -272,9 +252,3 @@ def start_background_job(request):
         return Response(
             {"error": "Infolol 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
         )
-
-
-class Test(views.APIView):
-    def get(self, request: HttpRequest):
-        test_task.delay(2, 5)
-        return Response("Celery Task Running")
