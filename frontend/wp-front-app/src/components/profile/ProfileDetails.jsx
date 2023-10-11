@@ -16,6 +16,16 @@ function UserProfile(props) {
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const [previousRequestTime, setPreviousRequestTime] = useState(null);
+    const [remainingTime, setRemainingTime] = useState(0); // 남은 시간 상태 추가
+    const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
+
+    const [inputValue, setInputValue] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+
+    const user = getUser();
 
     const fetchProfile = () => {
     getProfile()
@@ -41,12 +51,6 @@ function UserProfile(props) {
       closeModal();
       fetchProfile();
   }
-    const [inputValue, setInputValue] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState('');
-
-    const user = getUser();
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
@@ -54,6 +58,11 @@ function UserProfile(props) {
     };
 
     const handleConnectClick = () => {
+        if (remainingTime > 0) {
+            return;
+        }
+        const now = Date.now();
+        setPreviousRequestTime(now);
         setIsLoading(true);
     
         const newLolName = inputValue;
@@ -86,6 +95,31 @@ function UserProfile(props) {
     
         console.log("연동이 종료되었습니다.");
     };
+
+    // 클릭 시간을 확인하여 중복 클릭 방지
+    useEffect(() => {
+        const now = Date.now();
+        if (previousRequestTime !== null && now - previousRequestTime < 60000) {
+            const timeDiff = 120000 - (now - previousRequestTime);
+            setRemainingTime(timeDiff);
+
+            // 1초마다 남은 시간 갱신
+            const id = setInterval(() => {
+                setRemainingTime((prevTime) => prevTime - 1000);
+            }, 1000);
+
+            setTimerId(id);
+        } else {
+            setRemainingTime(0);
+        }
+
+        return () => {
+            // 컴포넌트가 언마운트되면 타이머 해제
+            if (timerId) {
+                clearInterval(timerId);
+            }
+        }
+    }, [previousRequestTime]);
     
     useEffect(() => {
         // 프로필 정보를 가져오기
@@ -195,12 +229,12 @@ function UserProfile(props) {
                     onChange={handleInputChange}
                 />
             </Form.Group>
-            <Button variant="primary" onClick={handleConnectClick} disabled={isLoading}>
-                {isLoading ? (
+            <Button variant="primary" onClick={handleConnectClick} disabled={remainingTime > 0 || isLoading}>
+                {remainingTime > 0 ? `남은 시간: ${Math.ceil(remainingTime / 1000)}초` : (isLoading ? (
                     <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
                 ) : (
                     '연동하기'
-                )}
+                ))}
             </Button>
         </div>
     );
