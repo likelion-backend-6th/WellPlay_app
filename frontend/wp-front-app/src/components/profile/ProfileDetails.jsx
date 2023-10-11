@@ -6,6 +6,9 @@ import {serverUrl} from '../../config'
 import axios from 'axios';
 import ProfileFormModal from "./ProfileFormModal";
 import {useNavigate, useParams} from "react-router-dom";
+import FollowerList from "../follow/Follower"
+import FollowingList from "../follow/Following"
+import '../../App.css'
 
 
 function UserProfile(props) {
@@ -15,6 +18,8 @@ function UserProfile(props) {
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showFollowerList, setShowFollowerList] = useState(false);
+    const [showFollowingList, setShowFollowingList] = useState(false);
     const navigate = useNavigate();
     const {profileId} = useParams();
     const [previousRequestTime, setPreviousRequestTime] = useState(null);
@@ -143,13 +148,23 @@ function UserProfile(props) {
             })
     }, []);
 
-    const goFollowerList = () => {
-        navigate('/follower');
+    const handleShowFollowerList = () => {
+        setShowFollowerList(true);
+        setShowFollowingList(false);
     };
 
-    const goFollowingList = () => {
-        navigate('/following');
+    const handleShowFollowingList = () => {
+        setShowFollowingList(true);
+        setShowFollowerList(false);
     };
+
+    const handleHideFollowerList = () => {
+        setShowFollowerList(false);
+    }
+
+    const handleHideFollowingList = () => {
+        setShowFollowingList(false);
+    }
 
     const toggleFollow = () => {
         const toUserId = profile.user_id;
@@ -206,13 +221,33 @@ function UserProfile(props) {
                     <Button variant="primary" onClick={openModal}>편집</Button>
                 </div>
             </div>
-            <div>
-                <span onClick={goFollowerList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로워 {follower.follower_count}
-                </span>
-                <span onClick={goFollowingList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로잉 {following.following_count}
-                </span>
+            <div className="container mt-5">
+                <div className="button-container">
+                    <div className={`button ${showFollowerList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowerList) {
+                                 handleHideFollowerList();
+                             } else {
+                                 handleShowFollowerList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로워 {follower.follower_count}
+                    </div>
+                    <div className={`button ${showFollowingList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowingList) {
+                                 handleHideFollowingList();
+                             } else {
+                                 handleShowFollowingList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로잉 {following.following_count}
+                    </div>
+                    {showFollowerList && <FollowerList/>}
+                    {showFollowingList && <FollowingList/>}
+                </div>
             </div>
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
