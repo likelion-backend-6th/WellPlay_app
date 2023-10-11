@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Image, Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { getUser, useUserActions } from '../hooks/user.actions';
 
@@ -11,8 +11,27 @@ function Navigationbar() {
   const handleLogout = () => {
     userActions.logout();
   };
+  const handleProfile = async () => {
+    try {
+      const profileResponse = await userActions.getProfile();
+      return profileResponse
+    } catch(error) {
+      throw error;
+    }
+  }
+  const [profile, setProfile] = useState({})
 
   const [showLoginForm, setShowLoginForm] = useState(false); // 모달 표시 상태 추가
+
+  useEffect(() => {
+    handleProfile()
+        .then((profileResponse) => {
+          setProfile(profileResponse.data);
+        })
+        .catch((error) => {
+          console.error('프로필 정보를 가져오는 중 오류 발생:', error);
+        });
+  }, []);
 
   return (
     <Navbar bg="primary" variant="dark">
@@ -25,7 +44,7 @@ function Navigationbar() {
             {user ? ( // 사용자가 로그인한 경우에만 아바타표시
               <Nav>
                 <Nav.Item as={Link} to={`/profile/${user.user_id}/`}>
-                  <Image src={user.avatar} roundedCircle width={36} height={36} />
+                  <Image src={profile.image_url} roundedCircle width={36} height={36} />
                 </Nav.Item>
               </Nav>
             ) : (
