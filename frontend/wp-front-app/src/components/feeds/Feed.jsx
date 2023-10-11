@@ -11,7 +11,6 @@ function Feed(props) {
 	const user = getUser();
 
 	const handleLikeClick = (action, data) => {
-		console.log(feed)
 		axiosService
 			.post(`/feed/${feed.id}/${action}/`, data)
 			.then(() => {
@@ -49,7 +48,7 @@ function Feed(props) {
 								src={feed.image_url}
 								width={48}
 								height={48}
-								className="me-2 border border-dark border-2"
+								className="me-2 mb-3 border border-dark border-2"
 							/>
 						)}
 						{feed.video_url && (

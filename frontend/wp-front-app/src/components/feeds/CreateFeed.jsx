@@ -16,8 +16,27 @@ function CreateFeed() {
 
 	const user = getUser()
 
-	const handleFileChange = (event) => {
-		setSelectedFile(event.target.files[0]);
+	const [formData, setFormData] = useState({
+		image: null,
+		video: null,
+	  });
+	
+	  const handleInputChange = (e) => {
+		const { name, files } = e.target;
+		setFormData({
+		  ...formData,
+		  [name]: files[0], // 파일 객체를 저장
+		});
+	  };
+
+	const data = new FormData();
+	data.append('content', form.body);
+
+	if (formData.image) {
+		data.append('image', formData.image);
+	}
+	if (formData.video) {
+		data.append('video', formData.video);
 	}
 
 	const handleSubmit = (event) => {
@@ -28,19 +47,13 @@ function CreateFeed() {
 		}
 		setValidated(true)
 
-		const data = {
-			content: form.body,
-			image: form.image,
-			video: form.video,
-		}
-
-		if (selectedFile) {
-			const formData = new FormData();
-			formData.append("image", selectedFile);
-		}
 
 		axiosService
-			.post("/feed/", data)
+			.post("/feed/", data, {
+				headers: {
+					"Content-Type": "multipart/form-data"
+				}
+			})
 			.then(() => {
 				handleClose()
 				setForm({})
@@ -61,7 +74,7 @@ function CreateFeed() {
 				console.log(error)
 			})
 	}
-	console.log(form)
+	
 	return (
 		<>
 			<Form.Group>
@@ -93,7 +106,7 @@ function CreateFeed() {
 								placeholder="image"
 								name="image"
 								value={form.image}
-								onChange={(e) => setForm({handleFileChange})}
+								onChange={handleInputChange}
 							/>
 							<Form.Label className="mt-3">Upload video</Form.Label>
 							<Form.Control
@@ -101,7 +114,7 @@ function CreateFeed() {
 								placeholder="Video"
 								name="video"
 								value={form.video}
-								onChange={(e) => setForm({handleFileChange})}
+								onChange={handleInputChange}
 							/>
 						</Form.Group>
 					</Form>
