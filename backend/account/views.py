@@ -1,18 +1,18 @@
-import requests
-from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate
 from django.core.files import File
 from django.conf import settings
+from django.http import HttpRequest
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, generics
 from rest_framework.response import Response
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view
+from rest_framework import views
 
 from .serializers import *
-from .tasks import *  # Celery 작업 import
+from account.tasks import *  # Celery 작업 import
 from common.uploader import FileUploader
 
 
@@ -234,36 +234,21 @@ class LOLinfoAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RiotApiIntegrationView(APIView):
-    def post(self, request):
-        # 클라이언트에서 보낸 username_lol 값을 가져옵니다.
-        username_lol = request.data.get("username_lol")
+@api_view(["POST"])
+def riot_summoner_info(request):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    summoner_name = request.data.get("summoner_name")
 
-        # 라이엇 API에 요청을 보내기 위한 설정
-        api_key = "YOUR_RIOT_API_KEY"  # 라이엇 API 키를 입력하세요
-        base_url = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/"
+    try:
+        user_infolol = request.user.infolol  # 현재 로그인한 사용자의 Infolol
+        print(user_infolol.id, "Celery tasks async start")  # 정수형 (장고유저ID)
+        summoner_v4.delay(user_infolol.id, summoner_name)
 
-        # 라이엇 API에 요청을 보냅니다.
-        response = requests.get(
-            f"{base_url}{username_lol}", headers={"X-Riot-Token": api_key}
+        return Response({"message": "백그라운드 작업이 시작되었습니다."}, status=status.HTTP_200_OK)
+    except Infolol.DoesNotExist:
+        # Infolol 모델이 존재하지 않는 경우
+        return Response(
+            {"error": "Infolol 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
         )
-
-        # API 응답을 확인하고 처리합니다.
-        if response.status_code == 200:
-            data = response.json()
-
-            # 응답을 InfoLol 모델에 데이터를 저장
-            info_lol, created = Infolol.objects.get_or_create(
-                profile=request.user.profile, defaults={"json_lol": data}
-            )
-
-            # 백그라운드 작업을 비동기적으로 실행
-            process_lol_data.delay(info_lol.id, data)
-
-            # 응답을 클라이언트에게 반환합니다.
-            return Response(data, status=status.HTTP_200_OK)
-        else:
-            # API 응답이 실패한 경우, 에러 메시지를 반환합니다.
-            return Response(
-                {"error": "API 요청이 실패했습니다."}, status=status.HTTP_400_BAD_REQUEST
-            )

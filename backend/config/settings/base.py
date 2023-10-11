@@ -45,6 +45,7 @@ INSTALLED_APPS += [
     "rest_framework_simplejwt",
     "drf_spectacular",
     "corsheaders",
+    "celery",
 ]
 
 # Created Apps
@@ -191,8 +192,11 @@ SIMPLE_JWT = {
 }
 
 # Celery 설정
-CELERY_BROKER_URL = "redis://localhost:6379/0"  # Redis 메시지 브로커 URL
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'  # Celery 결과 저장소 설정
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_TIMEZONE = "Asia/Seoul"
+CELERY_ENABLE_UTC = False
+
+CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -204,3 +208,5 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
+
+RIOT_API_KEY = os.getenv("RIOT_API_KEY", "")

@@ -73,7 +73,13 @@ class Profile(CommonModel):
 class Infolol(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infolol")
     summoner_name = models.CharField(max_length=30, null=True, blank=True)
-    summoner_json = models.JSONField(null=True, blank=True)
+    summoner_id = models.CharField(max_length=128, null=True, blank=True)
+    summoner_puuid = models.CharField(max_length=128, null=True, blank=True)
+    summoner_tier = models.CharField(max_length=128, null=True, blank=True)
+    summoner_rank = models.CharField(max_length=128, null=True, blank=True)
+    summoner_lp = models.IntegerField(null=True, blank=True)
+    summoner_win = models.IntegerField(null=True, blank=True)
+    summoner_loss = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.summoner_name}'s LoL Info"

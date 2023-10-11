@@ -10,3 +10,5 @@ celery==5.3.4
 redis==5.0.1
 requests==2.31.0
 django-cors-headers==4.2.0
+gevent==23.9.1 #윈도우 to 리눅스
+flower==2.0.1 #샐러리 모니터링 라이브러리

@@ -15,10 +15,15 @@ function useUserActions() {
         getFollowing,
         getFollower,
         updateUsernameLol,
+        apiUsernameLol,
     };
 
     function updateUsernameLol(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/LOLinfo/`, data, axiosConfig);
+    }
+
+    function apiUsernameLol(data, axiosConfig) {
+        return axiosService.post(`${baseURL}/account/riot_summoner_info/`, data, axiosConfig);
     }
 
     function setUserData(data) {
