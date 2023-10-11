@@ -84,7 +84,7 @@ function useUserActions() {
     }
 
     function getUserProfile(userId) {
-        return axiosService.get(`${baseURL}/account/profile/${userId}/`, {});
+        return axios.get(`${baseURL}/account/profile/${userId}/`, {});
     }
 
     function getFollowing() {
