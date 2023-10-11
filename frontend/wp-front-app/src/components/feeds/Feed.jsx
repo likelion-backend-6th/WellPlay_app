@@ -1,14 +1,30 @@
-import React from "react"
+import React, {useEffect, useState} from "react"
 import { Card, Image } from "react-bootstrap"
 import { format } from "timeago.js"
 import { CommentOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import { Link } from "react-router-dom"
-import { getUser } from "../../hooks/user.actions"
+import {getUser, useUserActions} from "../../hooks/user.actions"
 
 function Feed(props) {
 	const { feed, refresh, isSingleFeed } = props
 	const user = getUser();
+	const {getUserProfile} = useUserActions();
+    const [profile, setProfile] = useState({});
+    const userid = feed.user_id
+
+	const fetchProfile = (userid) => {
+        getUserProfile(userid)
+            .then((response) => {
+                setProfile(response.data);
+            })
+            .catch((error) => {
+                console.error('프로필 정보를 가져오는 중 오류 발생:', error);
+            });
+    };
+	useEffect(() => {
+        fetchProfile(userid);
+    }, []);
 
 	const handleLikeClick = (action, data) => {
 		axiosService
@@ -34,7 +50,7 @@ function Feed(props) {
                           border-2"
 							/>
 							<div className="d-flex flex-column justify-content-start align-self-center mt-2">
-								<p className="fs-6 m-0">{feed.user_id}</p>
+								<p className="fs-6 m-0">{profile.nickname}</p>
 								<p className="fs-6 fw-lighter">
 									<small>{format(feed.created_at)}</small>
 								</p>
