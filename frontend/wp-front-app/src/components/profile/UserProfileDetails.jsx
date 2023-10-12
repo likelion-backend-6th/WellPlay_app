@@ -4,6 +4,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {Button, Form, Image, Spinner} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
+import FollowerList from "../follow/Follower";
+import FollowingList from "../follow/Following";
 
 function UserProfile() {
     const {getUserProfile, getFollowing, getFollower,
@@ -12,6 +14,8 @@ function UserProfile() {
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
+    const [showFollowerList, setShowFollowerList] = useState(false);
+    const [showFollowingList, setShowFollowingList] = useState(false);
     const navigate = useNavigate();
     const {profileId} = useParams();
 
@@ -59,13 +63,23 @@ function UserProfile() {
             });
     }, [profileId]);
 
-    const goFollowerList = () => {
-        navigate('/follower');
+    const handleShowFollowerList = () => {
+        setShowFollowerList(true);
+        setShowFollowingList(false);
     };
 
-    const goFollowingList = () => {
-        navigate('/following');
+    const handleShowFollowingList = () => {
+        setShowFollowingList(true);
+        setShowFollowerList(false);
     };
+
+    const handleHideFollowerList = () => {
+        setShowFollowerList(false);
+    }
+
+    const handleHideFollowingList = () => {
+        setShowFollowingList(false);
+    }
     const toggleFollow = () => {
         const toUserId = profile.user_id;
 
@@ -118,13 +132,33 @@ function UserProfile() {
                     <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
                 </div>
             </div>
-            <div>
-                <span onClick={goFollowerList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로워 {follower.follower_count}
-                </span>
-                <span onClick={goFollowingList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로잉 {following.following_count}
-                </span>
+            <div className="container mt-5">
+                <div className="button-container">
+                    <div className={`button ${showFollowerList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowerList) {
+                                 handleHideFollowerList();
+                             } else {
+                                 handleShowFollowerList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로워 {follower.follower_count}
+                    </div>
+                    <div className={`button ${showFollowingList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowingList) {
+                                 handleHideFollowingList();
+                             } else {
+                                 handleShowFollowingList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로잉 {following.following_count}
+                    </div>
+                    {showFollowerList && <FollowerList/>}
+                    {showFollowingList && <FollowingList/>}
+                </div>
             </div>
 
             {/* LOL API 불러오는 부분 */}
