@@ -4,12 +4,12 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {Button, Form, Image, Spinner} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
-import FollowerList from "../follow/Follower";
+import UserFollowerList from "../follow/UserFollower";
+import UserFollowingList from "../follow/UserFollowing";
 import FollowingList from "../follow/Following";
 
 function UserProfile() {
-    const {getUserProfile, getFollowing, getFollower,
-        apiGetLol} = useUserActions();
+    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -35,20 +35,20 @@ function UserProfile() {
         // 프로필 정보를 가져오기
         fetchProfile(profileId);
 
-        getFollowing()
-            .then((response) => {
-                setFollowing(response.data);
-            })
-            .catch((error) => {
-                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
-            })
-
-        getFollower()
+        getUserFollower(profileId)
             .then((response) => {
                 setFollower(response.data);
             })
             .catch((error) => {
                 console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+
+        getUserFollowing(profileId)
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로잉 정보를 가져오는 중 오류 발생:', error);
             })
 
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
@@ -156,8 +156,8 @@ function UserProfile() {
                          style={{cursor: 'pointer'}}>
                         팔로잉 {following.following_count}
                     </div>
-                    {showFollowerList && <FollowerList/>}
-                    {showFollowingList && <FollowingList/>}
+                    {showFollowerList && <UserFollowerList/>}
+                    {showFollowingList && <UserFollowingList/>}
                 </div>
             </div>
 
@@ -177,7 +177,7 @@ function UserProfile() {
 
 
 
-        </div>        
+        </div>
     )
 }
 
