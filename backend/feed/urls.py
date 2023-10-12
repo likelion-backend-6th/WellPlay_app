@@ -13,6 +13,7 @@ router.register(r"", views.FeedViewSet, basename="")
 urlpatterns = [
     path("", include(router.urls)),
     path("<int:pk>/like/", views.LikeView.as_view(), name="like"),
+    path("userfeed/<str:user_id>/", views.FeedViewSet.as_view({"get": "user_feed"})),
     path(
         "<int:id>/comments/",
         views.CommentViewSet.as_view({"get": "list", "post": "create"}),
