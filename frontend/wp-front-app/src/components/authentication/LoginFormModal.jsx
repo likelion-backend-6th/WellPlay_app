@@ -8,7 +8,7 @@ function LoginFormModal() {
   const [showModal, setShowModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false); // 가입하기 버튼을 누를 때 사용할 상태 추가
   const [validated, setValidated] = useState(false);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({email: "", password: ""});
   const [error, setError] = useState(null);
   const userActions = useUserActions();
   const user = getUser();
