@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  backend:
+    depends_on:
+      - db
+    container_name: wp-back
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    image: "wp-backend:latest"
+    volumes:
+      - ./backend:/backend
+      - "wellplay-app-v:/var/www/html"
+    ports:
+      - "8000:8000"
+    command: 
+      - "/start"
+    env_file:
+      - ./backend/.envs/staging/django
+      - ./backend/.envs/staging/server
+      - ./backend/.envs/staging/db
+
+  frontend:
+    container_name: wp-front
+    build:
+      context: ./frontend/wp-front-app
+      dockerfile: Dockerfile
+    image: "wp-frontend:latest"
+    volumes:
+      - ./frontend/wp-front-app:/frontend
+    ports:
+      - 3000:3000
+    command:
+      - "/start"
+
+
+  db:
+    container_name: wp-postgres
+    image: postgres:15
+    ports:
+      - 5432:5432
+    env_file:
+      - ./backend/.envs/staging/db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  wellplay-app-v:
+  postgres-data:

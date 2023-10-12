@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.lb.type }}
+  selector:
+    {{- include "wellplay.selectorLabels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.service.lb.port }}
+      targetPort: {{ .Values.containerPort.django }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-db-nodeport
+spec:
+  type: {{ .Values.service.db.type }}
+  selector:
+    {{- include "db.selectorLabels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.service.db.port }}
+      targetPort: {{ .Values.containerPort.db }}

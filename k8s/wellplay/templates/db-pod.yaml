@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "wellplay.db.fullname" . }}
+  labels:
+    {{- include "db.selectorLabels" . | nindent 4 }}
+spec:
+  containers:
+    - name: {{ include "wellplay.db.fullname" . }}
+      image: {{ .Values.image.db.name }}:{{ .Values.image.db.tag }}
+      envFrom:
+        - secretRef:
+            name: {{ include "wellplay.db.fullname" . }}
+      ports:
+        - containerPort: {{ .Values.containerPort.db }}
+      volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          subPath: k8s
+          name: pg-data
+
+  volumes:
+    - name: pg-data
+      persistentVolumeClaim:
+        claimName: {{ include "wellplay.db.fullname" . }}
