@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.core.files.base import File
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
@@ -20,7 +21,6 @@ from .serializers import (
     NotificationSerializer,
 )
 from .models import Comment, Feed, Notification, Like
-from django.contrib.auth.models import User
 
 
 class FeedViewSet(viewsets.ModelViewSet):
@@ -34,7 +34,7 @@ class FeedViewSet(viewsets.ModelViewSet):
         return super().get_serializer_class()
 
     def get_permissions(self):
-        if self.action == "list" or self.action == "recommend":
+        if self.action == "list" or self.action == "recommend" or "user_feed":
             return [AllowAny()]
         return super().get_permissions()
 
@@ -57,10 +57,12 @@ class FeedViewSet(viewsets.ModelViewSet):
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @extend_schema(summary="내 피드 리스트")
+    @extend_schema(summary="유저별 피드 리스트")
     @action(detail=False, methods=["get"])
-    def myfeed(self, request, *args, **kwargs):
-        feeds = Feed.objects.filter(owner=request.user).order_by("-created_at")
+    def user_feed(self, request: Request, user_id: str):
+        User = get_user_model()
+        user = get_object_or_404(User, user_id=user_id)
+        feeds = Feed.objects.filter(owner=user).order_by("-created_at")
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
