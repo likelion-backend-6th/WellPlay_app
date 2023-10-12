@@ -24,14 +24,16 @@ function Navigationbar() {
   const [showLoginForm, setShowLoginForm] = useState(false); // 모달 표시 상태 추가
 
   useEffect(() => {
-    handleProfile()
+    if (user) {
+      handleProfile()
         .then((profileResponse) => {
           setProfile(profileResponse.data);
         })
         .catch((error) => {
           console.error('프로필 정보를 가져오는 중 오류 발생:', error);
         });
-  }, []);
+    }
+  }, [user]);
 
   return (
     <Navbar bg="primary" variant="dark">
