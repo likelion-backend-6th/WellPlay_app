@@ -13,8 +13,10 @@ function useUserActions() {
         edit,
         getProfile,
         getUserProfile,
-        getFollowing,
         getFollower,
+        getFollowing,
+        getUserFollower,
+        getUserFollowing,
         updateUsernameLol,
         apiPostLol,
         apiGetLol,
@@ -92,6 +94,14 @@ function useUserActions() {
         return axios.get(`${baseURL}/account/profile/${userId}/`, {});
     }
 
+    function getFollower() {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            return Promise.reject('액세스 토큰이 없습니다.');
+        }
+        return axiosService.get(`${baseURL}/account/follower/`, {});
+    }
+
     function getFollowing() {
         const accessToken = getAccessToken();
         if (!accessToken) {
@@ -100,12 +110,12 @@ function useUserActions() {
         return axiosService.get(`${baseURL}/account/following/`, {});
     }
 
-    function getFollower() {
-        const accessToken = getAccessToken();
-        if (!accessToken) {
-            return Promise.reject('액세스 토큰이 없습니다.');
-        }
-        return axiosService.get(`${baseURL}/account/follower/`, {});
+    function getUserFollower(user_id) {
+        return axios.get(`${baseURL}/account/follower/${user_id}`, {});
+    }
+
+    function getUserFollowing(user_id) {
+        return axios.get(`${baseURL}/account/following/${user_id}`, {});
     }
 }
 
