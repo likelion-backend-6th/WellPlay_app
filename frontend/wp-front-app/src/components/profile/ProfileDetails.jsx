@@ -12,7 +12,8 @@ import '../../App.css'
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower, updateUsernameLol, apiPostLol, apiGetLol } = useUserActions();
+    const {getProfile, getFollowing, getFollower,
+        updateUsernameLol, apiPostLol, apiGetLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});

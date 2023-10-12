@@ -6,13 +6,17 @@ import {Button, Form, Image, Spinner} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
 
 function UserProfile() {
-    const {getUserProfile, getFollowing, getFollower} = useUserActions();
+    const {getUserProfile, getFollowing, getFollower,
+        apiGetLol} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const navigate = useNavigate();
     const {profileId} = useParams();
+
+    const [userInfo, setUserInfo] = useState(null);
+    const [error, setError] = useState(null);
 
     const fetchProfile = (profileId) => {
         getUserProfile(profileId)
@@ -42,7 +46,18 @@ function UserProfile() {
             .catch((error) => {
                 console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
             })
-    }, []);
+
+        apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
+            .then((response) => {
+                console.log(profile.id)
+                setUserInfo(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+    }, [profileId]);
 
     const goFollowerList = () => {
         navigate('/follower');
@@ -109,7 +124,24 @@ function UserProfile() {
                     &nbsp; 팔로잉 {following.following_count}
                 </span>
             </div>
-        </div>
+
+            {/* LOL API 불러오는 부분 */}
+            <div className="user-profile-info">
+                {userInfo && (
+                    <div className="user-info-box">
+                    {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
+                    <div>
+                        <p>{userInfo.summonerName}</p>
+                        <p>{userInfo.tier} {userInfo.rank}</p>
+                        <p>승률: {userInfo.winrate}%</p>
+                    </div>
+                    </div>
+                )}
+            </div>
+
+
+
+        </div>        
     )
 }
 
