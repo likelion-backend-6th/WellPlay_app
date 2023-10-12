@@ -37,8 +37,6 @@ function UserProfile(props) {
 
     const fetchProfile = () => {
         getProfile()
-    const fetchProfile = () => {
-        getProfile()
             .then((response) => {
                 setProfile(response.data);
             })
