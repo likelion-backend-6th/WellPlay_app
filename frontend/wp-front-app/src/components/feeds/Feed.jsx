@@ -58,7 +58,7 @@ function Feed(props) {
 						</div>
 					</Card.Title>
 					<Card.Text>
-						<p> {feed.content} </p>
+						{feed.content}
 						{feed.image_url && (
 							<Image
 								src={feed.image_url}
