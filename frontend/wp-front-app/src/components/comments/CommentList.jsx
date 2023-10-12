@@ -17,9 +17,20 @@ function CommentList({ feedId, onCommentPosted }) {
       });
   }, [feedId]);
 
+  const handleCommentPosted = () => {
+    // 새 댓글이 게시되면 댓글 목록을 새로 고칩니다.
+    axiosService
+      .get(`/feed/${feedId}/comments/`)
+      .then((response) => {
+        setComments(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div>
-      <h3>댓글</h3>
       <ul>
         {comments.map((comment) => (
           <li key={comment.id}>
@@ -27,7 +38,8 @@ function CommentList({ feedId, onCommentPosted }) {
           </li>
         ))}
       </ul>
-      <CommentForm feedId={feedId} onCommentPosted={onCommentPosted} />
+      {/* CommentForm에서 날아온 콜백함수를 보고 handleCommentPosted 실행  */}
+      <CommentForm feedId={feedId} onCommentPosted={handleCommentPosted} /> 
     </div>
   );
 }

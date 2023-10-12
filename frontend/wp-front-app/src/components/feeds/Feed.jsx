@@ -39,7 +39,7 @@ function Feed(props) {
         axiosService
             .post(`/feed/${feed.id}/${action}/`, data)
             .then(() => {
-                refresh()
+                refresh();
             })
             .catch((err) => console.error(err))
     }
