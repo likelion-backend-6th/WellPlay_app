@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from django.core.files import File
 from django.conf import settings
 from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -185,9 +186,26 @@ class FollowAPIView(generics.CreateAPIView):
 class FollowerList(generics.ListAPIView):
     serializer_class = FollowerListSerializer
 
-    @extend_schema(request=FollowerListSerializer, responses=FollowerListSerializer)
+    @extend_schema(request=FollowerListSerializer, responses=FollowerListSerializer, summary="로그인한 유저 팔로워 목록")
     def get(self, request):
         queryset = Follow.objects.filter(to_user=self.request.user)
+        serializer = FollowerListSerializer(queryset, many=True)
+
+        follower_count = queryset.count()
+        response_data = {
+            "follower_count": follower_count,
+            "follower_list": serializer.data,
+        }
+        return Response(response_data)
+
+
+class UserFollowerList(generics.ListAPIView):
+    serializer_class = FollowerListSerializer
+
+    @extend_schema(request=None, responses=FollowerListSerializer, summary="특정 유저 팔로워 목록")
+    def get(self, request, user_id):
+        user = User.objects.get(user_id=user_id)
+        queryset = Follow.objects.filter(to_user=user)
         serializer = FollowerListSerializer(queryset, many=True)
 
         follower_count = queryset.count()
@@ -201,10 +219,27 @@ class FollowerList(generics.ListAPIView):
 class FollowingList(generics.ListAPIView):
     serializer_class = FollowingListSerializer
 
-    @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer)
+    @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer, summary="로그인한 유저 팔로잉 목록")
     def get(self, request):
         queryset = Follow.objects.filter(from_user=self.request.user)
         serializer = FollowerListSerializer(queryset, many=True)
+
+        following_count = queryset.count()
+        response_data = {
+            "following_count": following_count,
+            "following_list": serializer.data,
+        }
+        return Response(response_data)
+
+
+class UserFollowingList(generics.ListAPIView):
+    serializer_class = FollowingListSerializer
+
+    @extend_schema(request=None, responses=FollowingListSerializer, summary="특정 유저 팔로잉 목록")
+    def get(self, request, user_id):
+        user = User.objects.get(user_id=user_id)
+        queryset = Follow.objects.filter(from_user=user)
+        serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
         response_data = {

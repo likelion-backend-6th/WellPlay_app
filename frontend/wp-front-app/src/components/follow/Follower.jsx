@@ -6,30 +6,36 @@ function FollowerList() {
     const [follower, setFollower] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    const loadFollowerData = () => {
+        setLoading(true);
         getFollower()
             .then((response) => {
                 const followerList = response.data.follower_list || [];
                 setFollower(followerList);
-                setLoading(false);
             })
             .catch((error) => {
                 console.error('팔로워 목록을 가져오는 중 오류 발생:', error);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-    }, [getFollower]);
+    };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    useEffect(() => {
+        loadFollowerData()
+    }, []);
 
     return (
         <div className="container mt-5">
             <h2>팔로워</h2>
-            <ul>
-                {follower.map((followerItem) => (
-                    <li key={follower.id}>{followerItem.from_user}</li>
-                ))}
-            </ul>
+            {loading ? ('') : (
+                <div>
+                    <ul>{follower.map((followerItem) => (
+                        <li key={followerItem.id}>{followerItem.from_user}</li>
+                    ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 }

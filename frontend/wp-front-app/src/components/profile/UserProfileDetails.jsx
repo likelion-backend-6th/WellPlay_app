@@ -4,14 +4,18 @@ import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {Button, Form, Image, Spinner} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
+import UserFollowerList from "../follow/UserFollower";
+import UserFollowingList from "../follow/UserFollowing";
+import FollowingList from "../follow/Following";
 
 function UserProfile() {
-    const {getUserProfile, getFollowing, getFollower,
-        apiGetLol} = useUserActions();
+    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
+    const [showFollowerList, setShowFollowerList] = useState(false);
+    const [showFollowingList, setShowFollowingList] = useState(false);
     const navigate = useNavigate();
     const {profileId} = useParams();
 
@@ -31,20 +35,20 @@ function UserProfile() {
         // 프로필 정보를 가져오기
         fetchProfile(profileId);
 
-        getFollowing()
-            .then((response) => {
-                setFollowing(response.data);
-            })
-            .catch((error) => {
-                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
-            })
-
-        getFollower()
+        getUserFollower(profileId)
             .then((response) => {
                 setFollower(response.data);
             })
             .catch((error) => {
                 console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+
+        getUserFollowing(profileId)
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로잉 정보를 가져오는 중 오류 발생:', error);
             })
 
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
@@ -59,13 +63,23 @@ function UserProfile() {
             });
     }, [profileId]);
 
-    const goFollowerList = () => {
-        navigate('/follower');
+    const handleShowFollowerList = () => {
+        setShowFollowerList(true);
+        setShowFollowingList(false);
     };
 
-    const goFollowingList = () => {
-        navigate('/following');
+    const handleShowFollowingList = () => {
+        setShowFollowingList(true);
+        setShowFollowerList(false);
     };
+
+    const handleHideFollowerList = () => {
+        setShowFollowerList(false);
+    }
+
+    const handleHideFollowingList = () => {
+        setShowFollowingList(false);
+    }
     const toggleFollow = () => {
         const toUserId = profile.user_id;
 
@@ -110,19 +124,41 @@ function UserProfile() {
                     <div className="border-bottom pb-3">
                         <h2 className="mb-3">{profile.nickname}</h2>
                         <p>
-                            <strong>@{profileId}</strong> <Button onClick={toggleFollow}
-                                                                     size="sm">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                            <strong>@{profileId}</strong>
                         </p>
                     </div>
                 </div>
+                <div className="col-md-2">
+                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                </div>
             </div>
-            <div>
-                <span onClick={goFollowerList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로워 {follower.follower_count}
-                </span>
-                <span onClick={goFollowingList} style={{cursor: 'pointer'}}>
-                    &nbsp; 팔로잉 {following.following_count}
-                </span>
+            <div className="container mt-5">
+                <div className="button-container">
+                    <div className={`button ${showFollowerList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowerList) {
+                                 handleHideFollowerList();
+                             } else {
+                                 handleShowFollowerList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로워 {follower.follower_count}
+                    </div>
+                    <div className={`button ${showFollowingList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showFollowingList) {
+                                 handleHideFollowingList();
+                             } else {
+                                 handleShowFollowingList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        팔로잉 {following.following_count}
+                    </div>
+                    {showFollowerList && <UserFollowerList/>}
+                    {showFollowingList && <UserFollowingList/>}
+                </div>
             </div>
 
             {/* LOL API 불러오는 부분 */}
@@ -141,7 +177,7 @@ function UserProfile() {
 
 
 
-        </div>        
+        </div>
     )
 }
 
