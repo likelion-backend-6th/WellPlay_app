@@ -1,0 +1,40 @@
+image:
+  name: wp-registry.kr.ncr.ntruss.com/wp-backend
+  tag: "latest"
+  pullPolicy: Always
+  imagePullSecrets: regcred
+  db:
+    name: postgres
+    tag: 13
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicas: 3
+
+service:
+  lb:
+    type: LoadBalancer
+    port: 80
+  db:
+    type: NodePort
+    port: 5432
+
+containerPort:
+  django: 8000
+  db: 5432
+  react: 3000
+
+secret:
+  type: Opaque
+  django:
+    DJANGO_SECRET_KEY: wfux#h904l(tez&w%s-q2q$xr(hf-w+xk-fyst+e0qvkc!!o4_
+  db:
+    POSTGRES_DB: wellplay
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    POSTGRES_PORT: "5432"
+
+configMap:
+  django:
+    DJANGO_SETTINGS_MODULE: config.settings.staging
