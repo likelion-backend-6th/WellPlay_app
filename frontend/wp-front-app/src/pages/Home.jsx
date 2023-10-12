@@ -10,7 +10,7 @@ function Home() {
 
   const fetchFeeds =  async function() {
 	try {
-	  const apiUrl = "http://127.0.0.1:8000/feed/";
+	  const apiUrl = process.env.REACT_APP_API_URL+"/feed/";
 
 	  const response = await fetch(apiUrl, {
 		method: "GET",

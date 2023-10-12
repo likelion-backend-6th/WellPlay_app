@@ -5,7 +5,7 @@ import {useEffect} from "react";
 
 function useUserActions() {
     const navigate = useNavigate();
-    const baseURL = "http://localhost:8000";
+    const baseURL = process.env.REACT_APP_API_URL;
     return {
         login,
         register,
