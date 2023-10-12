@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Image, Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { getUser, useUserActions } from '../hooks/user.actions';
-
 import { Link } from 'react-router-dom';
 import LoginFormModal from './authentication/LoginFormModal'; // LoginFormModal을 import
 
@@ -33,7 +32,7 @@ function Navigationbar() {
           console.error('프로필 정보를 가져오는 중 오류 발생:', error);
         });
     }
-  }, [user]);
+  }, []);
 
   return (
     <Navbar bg="primary" variant="dark">
