@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react"
-import { Card, Image } from "react-bootstrap"
+import { Card, Image, Modal } from "react-bootstrap"
 import { format } from "timeago.js"
 import { CommentOutlined, LikeFilled, LikeOutlined } from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import { Link } from "react-router-dom"
 import {getUser, useUserActions} from "../../hooks/user.actions"
+import CommentModal from "../comments/CommentModal";
 
 function Feed(props) {
 	const { feed, refresh, isSingleFeed } = props
@@ -12,6 +13,7 @@ function Feed(props) {
 	const {getUserProfile} = useUserActions();
     const [profile, setProfile] = useState({});
     const userid = feed.user_id
+	const [showCommentModal, setShowCommentModal] = useState(false);
 
 	const fetchProfile = (userid) => {
         getUserProfile(userid)
@@ -62,14 +64,16 @@ function Feed(props) {
 						{feed.image_url && (
 							<Image
 								src={feed.image_url}
-								width="100%"
-								height="100%"
+								style={{ maxWidth: "100%", height: "auto" }}
+								width="auto"
+								height={400}
 								className="me-2 mb-3 border border-dark border-2"
 							/>
 						)}
 						{feed.video_url && (
 							<video
 								src={feed.video_url}
+								style={{ maxWidth: "100%" }}
 								controls={true}
 								className="border border-dark border-2"
 								width="100%"
@@ -100,25 +104,31 @@ function Feed(props) {
 					</div>
 					{!isSingleFeed && (
 						<div className="d-flex flex-row">
-							<Link to={`/feed/${feed.id}/comments/`}>
-								<CommentOutlined
-									style={{
-										width: "24px",
-										height: "24px",
-										padding: "2px",
-										fontSize: "20px",
-										color: "#C4C4C4",
-									}}
-								/>
-							</Link>
-								<p className="ms-1 mb-0">
-									<small>{feed.comment} Comment</small>
-								</p>
+						<CommentOutlined
+							style={{
+							width: "24px",
+							height: "24px",
+							padding: "2px",
+							fontSize: "20px",
+							color: "#C4C4C4",
+							}}
+							onClick={() => setShowCommentModal(true)}
+						/>
+						<p className="ms-1 mb-0">
+							<small>{feed.comment} Comment</small>
+						</p>
 						</div>
 					)}
 				</Card.Footer>
 			</Card>
-		</>
+				<CommentModal
+					feedId={feed.id}
+					show={showCommentModal}
+					size="lg" //크게만들고싶은데
+					handleClose={() => setShowCommentModal(false)}
+					//refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
+				/>
+				</>
 	)
 }
 
