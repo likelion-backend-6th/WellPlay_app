@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Image, Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { getUser, useUserActions } from '../hooks/user.actions';
-
 import { Link } from 'react-router-dom';
 import LoginFormModal from './authentication/LoginFormModal'; // LoginFormModal을 import
 
@@ -24,13 +23,15 @@ function Navigationbar() {
   const [showLoginForm, setShowLoginForm] = useState(false); // 모달 표시 상태 추가
 
   useEffect(() => {
-    handleProfile()
+    if (user) {
+      handleProfile()
         .then((profileResponse) => {
           setProfile(profileResponse.data);
         })
         .catch((error) => {
           console.error('프로필 정보를 가져오는 중 오류 발생:', error);
         });
+    }
   }, []);
 
   return (

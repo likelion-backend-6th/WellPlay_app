@@ -12,7 +12,7 @@ import '../../App.css'
 
 
 function UserProfile(props) {
-    const {getUserProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
+    const {getProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -33,8 +33,8 @@ function UserProfile(props) {
 
     const user = getUser();
 
-    const fetchProfile = (profileId) => {
-        getUserProfile(profileId)
+    const fetchProfile = () => {
+        getProfile()
             .then((response) => {
                 setProfile(response.data);
             })
@@ -129,7 +129,7 @@ function UserProfile(props) {
 
     useEffect(() => {
         // 프로필 정보를 가져오기
-        fetchProfile(profileId);
+        fetchProfile();
 
         getFollowing()
             .then((response) => {
