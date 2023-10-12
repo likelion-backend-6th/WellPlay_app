@@ -20,7 +20,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_API_URL=http://localhost:8000/ react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
