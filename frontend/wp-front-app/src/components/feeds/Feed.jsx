@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react"
-import {Card, DropdownButton, Image, Dropdown, Button, Modal, Form} from "react-bootstrap"
+import {Card, DropdownButton, Image, Modal, Dropdown, Button, Modal, Form} from "react-bootstrap"
 import {format} from "timeago.js"
 import {CommentOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import {Link} from "react-router-dom"
 import {getUser, useUserActions} from "../../hooks/user.actions"
+import CommentModal from "../comments/CommentModal";
 
 function Feed(props) {
     const {feed, refresh, isSingleFeed} = props
@@ -19,6 +20,7 @@ function Feed(props) {
     const data = new FormData();
 
     data.append('content', form.body);
+	const [showCommentModal, setShowCommentModal] = useState(false);
 
     const fetchProfile = (userid) => {
         getUserProfile(userid)
