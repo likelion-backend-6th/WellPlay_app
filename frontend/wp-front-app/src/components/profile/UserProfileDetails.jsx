@@ -110,10 +110,12 @@ function UserProfile() {
                     <div className="border-bottom pb-3">
                         <h2 className="mb-3">{profile.nickname}</h2>
                         <p>
-                            <strong>@{profileId}</strong> <Button onClick={toggleFollow}
-                                                                     size="sm">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                            <strong>@{profileId}</strong>
                         </p>
                     </div>
+                </div>
+                <div className="col-md-2">
+                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
                 </div>
             </div>
             <div>
