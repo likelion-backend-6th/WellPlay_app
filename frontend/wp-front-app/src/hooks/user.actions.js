@@ -16,16 +16,20 @@ function useUserActions() {
         getFollowing,
         getFollower,
         updateUsernameLol,
-        apiUsernameLol,
-        apiUsernameLol,
+        apiPostLol,
+        apiGetLol,
     };
 
     function updateUsernameLol(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/LOLinfo/`, data, axiosConfig);
     }
 
-    function apiUsernameLol(data, axiosConfig) {
+    function apiPostLol(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/riot_summoner_info/`, data, axiosConfig);
+    }
+
+    function apiGetLol(user_id, axiosConfig) {
+        return axiosService.get(`${baseURL}/account/riot_summoner_info/${user_id}/`, axiosConfig);
     }
 
     function setUserData(data) {

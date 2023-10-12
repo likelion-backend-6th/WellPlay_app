@@ -12,7 +12,7 @@ import '../../App.css'
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower, updateUsernameLol, apiUsernameLol } = useUserActions();
+    const {getProfile, getFollowing, getFollower, updateUsernameLol, apiPostLol, apiGetLol } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -25,6 +25,7 @@ function UserProfile(props) {
     const [previousRequestTime, setPreviousRequestTime] = useState(null);
     const [remainingTime, setRemainingTime] = useState(0); // 남은 시간 상태 추가
     const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
+    const [userInfo, setUserInfo] = useState(null);
 
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +34,8 @@ function UserProfile(props) {
 
     const user = getUser();
 
+    const fetchProfile = () => {
+        getProfile()
     const fetchProfile = () => {
         getProfile()
             .then((response) => {
@@ -76,7 +79,7 @@ function UserProfile(props) {
         console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
 
         // 백그라운드 작업 시작을 서버에 요청
-        apiUsernameLol(requestData)
+        apiPostLol(requestData)
             .then((response) => {
             setSuccessMessage(response.data.message);
             })
@@ -100,7 +103,12 @@ function UserProfile(props) {
             });
     
         console.log("연동이 종료되었습니다.");
+        setTimeout(() => {
+            fetchProfile(profileId);
+        }, 2000);
     };
+
+
 
     // 클릭 시간을 확인하여 중복 클릭 방지
     useEffect(() => {
@@ -119,12 +127,12 @@ function UserProfile(props) {
             setRemainingTime(0);
         }
 
-        return () => {
-            // 컴포넌트가 언마운트되면 타이머 해제
-            if (timerId) {
-                clearInterval(timerId);
-            }
-        }
+        // return () => {
+        //     // 컴포넌트가 언마운트되면 타이머 해제
+        //     if (timerId) {
+        //         clearInterval(timerId);
+        //     }
+        // }
     }, [previousRequestTime]);
 
     useEffect(() => {
@@ -146,7 +154,18 @@ function UserProfile(props) {
             .catch((error) => {
                 console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
             })
-    }, []);
+
+        apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
+            .then((response) => {
+                console.log(profile.id)
+                setUserInfo(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+    }, [profileId]);
 
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
@@ -252,6 +271,19 @@ function UserProfile(props) {
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
 
+            <div className="user-profile-info">
+                {userInfo && (
+                    <div className="user-info-box">
+                    {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
+                    <div>
+                        <p>{userInfo.summonerName}</p>
+                        <p>{userInfo.tier} {userInfo.rank}</p>
+                        <p>승률: {userInfo.winrate}%</p>
+                    </div>
+                    </div>
+                )}
+            </div>
+            
             {/* 연동하기 텍스트 필드와 버튼 */}
             <Form.Group>
                 <Form.Control
