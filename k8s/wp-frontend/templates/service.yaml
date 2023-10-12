@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  type: {{ .Values.service.lb.type }}
+  selector:
+    {{- include "wellplay.selectorLabels" . | nindent 4 }}
+  ports:
+    - port: {{ .Values.service.lb.port }}
+      targetPort: {{ .Values.containerPort.react }}

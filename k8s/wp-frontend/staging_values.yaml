@@ -1,0 +1,18 @@
+image:
+  name: wp-registry.kr.ncr.ntruss.com/wp-frontend
+  tag: "latest"
+  pullPolicy: Always
+  imagePullSecrets: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicas: 3
+
+service:
+  lb:
+    type: LoadBalancer
+    port: 80
+
+containerPort:
+  react: 3000
