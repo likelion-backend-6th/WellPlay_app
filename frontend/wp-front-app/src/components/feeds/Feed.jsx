@@ -62,8 +62,8 @@ function Feed(props) {
 						{feed.image_url && (
 							<Image
 								src={feed.image_url}
-								width={48}
-								height={48}
+								width="100%"
+								height="100%"
 								className="me-2 mb-3 border border-dark border-2"
 							/>
 						)}
@@ -74,7 +74,6 @@ function Feed(props) {
 								className="border border-dark border-2"
 								width="100%"
 								height="100%"
-								autoPlay={true}
 								loop={false}
 								muted={false}
 							/>
@@ -101,18 +100,20 @@ function Feed(props) {
 					</div>
 					{!isSingleFeed && (
 						<div className="d-flex flex-row">
-							<CommentOutlined
-								style={{
-									width: "24px",
-									height: "24px",
-									padding: "2px",
-									fontSize: "20px",
-									color: "#C4C4C4",
-								}}
-							/>
-							<p className="ms-1 mb-0">
-								<small>{feed.comment} Comment</small>
-							</p>
+							<Link to={`/feed/${feed.id}/comments/`}>
+								<CommentOutlined
+									style={{
+										width: "24px",
+										height: "24px",
+										padding: "2px",
+										fontSize: "20px",
+										color: "#C4C4C4",
+									}}
+								/>
+							</Link>
+								<p className="ms-1 mb-0">
+									<small>{feed.comment} Comment</small>
+								</p>
 						</div>
 					)}
 				</Card.Footer>

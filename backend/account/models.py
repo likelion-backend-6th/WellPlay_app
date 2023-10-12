@@ -60,16 +60,6 @@ class User(CommonModel, AbstractBaseUser, PermissionsMixin):
         return self.user_id
 
 
-# Profile 모델로 분리
-class Profile(CommonModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    nickname = models.CharField(max_length=30, null=True, blank=True)
-    image_url = models.URLField(null=True, blank=True)
-
-    def __str__(self):
-        return f"{self.user.user_id} Profile"
-
-
 class Infolol(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infolol")
     summoner_name = models.CharField(max_length=30, null=True, blank=True)
@@ -83,6 +73,16 @@ class Infolol(models.Model):
 
     def __str__(self):
         return f"{self.summoner_name}'s LoL Info"
+
+
+# Profile 모델로 분리
+class Profile(CommonModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+    nickname = models.CharField(max_length=30, null=True, blank=True)
+    image_url = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.user_id} Profile"
 
 
 @receiver(post_save, sender=User)
