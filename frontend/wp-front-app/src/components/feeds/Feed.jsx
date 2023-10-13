@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Card, DropdownButton, Image, Dropdown, Button, Modal} from "react-bootstrap"
+import {Card, DropdownButton, Image, Dropdown, Button, Modal, Form} from "react-bootstrap"
 import {format} from "timeago.js"
 import {CommentOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
@@ -13,7 +13,12 @@ function Feed(props) {
     const [profile, setProfile] = useState({});
     const userid = feed.user_id
     const [showMenu, setShowMenu] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showUpdateFeed, setShowUpdateFeed] = useState(false);
+    const [form, setForm] = useState({body: feed.content})
+    const data = new FormData();
+
+    data.append('content', form.body);
 
     const fetchProfile = (userid) => {
         getUserProfile(userid)
@@ -44,6 +49,24 @@ function Feed(props) {
         setShowDeleteModal(true);
     };
 
+    const handleEditClick = () => {
+        setShowUpdateFeed(true);
+    };
+
+    const confirmUpdateFeed = () => {
+        axiosService
+            .put(`/feed/${feed.id}/`, data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            .then(() => {
+                refresh()
+            })
+
+        setShowUpdateFeed(false);
+    };
+
     const confirmDelete = () => {
         axiosService
             .delete(`/feed/${feed.id}/`)
@@ -56,6 +79,9 @@ function Feed(props) {
 
     const cancelDelete = () => {
         setShowDeleteModal(false);
+    };
+    const cancelUpdate = () => {
+        setShowUpdateFeed(false);
     };
 
     return (
@@ -88,7 +114,7 @@ function Feed(props) {
                                     onClick={handleMenuClick}
                                 >
                                     <Dropdown.Item onClick={handleDeleteClick}>삭제</Dropdown.Item>
-                                    <Dropdown.Item onClick={handleDeleteClick}>수정</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleEditClick}>수정</Dropdown.Item>
                                 </DropdownButton>
                                 <Modal show={showDeleteModal} onHide={cancelDelete}>
                                     <Modal.Header closeButton>
@@ -100,6 +126,31 @@ function Feed(props) {
                                             취소
                                         </Button>
                                         <Button variant="primary" onClick={confirmDelete}>
+                                            확인
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                                <Modal show={showUpdateFeed} onHide={cancelUpdate}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>글 수정</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body><Form onSubmit={confirmUpdateFeed}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Content</Form.Label>
+                                            <Form.Control
+                                                name="body"
+                                                value={form.body}
+                                                onChange={(e) => setForm({...form, body: e.target.value})}
+                                                as="textarea"
+                                                rows={3}
+                                            />
+                                        </Form.Group>
+                                    </Form></Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={cancelUpdate}>
+                                            취소
+                                        </Button>
+                                        <Button variant="primary" onClick={confirmUpdateFeed}>
                                             확인
                                         </Button>
                                     </Modal.Footer>
