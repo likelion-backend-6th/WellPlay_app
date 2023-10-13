@@ -6,6 +6,9 @@ import axiosService from "../../helpers/axios"
 import {Link} from "react-router-dom"
 import {getUser, useUserActions} from "../../hooks/user.actions"
 import CommentModal from "../comments/CommentModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import "../default.css"
 
 function Feed(props) {
     const {feed, refresh, isSingleFeed} = props
@@ -88,7 +91,7 @@ function Feed(props) {
 
     return (
         <>
-            <Card className="rounded-3 my-4">
+            <Card className="custom-card rounded-3 my-4">
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
@@ -110,7 +113,7 @@ function Feed(props) {
                         {user && user.user_id === feed.user_id && (
                             <>
                                 <DropdownButton
-                                    title="메뉴"
+                                    title={<FontAwesomeIcon icon={faEllipsisV} />}
                                     id="menu-dropdown"
                                     show={showMenu}
                                     onClick={handleMenuClick}
@@ -185,7 +188,7 @@ function Feed(props) {
                         )}
                     </Card.Text>
                 </Card.Body>
-                <Card.Footer className="d-flex bg-white w-50 justify-content-between border-0">
+                <Card.Footer className="d-flex w-50 justify-content-between border-0">
                     <div className="d-flex flex-row">
                         <LikeOutlined
                             style={{

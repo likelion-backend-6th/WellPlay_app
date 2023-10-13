@@ -3,6 +3,7 @@ import axiosService from "../../helpers/axios";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment"; // 새로 추가한 부분
 import { Card } from "react-bootstrap";
+import "../default.css";
 
 function CommentList({ feedId, onCommentPosted, props, }) {
   const [comments, setComments] = useState([]);
@@ -43,7 +44,7 @@ function CommentList({ feedId, onCommentPosted, props, }) {
   };
 
   return (
-    <Card className="rounded-3 my-4" style={{ maxHeight: "63vh", overflowY: "auto" }}>
+    <Card className="custom-card rounded-3 my-4" style={{ maxHeight: "63vh", overflowY: "auto" }}>
       <Card.Body>
         <CommentForm feedId={feedId} onCommentPosted={handleCommentPosted} />
         {comments.map((comment) => (

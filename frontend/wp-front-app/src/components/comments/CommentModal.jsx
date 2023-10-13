@@ -6,6 +6,7 @@ import Feed from "../feeds/Feed"; // Feed 컴포넌트 불러오기
 import axiosService from "../../helpers/axios";
 import { getUser } from "../../hooks/user.actions";
 import { Context } from "../Layout";
+import "../default.css";
 
 function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
   const user = getUser();

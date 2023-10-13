@@ -1,0 +1,20 @@
+/*디폴트 값 css*/
+
+.content-backgroud {
+    background-color: #202020 ; /* 화면배경이 아닌 콘텐츠들의 배경 */
+  }
+
+.custom-card{
+    background-color: #202020 ;
+    color: white;
+}
+.custom-modal {
+    background-color: #202020 ;
+    color: white;
+}
+
+
+.button{
+    background-color: #202020 ;
+}
+
