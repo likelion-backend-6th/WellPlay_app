@@ -161,7 +161,9 @@ function Feed(props) {
                         )}
                     </Card.Title>
                     <Card.Text>
-                        {feed.content}
+                        <div>
+                            {feed.content}
+                        </div>
                         {feed.image_url && (
                             <Image
                             src={feed.image_url}
@@ -202,19 +204,25 @@ function Feed(props) {
                         </p>
                     </div>
                     {!isSingleFeed && (
-                        <div className="d-flex flex-row">
-                            <Link to={`/feed/${feed.id}/comments/`}>
-                                <CommentOutlined
-                                    style={{
-                                        width: "24px",
-                                        height: "24px",
-                                        padding: "2px",
-                                        fontSize: "20px",
-                                        color: "#C4C4C4",
-                                    }}
-                                    onClick={() => setShowCommentModal(true)}
-                                />
-                            </Link>
+						<div className="d-flex flex-row">
+						<CommentOutlined
+							style={{
+							width: "24px",
+							height: "24px",
+							padding: "2px",
+							fontSize: "20px",
+							color: "#C4C4C4",
+							cursor: !user ? "not-allowed" : "pointer",
+							}}
+							onClick={() => {
+								if (!user) {
+									window.location.reload();
+									alert("로그인이 필요합니다");
+								  } else {
+									setShowCommentModal(true);
+								  }
+							}}
+						/>
                             <p className="ms-1 mb-0">
                                 <small>{feed.comment} Comment</small>
                             </p>
