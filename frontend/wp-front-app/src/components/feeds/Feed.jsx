@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Card, DropdownButton, Image, Dropdown} from "react-bootstrap"
+import {Card, DropdownButton, Image, Dropdown, Button, Modal} from "react-bootstrap"
 import {format} from "timeago.js"
 import {CommentOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
@@ -13,6 +13,7 @@ function Feed(props) {
     const [profile, setProfile] = useState({});
     const userid = feed.user_id
     const [showMenu, setShowMenu] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     const fetchProfile = (userid) => {
         getUserProfile(userid)
@@ -40,12 +41,21 @@ function Feed(props) {
     };
 
     const handleDeleteClick = () => {
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
         axiosService
             .delete(`/feed/${feed.id}/`)
             .then(() => {
                 refresh()
             })
             .catch((err) => console.error(err))
+        setShowDeleteModal(false);
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
     };
 
     return (
@@ -70,14 +80,31 @@ function Feed(props) {
                             </div>
                         </div>
                         {user && user.user_id === feed.user_id && (
-                            <DropdownButton
-                                title="메뉴"
-                                id="menu-dropdown"
-                                show={showMenu}
-                                onClick={handleMenuClick}
-                            >
-                                <Dropdown.Item onClick={handleDeleteClick}>삭제</Dropdown.Item>
-                            </DropdownButton>
+                            <>
+                                <DropdownButton
+                                    title="메뉴"
+                                    id="menu-dropdown"
+                                    show={showMenu}
+                                    onClick={handleMenuClick}
+                                >
+                                    <Dropdown.Item onClick={handleDeleteClick}>삭제</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleDeleteClick}>수정</Dropdown.Item>
+                                </DropdownButton>
+                                <Modal show={showDeleteModal} onHide={cancelDelete}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>삭제 확인</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>'{feed.content}' 글을 삭제하시겠습니까?</Modal.Body>
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={cancelDelete}>
+                                            취소
+                                        </Button>
+                                        <Button variant="primary" onClick={confirmDelete}>
+                                            확인
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            </>
                         )}
                     </Card.Title>
                     <Card.Text>
