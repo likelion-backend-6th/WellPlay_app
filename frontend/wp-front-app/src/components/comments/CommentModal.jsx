@@ -25,9 +25,7 @@ function CommentModal({ feedId, show, handleClose, refreshComments }) {
   }, [feedId]);
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl">
-      <Modal.Header closeButton className="border-0">
-      </Modal.Header>
+    <Modal show={show} onHide={handleClose} size="xl" centered>
       <Modal.Body className="border-0" style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
         <Row>
           <Col sm={8}>
@@ -38,8 +36,6 @@ function CommentModal({ feedId, show, handleClose, refreshComments }) {
           </Col>
         </Row>
       </Modal.Body>
-      <Modal.Footer closeButton className="border-0">
-      </Modal.Footer>
     </Modal>
   );
 }
