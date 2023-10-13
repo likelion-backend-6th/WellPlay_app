@@ -72,7 +72,7 @@ function UserProfile(props) {
         const now = Date.now();
         setPreviousRequestTime(now);
         setIsLoading(true);
-    
+
         const newLolName = inputValue;
         const requestData = { summoner_name: newLolName };
         console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
@@ -100,7 +100,7 @@ function UserProfile(props) {
             .finally(() => {
                 setIsLoading(false);
             });
-    
+
         console.log("연동이 종료되었습니다.");
         setTimeout(() => {
             fetchProfile(profileId);
@@ -229,8 +229,7 @@ function UserProfile(props) {
                     <div className="border-bottom pb-3">
                         <h2 className="mb-3">{profile.nickname}</h2>
                         <p>
-                            <strong>@{user.user_id}</strong> <Button onClick={toggleFollow}
-                                                                     size="sm">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                            <strong>@{user.user_id}</strong>
                         </p>
                     </div>
                 </div>

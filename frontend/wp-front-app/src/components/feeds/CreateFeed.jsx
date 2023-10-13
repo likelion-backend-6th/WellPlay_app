@@ -4,7 +4,7 @@ import axiosService from "../../helpers/axios"
 import { getUser } from "../../hooks/user.actions"
 import { Context } from "../Layout"
 
-function CreateFeed() {
+function CreateFeed({refresh}) {
 	const [show, setShow] = useState(false)
 	const [validated, setValidated] = useState(false)
 	const [form, setForm] = useState({})
@@ -63,6 +63,7 @@ function CreateFeed() {
 					show: true,
 					title: "Post Success",
 				})
+				refresh();
 			})
 			.catch((error) => {
 				setToaster({

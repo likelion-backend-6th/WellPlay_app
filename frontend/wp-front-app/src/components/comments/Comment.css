@@ -1,0 +1,27 @@
+/* Comment.css */
+
+.comment {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .profile-image { 
+  }
+  
+  .comment-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .comment-username {
+  }
+  
+  .comment-text {
+    margin-top: 1px;
+  }
+
+  .comment-small-text {
+    font-size: 10px; 
+    font-weight: lighter; 
+  }

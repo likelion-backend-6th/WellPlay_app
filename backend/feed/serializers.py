@@ -57,6 +57,15 @@ class CommentSerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
+    user_id = serializers.SerializerMethodField()
+    profile_image = serializers.SerializerMethodField()
+
+    def get_user_id(self, obj) -> str:
+        return obj.owner.user_id if obj.owner else ""
+
+    def get_profile_image(self, obj) -> str:
+        return obj.owner.profile.image_url if obj.owner else ""
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

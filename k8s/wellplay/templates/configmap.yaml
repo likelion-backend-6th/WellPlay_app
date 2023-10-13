@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "wellplay.fullname" . }}
-data:
-  DB_HOST: {{ .Release.Name }}-db-nodeport
-  DJANGO_SETTINGS_MODULE: {{ .Values.configMap.django.DJANGO_SETTINGS_MODULE }}

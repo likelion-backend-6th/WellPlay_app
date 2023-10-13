@@ -1,5 +1,11 @@
 from django.contrib import admin
-from feed.models import Feed, Like
+from feed.models import Feed, Like, Comment
+
+
+class CommentInline(admin.StackedInline):
+    model = Comment
+    can_delete = False
+    verbose_name_plural = "Comment"
 
 
 @admin.register(Feed)
@@ -11,6 +17,7 @@ class FeedAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+    inlines = (CommentInline,)
 
 
 @admin.register(Like)
