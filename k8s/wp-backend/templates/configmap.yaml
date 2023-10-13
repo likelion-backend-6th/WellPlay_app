@@ -4,4 +4,6 @@ metadata:
   name: {{ include "wellplay.fullname" . }}
 data:
   DB_HOST: {{ .Release.Name }}-db-nodeport
+  REDIS_HOST: {{ .Release.Name }}-redis-nodeport
   DJANGO_SETTINGS_MODULE: {{ .Values.configMap.django.DJANGO_SETTINGS_MODULE }}
+  FRONTEND_URL: {{ .Values.configMap.django.FRONTEND_URL }}
