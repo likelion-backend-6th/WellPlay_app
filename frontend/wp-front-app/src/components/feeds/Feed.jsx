@@ -235,6 +235,7 @@ function Feed(props) {
 					show={showCommentModal}
 					size="lg" //크게만들고싶은데
 					handleClose={() => setShowCommentModal(false)}
+                    props={props}
 					//refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
 			/>
         </>
