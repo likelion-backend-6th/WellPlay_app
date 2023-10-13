@@ -29,8 +29,15 @@ app.kubernetes.io/managed-by: helm
 {{- define "wellplay.selectorLabels" -}}
 app.kubernetes.io/name: {{ .Chart.Name }}
 release: {{ .Release.Name }}
+tier: backend
 {{- end -}}
 
 {{- define "db.selectorLabels" -}}
 app: db
+component: postgresql
+{{- end -}}
+
+{{- define "redis.selectorLabels" -}}
+app: db
+component: redis
 {{- end -}}

@@ -1,11 +1,14 @@
 image:
   name: wp-registry.kr.ncr.ntruss.com/wp-backend
-  tag: "latest"
+  tag: ""
   pullPolicy: Always
   imagePullSecrets: regcred
   db:
     name: postgres
     tag: 13
+  redis:
+    name: redis
+    tag: 7
 
 nameOverride: ""
 fullnameOverride: ""
@@ -19,11 +22,15 @@ service:
   db:
     type: NodePort
     port: 5432
+  redis:
+    type: NodePort
+    port: 6379
 
 containerPort:
   django: 8000
   db: 5432
   react: 3000
+  redis: 6379
 
 secret:
   type: Opaque
@@ -38,3 +45,4 @@ secret:
 configMap:
   django:
     DJANGO_SETTINGS_MODULE: config.settings.staging
+    FRONTEND_URL: http://default-wellplay-fronten-f71e4-19988775-9cfa9a90a245.kr.lb.naverncp.com
