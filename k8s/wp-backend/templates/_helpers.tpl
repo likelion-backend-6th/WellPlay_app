@@ -20,6 +20,15 @@
 {{- end }}
 {{- end }}
 
+{{- define "wellplay.redis.fullname" -}}
+{{- $name := .Chart.Name }}
+{{- if contains $name .Release.Name }}
+{{- printf "%s-%s" "redis" .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s-%s" "redis" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+
 {{- define "wellplay.labels" -}}
 {{ include "wellplay.selectorLabels" .}}
 app.kubernetes.io/version: "{{ .Values.image.tag | default .Chart.AppVersion }}"

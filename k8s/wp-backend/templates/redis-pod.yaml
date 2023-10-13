@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ include "wellplay.db.fullname" . }}
+  name: {{ include "wellplay.redis.fullname" . }}
   labels:
     {{- include "redis.selectorLabels" . | nindent 4 }}
 spec:
   containers:
-    - name: {{ include "wellplay.db.fullname" . }}
+    - name: {{ include "wellplay.redis.fullname" . }}
       image: {{ .Values.image.redis.name }}:{{ .Values.image.redis.tag }}
       ports:
         - containerPort: {{ .Values.containerPort.redis }}
