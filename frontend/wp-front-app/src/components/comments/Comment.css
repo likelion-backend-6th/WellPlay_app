@@ -25,3 +25,9 @@
     font-size: 10px; 
     font-weight: lighter; 
   }
+
+  .dropdown {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+}

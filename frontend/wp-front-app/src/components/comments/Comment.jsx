@@ -4,9 +4,10 @@ import { format } from "timeago.js"
 import "./Comment.css"
 import {getUser, useUserActions} from "../../hooks/user.actions"
 import axiosService from "../../helpers/axios"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
-function Comment({feedId,comment,props }) {
-  const {refresh} = props
+function Comment({feedId,comment,refresh }) {
   const user = getUser();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -28,15 +29,15 @@ function Comment({feedId,comment,props }) {
   };
 
   const confirmUpdateComment = () => {
-    data.append('content', form.body); // 입력한 내용을 FormData에 추가
+    data.append('content', form.body);
     axiosService
-        .put(`/feed/${feedId}/comments/${comment.id}`, data, {
+        .put(`/feed/${feedId}/comments/${comment.id}/`, data, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         })
         .then(() => {
-          refresh();
+            refresh();
         })
         .catch((error) => console.error(error));
 
@@ -82,10 +83,11 @@ function Comment({feedId,comment,props }) {
             {user && user.user_id === comment.user_id && (
                             <>
                                 <DropdownButton
-                                    title="메뉴"
+                                    title={<FontAwesomeIcon icon={faEllipsisV} />} // 필요한 아이콘으로 변경
                                     id="menu-dropdown"
                                     show={showMenu}
                                     onClick={handleMenuClick}
+                                    className="p-1"
                                 >
                                     <Dropdown.Item onClick={handleDeleteClick}>삭제</Dropdown.Item>
                                     <Dropdown.Item onClick={handleEditClick}>수정</Dropdown.Item>

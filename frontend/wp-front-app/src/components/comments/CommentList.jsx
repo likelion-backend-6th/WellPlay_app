@@ -22,11 +22,11 @@ function CommentList({ feedId, onCommentPosted, props, }) {
       });
   }, [feedId]);
 
-  const handleCommentPosted = () => {
+  const fetchComments = () => {
     axiosService
       .get(`/feed/${feedId}/comments/`)
       .then((response) => {
-        const sortedComments = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // 최신 댓글 순으로 정렬
+        const sortedComments = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setComments(sortedComments);
       })
       .catch((error) => {
@@ -34,12 +34,25 @@ function CommentList({ feedId, onCommentPosted, props, }) {
       });
   };
 
+  useEffect(() => {
+    fetchComments();
+  }, [feedId]);
+
+  const handleCommentPosted = () => {
+    fetchComments();
+  };
+
   return (
     <Card className="rounded-3 my-4" style={{ maxHeight: "63vh", overflowY: "auto" }}>
       <Card.Body>
         <CommentForm feedId={feedId} onCommentPosted={handleCommentPosted} />
         {comments.map((comment) => (
-          <Comment key={comment.id} feedId={feedId} comment={comment} props={props} />
+          <Comment
+            key={comment.id}
+            feedId={feedId}
+            comment={comment}
+            refresh={fetchComments} // fetchComments를 refresh 함수로 전달
+          />
         ))}
       </Card.Body>
     </Card>
