@@ -35,7 +35,9 @@ class InfoLolSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ("id", "nickname", "image_url")
+        fields = ("id", "nickname", "image_url", "follow")
+
+    follow = serializers.SerializerMethodField()
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():
@@ -46,6 +48,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    to_user = serializers.CharField()
+
     class Meta:
         model = Follow
         fields = "__all__"

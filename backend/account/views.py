@@ -163,11 +163,14 @@ class FollowAPIView(generics.CreateAPIView):
     queryset = Follow.objects.all()
 
     @extend_schema(request=FollowSerializer, responses=FollowSerializer)
-    def post(self, request):
+    def post(self, request, user_id):
+        user = User.objects.get(user_id=user_id)
         serializer = FollowSerializer(data=request.data)
+        print(request.user, user)
         if serializer.is_valid():
-            to_user = serializer.validated_data["to_user"]
-            qs = Follow.objects.filter(from_user=request.user, to_user=to_user)
+            to_user_username = serializer.validated_data["to_user"]
+            to_user = User.objects.get(user_id=to_user_username)
+            qs = Follow.objects.filter(from_user=request.user, to_user=user)
             if qs.exists():
                 qs.delete()
                 return Response(
