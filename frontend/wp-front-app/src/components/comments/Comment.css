@@ -1,0 +1,29 @@
+/* Comment.css */
+
+.comment {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .profile-image {
+    max-width: 48px;
+    max-height: 48px;
+    width: auto;
+    height: auto;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .comment-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .comment-username {
+    font-weight: bold;
+  }
+  
+  .comment-text {
+    margin-top: 4px;
+  }

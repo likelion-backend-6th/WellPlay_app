@@ -1,4 +1,4 @@
-// CommentForm.jsx
+// 덧글 작성하는 컴포넌트
 import React, { useState } from "react";
 import axiosService from "../../helpers/axios";
 

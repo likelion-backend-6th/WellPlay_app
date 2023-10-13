@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosService from "../../helpers/axios";
-import CommentForm from "./CommentForm";   
+import CommentForm from "./CommentForm";
+import Comment from "./Comment"; // 새로 추가한 부분
 
 function CommentList({ feedId, onCommentPosted }) {
   const [comments, setComments] = useState([]);
@@ -31,14 +32,9 @@ function CommentList({ feedId, onCommentPosted }) {
 
   return (
     <div>
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            {comment.content} - {comment.author}
-          </li>
-        ))}
-      </ul>
-      {/* CommentForm에서 날아온 콜백함수를 보고 handleCommentPosted 실행  */}
+      {comments.map((comment) => (
+        <Comment key={comment.id} comment={comment} /> // Comment 컴포넌트로 변경
+      ))}
       <CommentForm feedId={feedId} onCommentPosted={handleCommentPosted} /> 
     </div>
   );
