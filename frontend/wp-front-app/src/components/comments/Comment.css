@@ -6,13 +6,7 @@
     margin: 10px 0;
   }
   
-  .profile-image {
-    max-width: 48px;
-    max-height: 48px;
-    width: auto;
-    height: auto;
-    border-radius: 50%;
-    margin-right: 10px;
+  .profile-image { 
   }
   
   .comment-content {
@@ -21,9 +15,13 @@
   }
   
   .comment-username {
-    font-weight: bold;
   }
   
   .comment-text {
-    margin-top: 4px;
+    margin-top: 1px;
+  }
+
+  .comment-small-text {
+    font-size: 10px; 
+    font-weight: lighter; 
   }

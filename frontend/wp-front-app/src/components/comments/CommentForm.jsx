@@ -21,14 +21,15 @@ function CommentForm({ feedId, onCommentPosted }) { // 여기에도 콜백 함�
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ display: "flex" }}>
       <input
         type="text"
         placeholder="WOW Well Play!"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        style={{ marginRight: "10px" }}
       />
-      <button type="submit">댓글 작성</button>
+      <button type="submit">작성</button>
     </form>
   );
 }
