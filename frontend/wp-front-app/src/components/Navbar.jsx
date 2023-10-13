@@ -3,6 +3,7 @@ import { Container, Image, Nav, Navbar, NavDropdown, Button } from 'react-bootst
 import { getUser, useUserActions } from '../hooks/user.actions';
 import { Link } from 'react-router-dom';
 import LoginFormModal from './authentication/LoginFormModal'; // LoginFormModal을 import
+import "./default.css"
 
 function Navigationbar() {
   const userActions = useUserActions();
@@ -35,7 +36,7 @@ function Navigationbar() {
   }, []);
 
   return (
-    <Navbar bg="primary" variant="dark">
+    <Navbar className="content-backgroud" variant="dark">
       <Container>
         <Navbar.Brand className="fw-bold" href="/">
           Well Play

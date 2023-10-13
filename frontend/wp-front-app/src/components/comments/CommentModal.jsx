@@ -6,8 +6,9 @@ import Feed from "../feeds/Feed"; // Feed 컴포넌트 불러오기
 import axiosService from "../../helpers/axios";
 import { getUser } from "../../hooks/user.actions";
 import { Context } from "../Layout";
+import "../default.css";
 
-function CommentModal({ feedId, show, handleClose, refreshComments }) {
+function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
   const user = getUser();
   const { setToaster } = useContext(Context);
   const [feedData, setFeedData] = useState(null); // Feed 데이터를 저장하는 상태
@@ -18,6 +19,7 @@ function CommentModal({ feedId, show, handleClose, refreshComments }) {
       .get(`/feed/${feedId}/`) // 예시 API 엔드포인트
       .then((response) => {
         setFeedData(response.data);
+        console.log("CommentModal에서",feedId)
       })
       .catch((error) => {
         console.error(error);
@@ -32,7 +34,7 @@ function CommentModal({ feedId, show, handleClose, refreshComments }) {
             <Feed feed={feedData} isSingleFeed={true} />
           </Col>
           <Col sm={4} style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
-            <CommentList feedId={feedId} onCommentPosted={refreshComments} />
+            <CommentList feedId={feedId} onCommentPosted={refreshComments} props={props} />
           </Col>
         </Row>
       </Modal.Body>
