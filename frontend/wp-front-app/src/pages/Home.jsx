@@ -55,7 +55,7 @@ function Home() {
                             </Col>
                         )}
                         <Col sm={10} className="flex-grow-1">
-                            <CreateFeed/>
+                            <CreateFeed refresh={fetchFeeds}/>
                         </Col>
                     </Row>
                     <Row className="my-4">
