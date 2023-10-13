@@ -45,6 +45,7 @@ function LoginFormModal() {
           title: "환영합니다!",
 			  })
         setShowModal(false); // 로그인 성공 시 모달을 닫습니다.
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err.response.data.message)

@@ -37,6 +37,7 @@ function RegisterFormModal(props) {
 				title: "환영합니다!",
 			})
             onHide(); // 회원가입 성공 시 모달을 닫습니다.
+            window.location.reload();
       })
       .catch((err) => {
         if (err.message) {
