@@ -188,19 +188,18 @@ SIMPLE_JWT = {
 }
 
 # Celery 설정
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = os.getenv("REDIS_HOST", "redis://localhost:6379/0")
 CELERY_TIMEZONE = "Asia/Seoul"
 CELERY_ENABLE_UTC = False
 
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = os.getenv("REDIS_HOST", "redis://localhost:6379/0")
 
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # 리액트 주소 열어주기
-    # 다른 허용할 주소들 추가
+    os.getenv("FRONTEND_URL", "http://localhost:3000"),
 ]
 
 CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
