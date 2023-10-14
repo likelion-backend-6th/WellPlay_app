@@ -256,8 +256,18 @@ function UserProfile(props) {
                         </div>
                         <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
                     </div>
-                    <div className="border-bottom pb-3"></div>
                 </div>
+            </div>
+            <div>
+            {userInfo && userInfo.winrate !== 0 && (
+                <Card style={{ width: '40rem' }}>
+                    <Card.Body>
+                        {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
+                    <Card.Title></Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank}  / 승률: {userInfo.winrate}%</Card.Subtitle>
+                    </Card.Body>
+                </Card>
+            )}
             </div>
 
             <div className="button-container">
@@ -287,8 +297,6 @@ function UserProfile(props) {
                 </div>
                 {showFollowerList && <FollowerList/>}
                 {showFollowingList && <FollowingList/>}
-            </div>
-            <div className="button-container">
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
                     onClick={() => {
                         if (showUserStoryList) {
@@ -299,7 +307,7 @@ function UserProfile(props) {
                     }}
                     style={{cursor: 'pointer'}}
                 >
-                    유저의 이야기
+                    이야기 {}
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
                     onClick={() => {
@@ -311,7 +319,7 @@ function UserProfile(props) {
                     }}
                     style={{cursor: 'pointer'}}
                 >
-                    연동된 프로필
+                    연동하기
                 </div>
             </div>
 
@@ -320,16 +328,6 @@ function UserProfile(props) {
 
             {showGameinfoList && (
             <div>
-                <Card style={{ width: '18rem' }}>
-                    {userInfo && (
-                        <Card.Body>
-                            {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                        <Card.Title>{userInfo.summonerName}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{userInfo.tier} {userInfo.rank}</Card.Subtitle>
-                        <Card.Text>승률: {userInfo.winrate}%</Card.Text>
-                        </Card.Body>
-                    )}
-                </Card>
                 <div>
                     <Form.Group>
                         <Form.Control
