@@ -29,6 +29,13 @@ def summoner_v4(user_infolol_id, summoner_name):
             return True
         else:
             logging.info(f"summoner_v4 요청 실패.{response.status_code}")
+            user_infolol.summoner_name = None
+            user_infolol.summoner_tier = None  # 혹시 이밑으로 문제 생기면 39번까지 삭제
+            user_infolol.summoner_rank = None
+            user_infolol.summoner_lp = None
+            user_infolol.summoner_win = None
+            user_infolol.summoner_loss = None
+            user_infolol.save()
             return False
 
     except Infolol.DoesNotExist:
@@ -54,14 +61,24 @@ def summoner_league(user_infolol_id):
             logging.info(f"summoner_league 요청 성공.{response.status_code}")
             league_data = response.json()
             logging.info(f"리그데이터.{league_data}")
-            if league_data:
+            if league_data == []:
+                logging.info("소환사가 없거나, 랭크게임을 하지않았습니다. 초기화합니다")
+                user_infolol.summoner_name = None
+                user_infolol.summoner_tier = None
+                user_infolol.summoner_rank = None
+                user_infolol.summoner_lp = None
+                user_infolol.summoner_win = None
+                user_infolol.summoner_loss = None
+                user_infolol.save()
+                return False
+            else:
                 user_infolol.summoner_tier = league_data[0]["tier"]
                 user_infolol.summoner_rank = league_data[0]["rank"]
                 user_infolol.summoner_lp = league_data[0]["leaguePoints"]
                 user_infolol.summoner_win = league_data[0]["wins"]
                 user_infolol.summoner_loss = league_data[0]["losses"]
                 user_infolol.save()
-            return True
+                return True
         else:
             logging.info(f"summoner_league 요청 실패.{response.status_code}")
             return False
