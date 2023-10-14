@@ -23,7 +23,12 @@ def summoner_v4(user_infolol_id, summoner_name):
             data = response.json()
             user_infolol.summoner_id = data["id"]
             user_infolol.summoner_puuid = data["puuid"]
-            user_infolol.save()
+
+            if user_infolol.summoner_name == data["name"]:
+                user_infolol.save()
+            else:
+                logging.info("사용자의 아이디와 요청한 이름이 다릅니다")
+                return False
 
             summoner_league.delay(user_infolol_id)
             return True
