@@ -40,6 +40,7 @@ function UserProfile(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [feeds, setFeeds] = useState([]);
 
     const user = getUser();
 
@@ -52,6 +53,23 @@ function UserProfile(props) {
                 console.error('프로필 정보를 가져오는 중 오류 발생:', error);
             });
     };
+
+    const fetchFeeds = () => {
+    try {
+        const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
+
+        axios.get(apiUrl)
+            .then((response) => {
+                const data = response.data;
+                setFeeds(data);
+            })
+            .catch((error) => {
+                console.error('피드를 가져오는 중 오류 발생:', error);
+            });
+    } catch (error) {
+        console.error('API 요청 오류:', error);
+    }
+};
 
     // 모달 열기 함수
     const openModal = () => {
@@ -134,6 +152,8 @@ function UserProfile(props) {
         // 프로필 정보를 가져오기
         fetchProfile();
 
+        fetchFeeds()
+
         getFollowing()
             .then((response) => {
                 setFollowing(response.data);
@@ -212,32 +232,6 @@ function UserProfile(props) {
         setShowUserStoryList(false);
     };
 
-    const toggleFollow = () => {
-        const toUserId = profile.user_id;
-
-        if (isFollowing) {
-            axios
-                .post(`/account/unfollow/`, {to_user: toUserId})
-                .then((response) => {
-                    setIsFollowing(false);
-                    console.log('unfollow')
-                })
-                .catch((error) => {
-                    console.error('언팔로우 요청 중 오류 발생:', error);
-                });
-        } else {
-            axios
-                .post(`/account/follow/`, {to_user: toUserId})
-                .then((response) => {
-                    setIsFollowing(true);
-                    console.log('follow')
-                })
-                .catch((error) => {
-                    console.error('팔로우 요청 중 오류 발생:', error);
-                });
-        }
-    };
-
     return (
         <div className="container mt-5" style={{ color: "white" }}>
             <div className="row">
@@ -310,7 +304,7 @@ function UserProfile(props) {
                     }}
                     style={{cursor: 'pointer'}}
                 >
-                    이야기 {}
+                    이야기 {feeds.feed_count}
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
                     onClick={() => {
