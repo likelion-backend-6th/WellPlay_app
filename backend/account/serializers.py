@@ -33,11 +33,10 @@ class InfoLolSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Profile
-        fields = ("id", "nickname", "image_url", "follow")
-
-    follow = serializers.SerializerMethodField()
+        fields = ("id", "nickname", "image_url")
 
     def update(self, instance, validated_data):
         for key, value in validated_data.items():
