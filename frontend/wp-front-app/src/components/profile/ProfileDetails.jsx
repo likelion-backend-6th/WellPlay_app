@@ -76,11 +76,6 @@ function UserProfile(props) {
         fetchProfile();
     }
 
-    const handleInputChange = (e) => {
-        setModalInputValue(e.target.value);
-        setError(null);
-    };
-
     const handleConnectClick = () => {
         if (remainingTime > 0) {
             return;
@@ -93,16 +88,28 @@ function UserProfile(props) {
         const requestData = { summoner_name: newLolName };
         console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
 
-        // 백그라운드 작업 시작을 서버에 요청
+        // 롤 api연동 백그라운드 작업
         apiPostLol(requestData)
-            .then((response) => {
-            setSuccessMessage(response.data.message);
-            })
-            .catch((error) => {
-            setError(error.response ? error.response.data.message : '서버 오류');
-            })
-            .finally(() => {
-            });
+        .then((response) => {
+            if (response.data) {
+                setSuccessMessage(response.data.message);
+                alert('연동이 성공적으로 완료되었습니다.');
+                window.location.reload();
+            } else {
+                if (response.data.message) {
+                    setError(response.data.message);
+                    alert('연동이 실패하였습니다: ' + response.data.message);
+                } else {
+                    alert('연동이 실패하였습니다.');
+                }
+                window.location.reload(); 
+            }
+        })
+        .catch((error) => {
+            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+            alert('서버 요청에 실패했습니다.');
+            window.location.reload(); 
+        });
 
 
         // DB에 게임 닉네임 보내기
@@ -158,12 +165,6 @@ function UserProfile(props) {
     const handleModalInputChange = (e) => {
         setModalInputValue(e.target.value);
         setError(null);
-    };
-
-    const handleModalConnectClick = () => {
-        if (modalRemainingTime > 0) {
-          return;
-        }
     };
 
     const handleShowFollowerList = () => {
@@ -330,6 +331,7 @@ function UserProfile(props) {
                     <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    현재시즌 랭크게임을 진행한 유저님 반갑습니다
                     <Form.Group>
                     <Form.Control
                         type="text"
