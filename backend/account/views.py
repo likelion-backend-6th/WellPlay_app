@@ -11,6 +11,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import views
+from celery.result import AsyncResult
 
 from .serializers import *
 from account.tasks import *  # Celery 작업 import
@@ -189,7 +190,11 @@ class FollowAPIView(generics.CreateAPIView):
 class FollowerList(generics.ListAPIView):
     serializer_class = FollowerListSerializer
 
-    @extend_schema(request=FollowerListSerializer, responses=FollowerListSerializer, summary="로그인한 유저 팔로워 목록")
+    @extend_schema(
+        request=FollowerListSerializer,
+        responses=FollowerListSerializer,
+        summary="로그인한 유저 팔로워 목록",
+    )
     def get(self, request):
         queryset = Follow.objects.filter(to_user=self.request.user)
         serializer = FollowerListSerializer(queryset, many=True)
@@ -205,7 +210,9 @@ class FollowerList(generics.ListAPIView):
 class UserFollowerList(generics.ListAPIView):
     serializer_class = FollowerListSerializer
 
-    @extend_schema(request=None, responses=FollowerListSerializer, summary="특정 유저 팔로워 목록")
+    @extend_schema(
+        request=None, responses=FollowerListSerializer, summary="특정 유저 팔로워 목록"
+    )
     def get(self, request, user_id):
         user = User.objects.get(user_id=user_id)
         queryset = Follow.objects.filter(to_user=user)
@@ -222,7 +229,11 @@ class UserFollowerList(generics.ListAPIView):
 class FollowingList(generics.ListAPIView):
     serializer_class = FollowingListSerializer
 
-    @extend_schema(request=FollowingListSerializer, responses=FollowingListSerializer, summary="로그인한 유저 팔로잉 목록")
+    @extend_schema(
+        request=FollowingListSerializer,
+        responses=FollowingListSerializer,
+        summary="로그인한 유저 팔로잉 목록",
+    )
     def get(self, request):
         queryset = Follow.objects.filter(from_user=self.request.user)
         serializer = FollowerListSerializer(queryset, many=True)
@@ -238,7 +249,9 @@ class FollowingList(generics.ListAPIView):
 class UserFollowingList(generics.ListAPIView):
     serializer_class = FollowingListSerializer
 
-    @extend_schema(request=None, responses=FollowingListSerializer, summary="특정 유저 팔로잉 목록")
+    @extend_schema(
+        request=None, responses=FollowingListSerializer, summary="특정 유저 팔로잉 목록"
+    )
     def get(self, request, user_id):
         user = User.objects.get(user_id=user_id)
         queryset = Follow.objects.filter(from_user=user)
@@ -282,9 +295,15 @@ def riot_summoner_info(request):
     try:
         user_infolol = request.user.infolol  # 현재 로그인한 사용자의 Infolol
         print(user_infolol.id, "Celery tasks async start")  # 정수형 (장고유저ID)
-        summoner_v4.delay(user_infolol.id, summoner_name)
-
-        return Response({"message": "백그라운드 작업이 시작되었습니다."}, status=status.HTTP_200_OK)
+        result = summoner_v4.delay(user_infolol.id, summoner_name)
+        try:
+            task_result = result.get(timeout=10)  # 10초 동안 대기
+            if task_result:  # 작업이 성공한 경우
+                return Response(True, status=status.HTTP_200_OK)
+            else:  # 작업이 실패한 경우
+                return Response(False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except TimeoutError:
+            return Response(False, status=status.HTTP_408_REQUEST_TIMEOUT)
     except Infolol.DoesNotExist:
         # Infolol 모델이 존재하지 않는 경우
         return Response(

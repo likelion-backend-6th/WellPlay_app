@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card} from 'react-bootstrap';
+import {Button, Image, Form, Spinner, Card, Modal} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -19,6 +19,7 @@ function UserProfile(props) {
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showLOLModal, setShowLOLModal] = useState(false);
     
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
@@ -32,7 +33,10 @@ function UserProfile(props) {
     const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
     const [userInfo, setUserInfo] = useState(null);
 
-    const [inputValue, setInputValue] = useState("");
+    const [modalInputValue, setModalInputValue] = useState("");
+    const [modalIsLoading, setModalIsLoading] = useState(false);
+    const [modalRemainingTime, setModalRemainingTime] = useState(0);
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
@@ -59,15 +63,18 @@ function UserProfile(props) {
         setShowModal(false);
     };
 
+    const openLOLModal = () => {
+        setShowLOLModal(true);
+    };
+    
+    const closeLOLModal = () => {
+        setShowLOLModal(false);
+    };
+
     const handleSaveModal = () => {
         closeModal();
         fetchProfile();
     }
-
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-        setError(null);
-    };
 
     const handleConnectClick = () => {
         if (remainingTime > 0) {
@@ -77,20 +84,32 @@ function UserProfile(props) {
         setPreviousRequestTime(now);
         setIsLoading(true);
 
-        const newLolName = inputValue;
+        const newLolName = modalInputValue;
         const requestData = { summoner_name: newLolName };
         console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
 
-        // 백그라운드 작업 시작을 서버에 요청
+        // 롤 api연동 백그라운드 작업
         apiPostLol(requestData)
-            .then((response) => {
-            setSuccessMessage(response.data.message);
-            })
-            .catch((error) => {
-            setError(error.response ? error.response.data.message : '서버 오류');
-            })
-            .finally(() => {
-            });
+        .then((response) => {
+            if (response.data) {
+                setSuccessMessage(response.data.message);
+                alert('연동이 성공적으로 완료되었습니다.');
+                window.location.reload();
+            } else {
+                if (response.data.message) {
+                    setError(response.data.message);
+                    alert('연동이 실패하였습니다: ' + response.data.message);
+                } else {
+                    alert('연동이 실패하였습니다.');
+                }
+                window.location.reload(); 
+            }
+        })
+        .catch((error) => {
+            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+            alert('서버 요청에 실패했습니다.');
+            window.location.reload(); 
+        });
 
 
         // DB에 게임 닉네임 보내기
@@ -110,33 +129,6 @@ function UserProfile(props) {
             fetchProfile(profileId);
         }, 2000);
     };
-
-
-
-    // 클릭 시간을 확인하여 중복 클릭 방지
-    useEffect(() => {
-        const now = Date.now();
-        if (previousRequestTime !== null && now - previousRequestTime < 60000) {
-            const timeDiff = 120000 - (now - previousRequestTime);
-            setRemainingTime(timeDiff);
-
-            // 1초마다 남은 시간 갱신
-            const id = setInterval(() => {
-                setRemainingTime((prevTime) => prevTime - 1000);
-            }, 1000);
-
-            setTimerId(id);
-        } else {
-            setRemainingTime(0);
-        }
-
-        // return () => {
-        //     // 컴포넌트가 언마운트되면 타이머 해제
-        //     if (timerId) {
-        //         clearInterval(timerId);
-        //     }
-        // }
-    }, [previousRequestTime]);
 
     useEffect(() => {
         // 프로필 정보를 가져오기
@@ -170,14 +162,23 @@ function UserProfile(props) {
             });
     }, [profileId]);
 
+    const handleModalInputChange = (e) => {
+        setModalInputValue(e.target.value);
+        setError(null);
+    };
+
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
         setShowFollowingList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
     };
     
     const handleShowFollowingList = () => {
         setShowFollowingList(true);
         setShowFollowerList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
     };
     
     const handleHideFollowerList = () => {
@@ -192,6 +193,8 @@ function UserProfile(props) {
     const handleShowGameinfoList = () => {
         setShowGameinfoList(true);
         setShowUserStoryList(false);
+        setShowFollowerList(false);
+        setShowFollowingList(false);
     };
     
     const handleHideGameinfoList = () => {
@@ -201,6 +204,8 @@ function UserProfile(props) {
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
         setShowGameinfoList(false);
+        setShowFollowerList(false);
+        setShowFollowingList(false);
     };
     
     const handleHideUserStoryList = () => {
@@ -260,7 +265,7 @@ function UserProfile(props) {
             </div>
             <div>
             {userInfo && userInfo.winrate !== 0 && (
-                <Card style={{ width: '40rem' }}>
+                <Card style={{ width: '35rem' }}>
                     <Card.Body>
                         {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
                     <Card.Title></Card.Title>
@@ -295,8 +300,6 @@ function UserProfile(props) {
                 >
                     팔로잉 {following.following_count}
                 </div>
-                {showFollowerList && <FollowerList/>}
-                {showFollowingList && <FollowingList/>}
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
                     onClick={() => {
                         if (showUserStoryList) {
@@ -322,33 +325,37 @@ function UserProfile(props) {
                     연동하기
                 </div>
             </div>
+            {showFollowerList && <FollowerList/>}
+            {showFollowingList && <FollowingList/>}
 
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
 
             {showGameinfoList && (
             <div>
-                <div>
+                <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
+                <Modal show={showLOLModal} onHide={closeLOLModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    현재시즌 랭크게임을 진행한 유저님 반갑습니다
                     <Form.Group>
-                        <Form.Control
-                            type="text"
-                            placeholder="닉네임"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                        />
+                    <Form.Control
+                        type="text"
+                        placeholder="닉네임"
+                        value={modalInputValue}
+                        onChange={handleModalInputChange}
+                    />
                     </Form.Group>
                     <Button
-                        variant="primary"
-                        onClick={handleConnectClick}
-                        disabled={remainingTime > 0 || isLoading}
+                    variant="primary"
+                    onClick={handleConnectClick}
                     >
-                        {remainingTime > 0
-                            ? `남은 시간: ${Math.ceil(remainingTime / 1000)}초`
-                            : isLoading
-                            ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                            : '연동하기'}
+                        연동하기
                     </Button>
-                </div>
+                </Modal.Body>
+                </Modal>
             </div>
             )}
         </div>
