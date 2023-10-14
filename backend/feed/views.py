@@ -64,7 +64,15 @@ class FeedViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(User, user_id=user_id)
         feeds = Feed.objects.filter(owner=user).order_by("-created_at")
         serializer = FeedSerializer(feeds, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        feed_count = feeds.count()
+
+        response_data = {
+            "feed_count": feed_count,
+            "feeds": serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
 
     @extend_schema(summary="피드 글 생성")
     def create(self, request: Request, *args, **kwargs):
