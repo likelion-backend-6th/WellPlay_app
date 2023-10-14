@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card} from 'react-bootstrap';
+import {Button, Image, Form, Spinner, Card, Modal} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -19,6 +19,7 @@ function UserProfile(props) {
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showLOLModal, setShowLOLModal] = useState(false);
     
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
@@ -32,7 +33,10 @@ function UserProfile(props) {
     const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
     const [userInfo, setUserInfo] = useState(null);
 
-    const [inputValue, setInputValue] = useState("");
+    const [modalInputValue, setModalInputValue] = useState("");
+    const [modalIsLoading, setModalIsLoading] = useState(false);
+    const [modalRemainingTime, setModalRemainingTime] = useState(0);
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
@@ -59,13 +63,21 @@ function UserProfile(props) {
         setShowModal(false);
     };
 
+    const openLOLModal = () => {
+        setShowLOLModal(true);
+    };
+    
+    const closeLOLModal = () => {
+        setShowLOLModal(false);
+    };
+
     const handleSaveModal = () => {
         closeModal();
         fetchProfile();
     }
 
     const handleInputChange = (e) => {
-        setInputValue(e.target.value);
+        setModalInputValue(e.target.value);
         setError(null);
     };
 
@@ -77,7 +89,7 @@ function UserProfile(props) {
         setPreviousRequestTime(now);
         setIsLoading(true);
 
-        const newLolName = inputValue;
+        const newLolName = modalInputValue;
         const requestData = { summoner_name: newLolName };
         console.log("연동하기 버튼을 클릭하였습니다. 닉네임: ", newLolName);
 
@@ -111,33 +123,6 @@ function UserProfile(props) {
         }, 2000);
     };
 
-
-
-    // 클릭 시간을 확인하여 중복 클릭 방지
-    useEffect(() => {
-        const now = Date.now();
-        if (previousRequestTime !== null && now - previousRequestTime < 60000) {
-            const timeDiff = 120000 - (now - previousRequestTime);
-            setRemainingTime(timeDiff);
-
-            // 1초마다 남은 시간 갱신
-            const id = setInterval(() => {
-                setRemainingTime((prevTime) => prevTime - 1000);
-            }, 1000);
-
-            setTimerId(id);
-        } else {
-            setRemainingTime(0);
-        }
-
-        // return () => {
-        //     // 컴포넌트가 언마운트되면 타이머 해제
-        //     if (timerId) {
-        //         clearInterval(timerId);
-        //     }
-        // }
-    }, [previousRequestTime]);
-
     useEffect(() => {
         // 프로필 정보를 가져오기
         fetchProfile();
@@ -169,6 +154,17 @@ function UserProfile(props) {
             .finally(() => {
             });
     }, [profileId]);
+
+    const handleModalInputChange = (e) => {
+        setModalInputValue(e.target.value);
+        setError(null);
+    };
+
+    const handleModalConnectClick = () => {
+        if (modalRemainingTime > 0) {
+          return;
+        }
+    };
 
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
@@ -260,7 +256,7 @@ function UserProfile(props) {
             </div>
             <div>
             {userInfo && userInfo.winrate !== 0 && (
-                <Card style={{ width: '40rem' }}>
+                <Card style={{ width: '35rem' }}>
                     <Card.Body>
                         {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
                     <Card.Title></Card.Title>
@@ -328,27 +324,28 @@ function UserProfile(props) {
 
             {showGameinfoList && (
             <div>
-                <div>
+                <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
+                <Modal show={showLOLModal} onHide={closeLOLModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
                     <Form.Group>
-                        <Form.Control
-                            type="text"
-                            placeholder="닉네임"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                        />
+                    <Form.Control
+                        type="text"
+                        placeholder="닉네임"
+                        value={modalInputValue}
+                        onChange={handleModalInputChange}
+                    />
                     </Form.Group>
                     <Button
-                        variant="primary"
-                        onClick={handleConnectClick}
-                        disabled={remainingTime > 0 || isLoading}
+                    variant="primary"
+                    onClick={handleConnectClick}
                     >
-                        {remainingTime > 0
-                            ? `남은 시간: ${Math.ceil(remainingTime / 1000)}초`
-                            : isLoading
-                            ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                            : '연동하기'}
+                        연동하기
                     </Button>
-                </div>
+                </Modal.Body>
+                </Modal>
             </div>
             )}
         </div>
