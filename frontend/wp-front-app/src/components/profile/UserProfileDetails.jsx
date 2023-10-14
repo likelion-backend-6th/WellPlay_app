@@ -2,7 +2,7 @@ import {getUser, useUserActions} from "../../hooks/user.actions";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import {Button, Form, Image, Spinner} from "react-bootstrap";
+import {Button, Form, Image, Card} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
 import UserFollowerList from "../follow/UserFollower";
 import UserFollowingList from "../follow/UserFollowing";
@@ -136,6 +136,15 @@ function UserProfile() {
                         </p>
                     </div>
                 </div>
+                {userInfo && userInfo.winrate !== 0 && (
+                    <Card style={{ width: '35rem' }}>
+                        <Card.Body>
+                            {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
+                        <Card.Title></Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank}  / 승률: {userInfo.winrate}%</Card.Subtitle>
+                        </Card.Body>
+                    </Card>
+                )}
                 <div className="col-md-2">
                     <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
                 </div>
@@ -167,20 +176,6 @@ function UserProfile() {
                     {showFollowerList && <UserFollowerList/>}
                     {showFollowingList && <UserFollowingList/>}
                 </div>
-            </div>
-
-            {/* LOL API 불러오는 부분 */}
-            <div className="user-profile-info">
-                {userInfo && (
-                    <div className="user-info-box">
-                    {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                    <div>
-                        <p>{userInfo.summonerName}</p>
-                        <p>{userInfo.tier} {userInfo.rank}</p>
-                        <p>승률: {userInfo.winrate}%</p>
-                    </div>
-                    </div>
-                )}
             </div>
 
 

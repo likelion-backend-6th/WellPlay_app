@@ -170,11 +170,15 @@ function UserProfile(props) {
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
         setShowFollowingList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
     };
     
     const handleShowFollowingList = () => {
         setShowFollowingList(true);
         setShowFollowerList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
     };
     
     const handleHideFollowerList = () => {
@@ -189,6 +193,8 @@ function UserProfile(props) {
     const handleShowGameinfoList = () => {
         setShowGameinfoList(true);
         setShowUserStoryList(false);
+        setShowFollowerList(false);
+        setShowFollowingList(false);
     };
     
     const handleHideGameinfoList = () => {
@@ -198,6 +204,8 @@ function UserProfile(props) {
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
         setShowGameinfoList(false);
+        setShowFollowerList(false);
+        setShowFollowingList(false);
     };
     
     const handleHideUserStoryList = () => {
@@ -292,8 +300,6 @@ function UserProfile(props) {
                 >
                     팔로잉 {following.following_count}
                 </div>
-                {showFollowerList && <FollowerList/>}
-                {showFollowingList && <FollowingList/>}
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
                     onClick={() => {
                         if (showUserStoryList) {
@@ -319,6 +325,8 @@ function UserProfile(props) {
                     연동하기
                 </div>
             </div>
+            {showFollowerList && <FollowerList/>}
+            {showFollowingList && <FollowingList/>}
 
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
