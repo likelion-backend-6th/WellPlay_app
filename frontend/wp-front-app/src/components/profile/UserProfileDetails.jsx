@@ -1,4 +1,4 @@
-import {useUserActions} from "../../hooks/user.actions";
+import {getUser, useUserActions} from "../../hooks/user.actions";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
@@ -7,6 +7,7 @@ import ProfileFormModal from "./ProfileFormModal";
 import UserFollowerList from "../follow/UserFollower";
 import UserFollowingList from "../follow/UserFollowing";
 import FollowingList from "../follow/Following";
+import axiosService from "../../helpers/axios";
 
 function UserProfile() {
     const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol} = useUserActions();
@@ -18,9 +19,11 @@ function UserProfile() {
     const [showFollowingList, setShowFollowingList] = useState(false);
     const navigate = useNavigate();
     const {profileId} = useParams();
-
     const [userInfo, setUserInfo] = useState(null);
     const [error, setError] = useState(null);
+    const baseURL = process.env.REACT_APP_API_URL;
+
+    const user = getUser();
 
     const fetchProfile = (profileId) => {
         getUserProfile(profileId)
@@ -80,12 +83,17 @@ function UserProfile() {
     const handleHideFollowingList = () => {
         setShowFollowingList(false);
     }
+
     const toggleFollow = () => {
-        const toUserId = profile.user_id;
+        const toUserId = profileId;
+        const followURL = `${baseURL}/account/follow/${toUserId}/`
+        const unfollowURL = `${baseURL}/account/follow/${toUserId}/`
+        console.log(followURL)
+        console.log(unfollowURL)
 
         if (isFollowing) {
-            axios
-                .post(`/account/unfollow/`, {to_user: toUserId})
+            axiosService
+                .post(unfollowURL, { to_user: profileId })
                 .then((response) => {
                     setIsFollowing(false);
                     console.log('unfollow')
@@ -94,8 +102,8 @@ function UserProfile() {
                     console.error('언팔로우 요청 중 오류 발생:', error);
                 });
         } else {
-            axios
-                .post(`/account/follow/`, {to_user: toUserId})
+            axiosService
+                .post(followURL, { to_user: profileId })
                 .then((response) => {
                     setIsFollowing(true);
                     console.log('follow')

@@ -9,7 +9,7 @@ urlpatterns = [
     path("login/", LoginAPIView.as_view()),
     path("logout/", LogoutAPIView.as_view()),
     path("refresh/", TokenRefreshView.as_view()),
-    path("follow/", FollowAPIView.as_view()),
+    path("follow/<str:user_id>/", FollowAPIView.as_view()),
     path("follower/", FollowerList.as_view()),
     path("following/", FollowingList.as_view()),
     path("follower/<str:user_id>/", UserFollowerList.as_view()),

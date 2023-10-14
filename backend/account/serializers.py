@@ -33,6 +33,7 @@ class InfoLolSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Profile
         fields = ("id", "nickname", "image_url")
@@ -46,6 +47,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    to_user = serializers.CharField()
+
     class Meta:
         model = Follow
         fields = "__all__"
