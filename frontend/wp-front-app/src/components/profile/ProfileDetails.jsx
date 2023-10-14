@@ -320,18 +320,16 @@ function UserProfile(props) {
 
             {showGameinfoList && (
             <div>
-                <div className="user-profile-info">
+                <Card style={{ width: '18rem' }}>
                     {userInfo && (
-                        <div className="user-info-box">
+                        <Card.Body>
                             {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                            <div>
-                                <p>{userInfo.summonerName}</p>
-                                <p>{userInfo.tier} {userInfo.rank}</p>
-                                <p>승률: {userInfo.winrate}%</p>
-                            </div>
-                        </div>
+                        <Card.Title>{userInfo.summonerName}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{userInfo.tier} {userInfo.rank}</Card.Subtitle>
+                        <Card.Text>승률: {userInfo.winrate}%</Card.Text>
+                        </Card.Body>
                     )}
-                </div>
+                </Card>
                 <div>
                     <Form.Group>
                         <Form.Control
