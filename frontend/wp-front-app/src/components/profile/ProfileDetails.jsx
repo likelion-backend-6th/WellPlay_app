@@ -19,8 +19,12 @@ function UserProfile(props) {
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
+    const [showGameinfoList, setShowGameinfoList] = useState(false)
+    const [showUserStoryList, setShowUserStoryList] = useState(false)
+
     const navigate = useNavigate();
     const {profileId} = useParams();
     const [previousRequestTime, setPreviousRequestTime] = useState(null);
@@ -170,19 +174,38 @@ function UserProfile(props) {
         setShowFollowerList(true);
         setShowFollowingList(false);
     };
-
+    
     const handleShowFollowingList = () => {
         setShowFollowingList(true);
         setShowFollowerList(false);
     };
-
+    
     const handleHideFollowerList = () => {
         setShowFollowerList(false);
-    }
-
+    };
+    
     const handleHideFollowingList = () => {
         setShowFollowingList(false);
-    }
+    };
+
+    
+    const handleShowGameinfoList = () => {
+        setShowGameinfoList(true);
+        setShowUserStoryList(false);
+    };
+    
+    const handleHideGameinfoList = () => {
+        setShowGameinfoList(false);
+    };
+    
+    const handleShowUserStoryList = () => {
+        setShowUserStoryList(true);
+        setShowGameinfoList(false);
+    };
+    
+    const handleHideUserStoryList = () => {
+        setShowUserStoryList(false);
+    };
 
     const toggleFollow = () => {
         const toUserId = profile.user_id;
@@ -211,93 +234,127 @@ function UserProfile(props) {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5" style={{ color: "white" }}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
                         <Image
                             src={profile.image_url}
                             roundedCircle
-                            width={100}
-                            height={100}
+                            width={130}
+                            height={130}
                             border={3}
                             alt="프로필 이미지"
                         />
                     </div>
                 </div>
-                <div className="col-md-8">
-                    <div className="border-bottom pb-3">
-                        <h2 className="mb-3">{profile.nickname}</h2>
-                        <p>
-                            <strong>@{user.user_id}</strong>
-                        </p>
+                <div className="col-md-6">
+                    <div className="d-flex flex-column">
+                        <div className="d-flex align-items-center justify-content-between mb-3">
+                            <h2><strong>{profile.nickname}</strong></h2>
+                            <Button variant="primary" onClick={openModal}>편집</Button>
+                        </div>
+                        <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
                     </div>
-                </div>
-                <div className="col-md-2">
-                    {/* 오른쪽 끝에 버튼 추가 */}
-                    <Button variant="primary" onClick={openModal}>편집</Button>
+                    <div className="border-bottom pb-3"></div>
                 </div>
             </div>
-            <div className="container mt-5">
-                <div className="button-container">
-                    <div className={`button ${showFollowerList ? 'active' : ''}`}
-                         onClick={() => {
-                             if (showFollowerList) {
-                                 handleHideFollowerList();
-                             } else {
-                                 handleShowFollowerList();
-                             }
-                         }}
-                         style={{cursor: 'pointer'}}>
-                        팔로워 {follower.follower_count}
-                    </div>
-                    <div className={`button ${showFollowingList ? 'active' : ''}`}
-                         onClick={() => {
-                             if (showFollowingList) {
-                                 handleHideFollowingList();
-                             } else {
-                                 handleShowFollowingList();
-                             }
-                         }}
-                         style={{cursor: 'pointer'}}>
-                        팔로잉 {following.following_count}
-                    </div>
-                    {showFollowerList && <FollowerList/>}
-                    {showFollowingList && <FollowingList/>}
+
+            <div className="button-container">
+                <div className={`button ${showFollowerList ? 'active' : ''}`}
+                    onClick={() => {
+                        if (showFollowerList) {
+                            handleHideFollowerList();
+                        } else {
+                            handleShowFollowerList();
+                        }
+                    }}
+                    style={{cursor: 'pointer'}}
+                >
+                    팔로워 {follower.follower_count}
+                </div>
+                <div className={`button ${showFollowingList ? 'active' : ''}`}
+                    onClick={() => {
+                        if (showFollowingList) {
+                            handleHideFollowingList();
+                        } else {
+                            handleShowFollowingList();
+                        }
+                    }}
+                    style={{cursor: 'pointer'}}
+                >
+                    팔로잉 {following.following_count}
+                </div>
+                {showFollowerList && <FollowerList/>}
+                {showFollowingList && <FollowingList/>}
+            </div>
+            <div className="button-container">
+                <div className={`button ${showUserStoryList ? 'active' : ''}`}
+                    onClick={() => {
+                        if (showUserStoryList) {
+                            handleHideUserStoryList();
+                        } else {
+                            handleShowUserStoryList();
+                        }
+                    }}
+                    style={{cursor: 'pointer'}}
+                >
+                    유저의 이야기
+                </div>
+                <div className={`button ${showGameinfoList ? 'active' : ''}`}
+                    onClick={() => {
+                        if (showGameinfoList) {
+                            handleHideGameinfoList();
+                        } else {
+                            handleShowGameinfoList();
+                        }
+                    }}
+                    style={{cursor: 'pointer'}}
+                >
+                    연동된 프로필
                 </div>
             </div>
+
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
 
-            <div className="user-profile-info">
-                {userInfo && (
-                    <div className="user-info-box">
-                    {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                    <div>
-                        <p>{userInfo.summonerName}</p>
-                        <p>{userInfo.tier} {userInfo.rank}</p>
-                        <p>승률: {userInfo.winrate}%</p>
-                    </div>
-                    </div>
-                )}
+            {showGameinfoList && (
+            <div>
+                <div className="user-profile-info">
+                    {userInfo && (
+                        <div className="user-info-box">
+                            {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
+                            <div>
+                                <p>{userInfo.summonerName}</p>
+                                <p>{userInfo.tier} {userInfo.rank}</p>
+                                <p>승률: {userInfo.winrate}%</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+                <div>
+                    <Form.Group>
+                        <Form.Control
+                            type="text"
+                            placeholder="닉네임"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+                    <Button
+                        variant="primary"
+                        onClick={handleConnectClick}
+                        disabled={remainingTime > 0 || isLoading}
+                    >
+                        {remainingTime > 0
+                            ? `남은 시간: ${Math.ceil(remainingTime / 1000)}초`
+                            : isLoading
+                            ? <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                            : '연동하기'}
+                    </Button>
+                </div>
             </div>
-            
-            {/* 연동하기 텍스트 필드와 버튼 */}
-            <Form.Group>
-                <Form.Control
-                    type="text"
-                    placeholder="닉네임"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                />
-            </Form.Group>
-            <Button variant="primary" onClick={handleConnectClick} disabled={remainingTime > 0 || isLoading}>
-                {remainingTime > 0 ? `남은 시간: ${Math.ceil(remainingTime / 1000)}초` : (isLoading ? (
-                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
-                ) : (
-                    '연동하기'
-                ))}
-            </Button>
+            )}
         </div>
     );
 }
