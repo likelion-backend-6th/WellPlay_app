@@ -30,6 +30,11 @@ def summoner_v4(user_infolol_id, summoner_name):
         else:
             logging.info(f"summoner_v4 요청 실패.{response.status_code}")
             user_infolol.summoner_name = None
+            user_infolol.summoner_tier = None  # 혹시 이밑으로 문제 생기면 39번까지 삭제
+            user_infolol.summoner_rank = None
+            user_infolol.summoner_lp = None
+            user_infolol.summoner_win = None
+            user_infolol.summoner_loss = None
             user_infolol.save()
             return False
 
