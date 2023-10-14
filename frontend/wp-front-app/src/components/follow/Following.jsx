@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useUserActions} from '../../hooks/user.actions';
+import {Link} from "react-router-dom";
 
 function FollowingList() {
     const {getFollowing} = useUserActions();
@@ -31,7 +32,11 @@ function FollowingList() {
             {loading ? ('') : (
                 <div>
                     <ul>{following.map((followingItem) => (
-                        <li key={followingItem.id}>{followingItem.to_user}</li>
+                        <li key={followingItem.id}>
+                            <Link to={`/profile/${followingItem.to_user}`}>
+                                {followingItem.to_user}
+                            </Link>
+                        </li>
                     ))}
                     </ul>
                 </div>
