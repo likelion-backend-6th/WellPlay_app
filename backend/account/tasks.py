@@ -23,7 +23,12 @@ def summoner_v4(user_infolol_id, summoner_name):
             data = response.json()
             user_infolol.summoner_id = data["id"]
             user_infolol.summoner_puuid = data["puuid"]
-            user_infolol.save()
+
+            if user_infolol.summoner_name == data["name"]:
+                user_infolol.save()
+            else:
+                logging.info("사용자의 아이디와 요청한 이름이 다릅니다")
+                return False
 
             summoner_league.delay(user_infolol_id)
             return True
@@ -54,14 +59,24 @@ def summoner_league(user_infolol_id):
             logging.info(f"summoner_league 요청 성공.{response.status_code}")
             league_data = response.json()
             logging.info(f"리그데이터.{league_data}")
-            if league_data:
+            if league_data == []:
+                logging.info("소환사가 없거나, 랭크게임을 하지않았습니다. 초기화합니다")
+                user_infolol.summoner_name = None
+                user_infolol.summoner_tier = None
+                user_infolol.summoner_rank = None
+                user_infolol.summoner_lp = None
+                user_infolol.summoner_win = None
+                user_infolol.summoner_loss = None
+                user_infolol.save()
+                return False
+            else:
                 user_infolol.summoner_tier = league_data[0]["tier"]
                 user_infolol.summoner_rank = league_data[0]["rank"]
                 user_infolol.summoner_lp = league_data[0]["leaguePoints"]
                 user_infolol.summoner_win = league_data[0]["wins"]
                 user_infolol.summoner_loss = league_data[0]["losses"]
                 user_infolol.save()
-            return True
+                return True
         else:
             logging.info(f"summoner_league 요청 실패.{response.status_code}")
             return False
