@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card, Modal} from 'react-bootstrap';
+import {Button, Image, Form, Spinner, Card, Modal, Row} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -9,6 +9,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
 import '../../App.css'
+import Feed from "../feeds/Feed";
 
 
 function UserProfile(props) {
@@ -23,8 +24,8 @@ function UserProfile(props) {
     
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
-    const [showGameinfoList, setShowGameinfoList] = useState(false)
-    const [showUserStoryList, setShowUserStoryList] = useState(false)
+    const [showGameinfoList, setShowGameinfoList] = useState(false);
+    const [showUserStoryList, setShowUserStoryList] = useState(false);
 
     const navigate = useNavigate();
     const {profileId} = useParams();
@@ -55,21 +56,21 @@ function UserProfile(props) {
     };
 
     const fetchFeeds = () => {
-    try {
-        const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
+        try {
+            const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
 
-        axios.get(apiUrl)
-            .then((response) => {
-                const data = response.data;
-                setFeeds(data);
-            })
-            .catch((error) => {
-                console.error('피드를 가져오는 중 오류 발생:', error);
-            });
-    } catch (error) {
-        console.error('API 요청 오류:', error);
-    }
-};
+            axios.get(apiUrl)
+                .then((response) => {
+                    const data = response.data;
+                    setFeeds(data);
+                })
+                .catch((error) => {
+                    console.error('피드를 가져오는 중 오류 발생:', error);
+                });
+        } catch (error) {
+            console.error('API 요청 오류:', error);
+        }
+    };
 
     // 모달 열기 함수
     const openModal = () => {
@@ -152,7 +153,7 @@ function UserProfile(props) {
         // 프로필 정보를 가져오기
         fetchProfile();
 
-        fetchFeeds()
+        fetchFeeds();
 
         getFollowing()
             .then((response) => {
@@ -321,6 +322,15 @@ function UserProfile(props) {
             </div>
             {showFollowerList && <FollowerList/>}
             {showFollowingList && <FollowingList/>}
+            {showUserStoryList && (
+                <div>
+                    <Row className="my-4">
+                        {feeds.feeds.map((feed, index) => (
+                            <Feed key={index} feed={feed} refresh={fetchFeeds} />
+                        ))}
+                    </Row>
+                </div>
+            )}
 
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>

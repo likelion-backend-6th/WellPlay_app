@@ -2,12 +2,14 @@ import {getUser, useUserActions} from "../../hooks/user.actions";
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
-import {Button, Form, Image, Card} from "react-bootstrap";
+import {Button, Form, Image, Card, Row} from "react-bootstrap";
 import ProfileFormModal from "./ProfileFormModal";
 import UserFollowerList from "../follow/UserFollower";
 import UserFollowingList from "../follow/UserFollowing";
 import FollowingList from "../follow/Following";
 import axiosService from "../../helpers/axios";
+import {serverUrl} from "../../config";
+import Feed from "../feeds/Feed";
 
 function UserProfile() {
     const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol} = useUserActions();
@@ -17,6 +19,8 @@ function UserProfile() {
     const [isFollowing, setIsFollowing] = useState(false);
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
+    const [showUserStoryList, setShowUserStoryList] = useState(false);
+    const [feeds, setFeeds] = useState([]);
     const navigate = useNavigate();
     const {profileId} = useParams();
     const [userInfo, setUserInfo] = useState(null);
@@ -34,9 +38,28 @@ function UserProfile() {
                 console.error('프로필 정보를 가져오는 중 오류 발생:', error);
             });
     };
+    const fetchFeeds = () => {
+        try {
+            const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
+
+            axios.get(apiUrl)
+                .then((response) => {
+                    const data = response.data;
+                    setFeeds(data);
+                })
+                .catch((error) => {
+                    console.error('피드를 가져오는 중 오류 발생:', error);
+                });
+        } catch (error) {
+            console.error('API 요청 오류:', error);
+        }
+    };
+
     useEffect(() => {
         // 프로필 정보를 가져오기
         fetchProfile(profileId);
+
+        fetchFeeds();
 
         getUserFollower(profileId)
             .then((response) => {
@@ -69,20 +92,33 @@ function UserProfile() {
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
         setShowFollowingList(false);
+        setShowUserStoryList(false);
     };
 
     const handleShowFollowingList = () => {
         setShowFollowingList(true);
         setShowFollowerList(false);
+        setShowUserStoryList(false);
     };
 
     const handleHideFollowerList = () => {
         setShowFollowerList(false);
-    }
+    };
 
     const handleHideFollowingList = () => {
         setShowFollowingList(false);
-    }
+    };
+
+
+    const handleShowUserStoryList = () => {
+        setShowUserStoryList(true);
+        setShowFollowerList(false);
+        setShowFollowingList(false);
+    };
+
+    const handleHideUserStoryList = () => {
+        setShowUserStoryList(false);
+    };
 
     const toggleFollow = () => {
         const toUserId = profileId;
@@ -93,7 +129,7 @@ function UserProfile() {
 
         if (isFollowing) {
             axiosService
-                .post(unfollowURL, { to_user: profileId })
+                .post(unfollowURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(false);
                     console.log('unfollow')
@@ -103,7 +139,7 @@ function UserProfile() {
                 });
         } else {
             axiosService
-                .post(followURL, { to_user: profileId })
+                .post(followURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(true);
                     console.log('follow')
@@ -114,15 +150,15 @@ function UserProfile() {
         }
     };
     return (
-         <div className="container mt-5">
+        <div className="container mt-5">
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
                         <Image
                             src={profile.image_url}
                             roundedCircle
-                            width={100}
-                            height={100}
+                            width={130}
+                            height={130}
                             border={3}
                             alt="프로필 이미지"
                         />
@@ -137,11 +173,13 @@ function UserProfile() {
                     </div>
                 </div>
                 {userInfo && userInfo.winrate !== 0 && (
-                    <Card style={{ width: '35rem' }}>
+                    <Card style={{width: '35rem'}}>
                         <Card.Body>
                             {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                        <Card.Title></Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank}  / 승률: {userInfo.winrate}%</Card.Subtitle>
+                            <Card.Title></Card.Title>
+                            <Card.Subtitle
+                                className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank} /
+                                승률: {userInfo.winrate}%</Card.Subtitle>
                         </Card.Body>
                     </Card>
                 )}
@@ -173,11 +211,30 @@ function UserProfile() {
                          style={{cursor: 'pointer'}}>
                         팔로잉 {following.following_count}
                     </div>
+                    <div className={`button ${showUserStoryList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showUserStoryList) {
+                                 handleHideUserStoryList();
+                             } else {
+                                 handleShowUserStoryList();
+                             }
+                         }}
+                         style={{cursor: 'pointer'}}>
+                        이야기 {feeds.feed_count}
+                    </div>
                     {showFollowerList && <UserFollowerList/>}
                     {showFollowingList && <UserFollowingList/>}
+                    {showUserStoryList && (
+                        <div>
+                            <Row className="my-4">
+                                {feeds.feeds.map((feed, index) => (
+                                    <Feed key={index} feed={feed} refresh={fetchFeeds} />
+                                ))}
+                            </Row>
+                        </div>
+                    )}
                 </div>
             </div>
-
 
 
         </div>
