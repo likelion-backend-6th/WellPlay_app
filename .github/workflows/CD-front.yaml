@@ -10,8 +10,6 @@ on:
           - 'dev'
         tags:
           - '*.*.*'
-        paths:
-          - 'frontend/**'
 
 jobs:
     deploy:
