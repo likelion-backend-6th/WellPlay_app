@@ -22,7 +22,7 @@ jobs:
         - name: change apiVersion
           run: |
             cd k8s/wp-frontend/
-            sed -ie 's/appVersion: ".*"/appVersion: "${{ github.ref_name }}"/g' Chart.yaml
+            sed -ie 's/appVersion: ".*"/appVersion: "${{ github.event.workflow_run.head_branch }}"/g' Chart.yaml
             cat Chart.yaml
             git add .
             git config --global user.email "hjklo0220@gmail.com"
