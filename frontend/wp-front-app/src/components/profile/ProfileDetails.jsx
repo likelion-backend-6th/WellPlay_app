@@ -252,9 +252,7 @@ function UserProfile(props) {
             {userInfo && userInfo.winrate !== 0 && (
                 <Card style={{ width: '35rem' }}>
                     <Card.Body>
-                        {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                    <Card.Title></Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank}  / 승률: {userInfo.winrate}%</Card.Subtitle>
+                    <img src={`/media/lol/${userInfo.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfo.summonerName} {userInfo.tier} {userInfo.rank} 승률: {userInfo.winrate}%
                     </Card.Body>
                 </Card>
             )}
