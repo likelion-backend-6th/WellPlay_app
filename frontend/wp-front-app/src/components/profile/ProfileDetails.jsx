@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card, Modal} from 'react-bootstrap';
+import {Button, Image, Form, Spinner, Card, Modal, Row} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
 import axios from 'axios';
 import ProfileFormModal from "./ProfileFormModal";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
 import '../../App.css'
+import Feed from "../feeds/Feed";
 
 
 function UserProfile(props) {
@@ -20,11 +21,10 @@ function UserProfile(props) {
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showLOLModal, setShowLOLModal] = useState(false);
-    
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
-    const [showGameinfoList, setShowGameinfoList] = useState(false)
-    const [showUserStoryList, setShowUserStoryList] = useState(false)
+    const [showGameinfoList, setShowGameinfoList] = useState(false);
+    const [showUserStoryList, setShowUserStoryList] = useState(true);
 
     const navigate = useNavigate();
     const {profileId} = useParams();
@@ -41,6 +41,8 @@ function UserProfile(props) {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [feeds, setFeeds] = useState([]);
+    const [showFollowerModal, setShowFollowerModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
 
     const user = getUser();
 
@@ -55,21 +57,21 @@ function UserProfile(props) {
     };
 
     const fetchFeeds = () => {
-    try {
-        const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
+        try {
+            const apiUrl = `${serverUrl}/feed/userfeed/${profileId}`;
 
-        axios.get(apiUrl)
-            .then((response) => {
-                const data = response.data;
-                setFeeds(data);
-            })
-            .catch((error) => {
-                console.error('피드를 가져오는 중 오류 발생:', error);
-            });
-    } catch (error) {
-        console.error('API 요청 오류:', error);
-    }
-};
+            axios.get(apiUrl)
+                .then((response) => {
+                    const data = response.data;
+                    setFeeds(data);
+                })
+                .catch((error) => {
+                    console.error('피드를 가져오는 중 오류 발생:', error);
+                });
+        } catch (error) {
+            console.error('API 요청 오류:', error);
+        }
+    };
 
     // 모달 열기 함수
     const openModal = () => {
@@ -152,7 +154,7 @@ function UserProfile(props) {
         // 프로필 정보를 가져오기
         fetchProfile();
 
-        fetchFeeds()
+        fetchFeeds();
 
         getFollowing()
             .then((response) => {
@@ -186,35 +188,10 @@ function UserProfile(props) {
         setModalInputValue(e.target.value);
         setError(null);
     };
-
-    const handleShowFollowerList = () => {
-        setShowFollowerList(true);
-        setShowFollowingList(false);
-        setShowGameinfoList(false);
-        setShowUserStoryList(false);
-    };
-    
-    const handleShowFollowingList = () => {
-        setShowFollowingList(true);
-        setShowFollowerList(false);
-        setShowGameinfoList(false);
-        setShowUserStoryList(false);
-    };
-    
-    const handleHideFollowerList = () => {
-        setShowFollowerList(false);
-    };
-    
-    const handleHideFollowingList = () => {
-        setShowFollowingList(false);
-    };
-
     
     const handleShowGameinfoList = () => {
         setShowGameinfoList(true);
         setShowUserStoryList(false);
-        setShowFollowerList(false);
-        setShowFollowingList(false);
     };
     
     const handleHideGameinfoList = () => {
@@ -224,12 +201,26 @@ function UserProfile(props) {
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
         setShowGameinfoList(false);
-        setShowFollowerList(false);
-        setShowFollowingList(false);
     };
     
     const handleHideUserStoryList = () => {
         setShowUserStoryList(false);
+    };
+
+    const openFollowerModal = () => {
+        setShowFollowerModal(true);
+    };
+
+    const openFollowingModal = () => {
+        setShowFollowingModal(true);
+    };
+
+    const closeFollowerModal = () => {
+        setShowFollowerModal(false);
+    };
+
+    const closeFollowingModal = () => {
+        setShowFollowingModal(false);
     };
 
     return (
@@ -270,27 +261,10 @@ function UserProfile(props) {
             </div>
 
             <div className="button-container">
-                <div className={`button ${showFollowerList ? 'active' : ''}`}
-                    onClick={() => {
-                        if (showFollowerList) {
-                            handleHideFollowerList();
-                        } else {
-                            handleShowFollowerList();
-                        }
-                    }}
-                    style={{cursor: 'pointer'}}
-                >
+                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
                     팔로워 {follower.follower_count}
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`}
-                    onClick={() => {
-                        if (showFollowingList) {
-                            handleHideFollowingList();
-                        } else {
-                            handleShowFollowingList();
-                        }
-                    }}
-                    style={{cursor: 'pointer'}}
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}
                 >
                     팔로잉 {following.following_count}
                 </div>
@@ -305,6 +279,7 @@ function UserProfile(props) {
                     style={{cursor: 'pointer'}}
                 >
                     이야기 {feeds.feed_count}
+
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
                     onClick={() => {
@@ -319,12 +294,50 @@ function UserProfile(props) {
                     연동하기
                 </div>
             </div>
-            {showFollowerList && <FollowerList/>}
-            {showFollowingList && <FollowingList/>}
-
-            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
-                              onSave={handleSaveModal}/>
-
+            {showFollowerModal &&
+                <div>
+                    <Modal show={showFollowerModal} onHide={closeFollowerModal}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>팔로워</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <ul>
+                            {follower.follower_list.map((followerItem) => (
+                              <li key={followerItem.id}>
+                                <Link to={`/profile/${followerItem.from_user}`}>
+                                  {followerItem.from_user}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <button onClick={closeFollowerModal}>x</button>
+                        </Modal.Footer>
+                      </Modal>
+                </div>}
+            {showFollowingModal &&
+                <div>
+                    <Modal show={showFollowingModal} onHide={closeFollowingModal}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>팔로잉</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <ul>
+                            {following.following_list.map((followingItem) => (
+                              <li key={followingItem.id}>
+                                <Link to={`/profile/${followingItem.to_user}`}>
+                                  {followingItem.to_user}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <button onClick={closeFollowingModal}>x</button>
+                        </Modal.Footer>
+                      </Modal>
+                </div>}
             {showGameinfoList && (
             <div>
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
@@ -352,6 +365,19 @@ function UserProfile(props) {
                 </Modal>
             </div>
             )}
+            {feeds && feeds.feed_count > 0 ? (
+                <div>
+                    <Row className="my-4">
+                        {feeds.feeds.map((feed, index) => (
+                            <Feed key={index} feed={feed} refresh={fetchFeeds} />
+                        ))}
+                    </Row>
+                </div>
+            ) : (
+                <div></div>
+            )}
+            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
+                              onSave={handleSaveModal}/>
         </div>
     );
 }
