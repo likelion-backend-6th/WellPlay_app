@@ -38,10 +38,10 @@ jobs:
               run: echo "timestamp=$(date '+%s')" >> "$GITHUB_OUTPUT"
 
             - name: bulid and push refs/heads
-              if: startsWith(github.ref, 'refs/heads')
+              if: github.event.pull_request.merged == true
               uses: docker/build-push-action@v4
               with:
-                  context: frontend
+                  context: frontend/wp-front-app
                   tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.timestamp.outputs.timestamp }}"
                   push: true
 
@@ -49,6 +49,6 @@ jobs:
               if: startsWith(github.ref, 'refs/tags')
               uses: docker/build-push-action@v4
               with:
-                  context: frontend
+                  context: frontend/wp-front-app
                   tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ github.ref_name }}"
                   push: true
