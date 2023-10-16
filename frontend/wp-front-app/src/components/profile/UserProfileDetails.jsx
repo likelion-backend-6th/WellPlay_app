@@ -12,7 +12,7 @@ import {serverUrl} from "../../config";
 import Feed from "../feeds/Feed";
 
 function UserProfile() {
-    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol} = useUserActions();
+    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -27,7 +27,8 @@ function UserProfile() {
     const navigate = useNavigate();
 
     const {profileId} = useParams();
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfolol, setUserInfolol] = useState(null);
+    const [userInfoval, setUserInfoval] = useState(null);
     const [error, setError] = useState(null);
     const baseURL = process.env.REACT_APP_API_URL;
 
@@ -84,13 +85,25 @@ function UserProfile() {
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
             .then((response) => {
                 console.log(profile.id)
-                setUserInfo(response.data);
+                setUserInfolol(response.data);
             })
             .catch((error) => {
                 setError(error.response ? error.response.data.message : '서버 오류');
             })
             .finally(() => {
             });
+
+        apiGetVal(profileId) // 유저의 val 정보를 불러옵니다
+            .then((response) => {
+                console.log(profile.id)
+                setUserInfoval(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+
     }, [profileId]);
 
     const handleShowUserStoryList = () => {
@@ -169,17 +182,28 @@ function UserProfile() {
                         </p>
                     </div>
                 </div>
-                {userInfo && userInfo.winrate !== 0 && (
-                    <Card style={{width: '35rem'}}>
-                        <Card.Body>
-                            {/* <img src={userInfo.tierImageUrl} alt={userInfo.tier} /> */}
-                            <Card.Title></Card.Title>
-                            <Card.Subtitle
-                                className="mb-2 text-muted">{userInfo.summonerName} {userInfo.tier} {userInfo.rank} /
-                                승률: {userInfo.winrate}%</Card.Subtitle>
-                        </Card.Body>
-                    </Card>
-                )}
+                
+                <div>
+                    <div className='lol-card-container'>
+                    {userInfolol && userInfolol.tier && (
+                        <Card style={{ width: '35rem' }}>
+                            <Card.Body>
+                            <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                            </Card.Body>
+                        </Card>
+                    )}
+                    </div>
+                    <div className='val-card-container'>
+                    {userInfoval && userInfoval.val_tag && (
+                        <Card style={{ width: '35rem' }}>
+                            <Card.Body>
+                            <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                            </Card.Body>
+                        </Card>
+                    )}
+                    </div>
+                </div>
+
                 <div className="col-md-2">
                     <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
                 </div>

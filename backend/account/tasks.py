@@ -1,7 +1,7 @@
 from django.conf import settings
 from celery import shared_task
 import requests
-from .models import Infolol
+from .models import Infolol, Infoval
 import logging
 
 
@@ -72,6 +72,7 @@ def summoner_league(user_infolol_id):
                 user_infolol.save()
                 return False
             else:
+                user_infolol.summoner_name = league_data[0]["summonerName"]
                 user_infolol.summoner_tier = league_data[0]["tier"]
                 user_infolol.summoner_rank = league_data[0]["rank"]
                 user_infolol.summoner_lp = league_data[0]["leaguePoints"]
@@ -85,4 +86,40 @@ def summoner_league(user_infolol_id):
 
     except Infolol.DoesNotExist:
         logging.info("Dose not exist Infolol.")
+        return False
+
+
+@shared_task
+def account_v1(user_infoval_id, val_name, val_tag):
+    logging.info("start 발로란트 계정확인")
+    try:
+        user_infoval = Infoval.objects.get(id=user_infoval_id)
+
+        apiDefault = {
+            "region": "https://americas.api.riotgames.com",
+            "key": settings.RIOT_API_KEY,
+            "valName": val_name,
+            "valTag": val_tag,
+        }
+        url = f"{apiDefault['region']}/riot/account/v1/accounts/by-riot-id/{apiDefault['valName']}/{apiDefault['valTag']}?api_key={apiDefault['key']}"
+        response = requests.get(url)
+        logging.info(f"account_v1 요청 url : {url}")
+        if response.status_code == 200:
+            logging.info(f"account_v1 요청 성공.{response.status_code}")
+            data = response.json()
+            user_infoval.val_name = data["gameName"]
+            user_infoval.val_tag = data["tagLine"]
+            user_infoval.val_puuid = data["puuid"]
+            user_infoval.save()
+            return True
+        else:
+            logging.info(f"account_v1 요청 실패.{response.status_code}")
+            user_infoval.val_name = None
+            user_infoval.val_tag = None
+            user_infoval.val_puuid = None
+            user_infoval.save()
+            return False
+
+    except Infolol.DoesNotExist:
+        logging.info("Dose not exist Infoval.")
         return False

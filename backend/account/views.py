@@ -265,26 +265,6 @@ class UserFollowingList(generics.ListAPIView):
         return Response(response_data)
 
 
-class LOLinfoAPIView(APIView):
-    permission_classes = [
-        IsAuthenticated,
-    ]
-    serializer_class = InfoLolSerializer
-
-    @extend_schema(
-        request=InfoLolSerializer, responses=InfoLolSerializer, summary="LOL 정보 업데이트"
-    )
-    def post(self, request, *args, **kwargs):
-        infolol = request.user.infolol
-        serializer_data = request.data.copy()
-
-        serializer = self.serializer_class(infolol, data=serializer_data, partial=True)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
 @api_view(["POST"])
 def riot_summoner_info(request):
     permission_classes = [
@@ -325,4 +305,50 @@ class InfololList(generics.ListAPIView):
         except Infolol.DoesNotExist:
             return Response(
                 {"error": "Infolol 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+@api_view(["POST"])
+def riot_val_info(request):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    val_name = request.data.get("val_name")
+    val_tag = request.data.get("val_tag")
+
+    try:
+        user = request.user
+        infoval, created = Infoval.objects.get_or_create(
+            user=user, defaults={"val_name": val_name, "val_tag": val_tag}
+        )
+
+        print(infoval.id, "Celery tasks async start")  # 정수형 (장고유저ID)
+        result = account_v1.delay(infoval.id, val_name, val_tag)
+        try:
+            task_result = result.get(timeout=10)  # 10초 동안 대기
+            if task_result:  # 작업이 성공한 경우
+                return Response(True, status=status.HTTP_200_OK)
+            else:  # 작업이 실패한 경우
+                return Response(False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except TimeoutError:
+            return Response(False, status=status.HTTP_408_REQUEST_TIMEOUT)
+    except Infoval.DoesNotExist:
+        # Infoval 모델이 존재하지 않는 경우
+        return Response(
+            {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+
+class InfovalList(generics.ListAPIView):
+    serializer_class = InfoValSerializer
+    queryset = Infoval.objects.all()
+
+    def list(self, request, user_id=None):
+        try:
+            user_infoval = Infoval.objects.get(user__user_id=user_id)
+            serializer = InfoValSerializer(user_infoval)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Infolol.DoesNotExist:
+            return Response(
+                {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
             )

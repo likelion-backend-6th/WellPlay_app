@@ -75,6 +75,16 @@ class Infolol(models.Model):
         return f"{self.summoner_name}'s LoL Info"
 
 
+class Infoval(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infoval")
+    val_name = models.CharField(max_length=30, null=True, blank=True)
+    val_tag = models.CharField(max_length=10, null=True, blank=True)
+    val_puuid = models.CharField(max_length=128, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.val_name}'s Val Info"
+
+
 # Profile 모델로 분리
 class Profile(CommonModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")

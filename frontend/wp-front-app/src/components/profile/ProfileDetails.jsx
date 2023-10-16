@@ -14,13 +14,15 @@ import Feed from "../feeds/Feed";
 
 function UserProfile(props) {
     const {getProfile, getFollowing, getFollower,
-        updateUsernameLol, apiPostLol, apiGetLol } = useUserActions();
+        apiPostLol, apiGetLol, apiPostVal, apiGetVal } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showLOLModal, setShowLOLModal] = useState(false);
+    const [showVALModal, setShowVALModal] = useState(false);
+    
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
     const [showGameinfoList, setShowGameinfoList] = useState(false);
@@ -31,9 +33,12 @@ function UserProfile(props) {
     const [previousRequestTime, setPreviousRequestTime] = useState(null);
     const [remainingTime, setRemainingTime] = useState(0); // 남은 시간 상태 추가
     const [timerId, setTimerId] = useState(null); // 타이머 ID 상태 추가
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfolol, setUserInfolol] = useState(null);
+    const [userInfoval, setUserInfoval] = useState(null);
 
     const [modalInputValue, setModalInputValue] = useState("");
+    const [modalInputValueValName, setModalInputValueValName] = useState("");
+    const [modalInputValueValTag, setModalInputValueValTag] = useState("");
     const [modalIsLoading, setModalIsLoading] = useState(false);
     const [modalRemainingTime, setModalRemainingTime] = useState(0);
 
@@ -91,6 +96,14 @@ function UserProfile(props) {
         setShowLOLModal(false);
     };
 
+    const openVALModal = () => {
+        setShowVALModal(true);
+    };
+    
+    const closeVALModal = () => {
+        setShowVALModal(false);
+    };
+
     const handleSaveModal = () => {
         closeModal();
         fetchProfile();
@@ -132,17 +145,45 @@ function UserProfile(props) {
         });
 
 
-        // DB에 게임 닉네임 보내기
-        updateUsernameLol(requestData)
-            .then(response => {
+        console.log("연동이 종료되었습니다.");
+        setTimeout(() => {
+            fetchProfile(profileId);
+        }, 2000);
+    };
+
+    const handleConnectVALClick = () => {
+        if (remainingTime > 0) {
+            return;
+        }
+        const now = Date.now();
+        setPreviousRequestTime(now);
+        setIsLoading(true);
+
+        const newValName = modalInputValueValName;
+        const newValTag = modalInputValueValTag;
+        const requestData = { val_name: newValName, val_tag: newValTag  };
+        console.log("연동하기 버튼을 클릭하였습니다. 닉네임태그 ",newValName,newValTag);
+
+        apiPostVal(requestData)
+        .then((response) => {
+            if (response.data) {
                 setSuccessMessage(response.data.message);
-            })
-            .catch(error => {
-                setError(error.response ? error.response.data.message : '서버 오류');
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+                alert('연동이 성공적으로 완료되었습니다.');
+                window.location.reload();
+            } else {
+                if (response.data.message) {
+                    setError(response.data.message);
+                    alert('연동이 실패하였습니다: ' + response.data.message);
+                } else {
+                    alert('연동이 실패하였습니다.');
+                }
+                window.location.reload(); 
+            }
+        })
+        .catch((error) => {
+            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+            alert('서버 요청에 실패했습니다.');
+        });
 
         console.log("연동이 종료되었습니다.");
         setTimeout(() => {
@@ -175,34 +216,69 @@ function UserProfile(props) {
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
             .then((response) => {
                 console.log(profile.id)
-                setUserInfo(response.data);
+                setUserInfolol(response.data);
             })
             .catch((error) => {
                 setError(error.response ? error.response.data.message : '서버 오류');
             })
             .finally(() => {
             });
+
+        apiGetVal(profileId) // 유저의 val 정보를 불러옵니다
+            .then((response) => {
+                console.log(profile.id)
+                setUserInfoval(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+            
     }, [profileId]);
 
     const handleModalInputChange = (e) => {
         setModalInputValue(e.target.value);
         setError(null);
     };
-    
+    const handleModalInputChangeValName = (e) => {
+        setModalInputValueValName(e.target.value);
+        setError(null);
+    };
+    const handleModalInputChangeValTag = (e) => {
+        setModalInputValueValTag(e.target.value);
+        setError(null);
+    }
+
+    const handleShowFollowerList = () => {
+        setShowFollowerList(true);
+        setShowFollowingList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
+    };
+    const handleShowFollowingList = () => {
+        setShowFollowingList(true);
+        setShowFollowerList(false);
+        setShowGameinfoList(false);
+        setShowUserStoryList(false);
+    };
+    const handleHideFollowerList = () => {
+        setShowFollowerList(false);
+    };
+    const handleHideFollowingList = () => {
+        setShowFollowingList(false);
+    };
     const handleShowGameinfoList = () => {
         setShowGameinfoList(true);
         setShowUserStoryList(false);
     };
-    
     const handleHideGameinfoList = () => {
         setShowGameinfoList(false);
     };
-    
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
         setShowGameinfoList(false);
     };
-    
     const handleHideUserStoryList = () => {
         setShowUserStoryList(false);
     };
@@ -224,7 +300,7 @@ function UserProfile(props) {
     };
 
     return (
-        <div className="container mt-5" style={{ color: "white" }}>
+        <div className="container" style={{ color: "white" }}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
@@ -248,16 +324,28 @@ function UserProfile(props) {
                     </div>
                 </div>
             </div>
+            
             <div>
-            {userInfo && userInfo.winrate !== 0 && (
-                <Card style={{ width: '35rem' }}>
-                    <Card.Body>
-                    <img src={`/media/lol/${userInfo.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfo.summonerName} {userInfo.tier} {userInfo.rank} 승률: {userInfo.winrate}%
-                    </Card.Body>
-                </Card>
-            )}
+                <div className='lol-card-container'>
+                {userInfolol && userInfolol.tier && (
+                    <Card style={{ width: '35rem' }}>
+                        <Card.Body>
+                        <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                        </Card.Body>
+                    </Card>
+                )}
+                </div>
+                <div className='val-card-container'>
+                {userInfoval && userInfoval.val_tag && (
+                    <Card style={{ width: '35rem' }}>
+                        <Card.Body>
+                        <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                        </Card.Body>
+                    </Card>
+                )}
+                </div>
             </div>
-
+            
             <div className="button-container">
                 <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
                     팔로워 {follower.follower_count}
@@ -356,6 +444,35 @@ function UserProfile(props) {
                     <Button
                     variant="primary"
                     onClick={handleConnectClick}
+                    >
+                        연동하기
+                    </Button>
+                </Modal.Body>
+                </Modal>
+                <Button variant="primary" onClick={openVALModal}>발로란트</Button>
+                <Modal show={showVALModal} onHide={closeVALModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>발로란트 계정 연동</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    발로란트를 즐기시는 요원님 반갑습니다
+                    <Form.Group>
+                    <Form.Control
+                        type="text"
+                        placeholder="ID"
+                        value={modalInputValueValName}
+                        onChange={handleModalInputChangeValName}
+                    />
+                    <Form.Control
+                        type="text"
+                        placeholder="Tag(#빼고 입력)"
+                        value={modalInputValueValTag}
+                        onChange={handleModalInputChangeValTag}
+                    />
+                    </Form.Group>
+                    <Button
+                    variant="primary"
+                    onClick={handleConnectVALClick}
                     >
                         연동하기
                     </Button>
