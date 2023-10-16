@@ -1,20 +1,39 @@
 /*디폴트 값 css*/
 
 .content-backgroud {
-    background-color: #202020 ; /* 화면배경이 아닌 콘텐츠들의 배경 */
-  }
+    background-color: #202020; /* 화면배경이 아닌 콘텐츠들의 배경 */
+}
 
-.custom-card{
-    background-color: #202020 ;
+.custom-card {
+    background-color: #202020;
     color: white;
 }
+
 .custom-modal {
-    background-color: #202020 ;
+    background-color: #202020;
     color: white;
 }
 
 
-.button{
-    background-color: #202020 ;
+.button {
+    background-color: #202020;
 }
 
+.button-container button {
+    display: inline-block;
+    padding: 0px 20px;
+    border: none;
+    cursor: pointer;
+    margin: 20px 130px;
+    font-weight: bold;
+    background-color: #131313;
+    color: #FFF;
+    width: 15%;
+    text-decoration: none;
+    position: relative;
+    transition: all;
+}
+
+.button-container button:hover {
+  border-bottom: 3px solid #4C5ABF;
+}
