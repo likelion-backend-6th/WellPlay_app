@@ -4,6 +4,8 @@ on:
     workflow_run:
       workflows: ["CI-front"]
       types: [completed]
+    push:
+        tags: '*.*.*'
 
 jobs:
     deploy:
@@ -20,7 +22,7 @@ jobs:
         - name: change apiVersion
           run: |
             cd k8s/wp-frontend/
-            sed -i 's/appVersion: ".*"/appVersion: "${{ github.ref_name }}"/g' Chart.yaml
+            sed -i 's/appVersion: ".*"/appVersion: "${{ github.ref_name }}"/g' Chart.yaml\
             cat Chart.yaml
             git add .
             git config --global user.email "hjklo0220@gmail.com"
