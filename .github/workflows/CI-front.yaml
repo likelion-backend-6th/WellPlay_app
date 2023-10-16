@@ -37,6 +37,13 @@ jobs:
               id: timestamp
               run: echo "timestamp=$(date '+%s')" >> "$GITHUB_OUTPUT"
 
+            - name: add env
+              id: env
+              run: |
+                  cd frontend/wp-front-app
+                  touch .env
+                  echo "REACT_APP_API_URL=${{ secrets.BACKEND_LB }}" >> .env
+
             - name: bulid and push refs/heads
               if: github.event.pull_request.merged == true
               uses: docker/build-push-action@v4
