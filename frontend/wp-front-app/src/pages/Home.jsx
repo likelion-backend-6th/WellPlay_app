@@ -59,7 +59,7 @@ function Home() {
                         </Col>
                     </Row>
                     <Row className="my-4">
-                        {feeds.map((feed, index) => (
+                        {feeds.results && feeds.results.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds}/>
                         ))}
                     </Row>
