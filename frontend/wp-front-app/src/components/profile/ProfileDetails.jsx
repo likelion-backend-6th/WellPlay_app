@@ -25,7 +25,7 @@ function UserProfile(props) {
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
     const [showGameinfoList, setShowGameinfoList] = useState(false);
-    const [showUserStoryList, setShowUserStoryList] = useState(false);
+    const [showUserStoryList, setShowUserStoryList] = useState(true);
 
     const navigate = useNavigate();
     const {profileId} = useParams();
@@ -306,6 +306,7 @@ function UserProfile(props) {
                     style={{cursor: 'pointer'}}
                 >
                     이야기 {feeds.feed_count}
+
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
                     onClick={() => {
@@ -322,19 +323,6 @@ function UserProfile(props) {
             </div>
             {showFollowerList && <FollowerList/>}
             {showFollowingList && <FollowingList/>}
-            {showUserStoryList && (
-                <div>
-                    <Row className="my-4">
-                        {feeds.feeds.map((feed, index) => (
-                            <Feed key={index} feed={feed} refresh={fetchFeeds} />
-                        ))}
-                    </Row>
-                </div>
-            )}
-
-            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
-                              onSave={handleSaveModal}/>
-
             {showGameinfoList && (
             <div>
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
@@ -362,6 +350,19 @@ function UserProfile(props) {
                 </Modal>
             </div>
             )}
+            {feeds && feeds.feed_count > 0 ? (
+                <div>
+                    <Row className="my-4">
+                        {feeds.feeds.map((feed, index) => (
+                            <Feed key={index} feed={feed} refresh={fetchFeeds} />
+                        ))}
+                    </Row>
+                </div>
+            ) : (
+                <div>""</div>
+            )}
+            <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
+                              onSave={handleSaveModal}/>
         </div>
     );
 }
