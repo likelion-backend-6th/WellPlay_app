@@ -19,7 +19,6 @@ function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
       .get(`/feed/${feedId}/`) // 예시 API 엔드포인트
       .then((response) => {
         setFeedData(response.data);
-        console.log("CommentModal에서",feedId)
       })
       .catch((error) => {
         console.error(error);

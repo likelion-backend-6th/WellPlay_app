@@ -141,6 +141,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
 }
 
 # for spectacular
@@ -154,7 +156,6 @@ SPECTACULAR_SETTINGS = {
 
 # Set custom user model
 AUTH_USER_MODEL = "account.User"
-
 
 # NCP
 NCP_ACCESS_KEY = os.getenv("NCP_ACCESS_KEY", "")
