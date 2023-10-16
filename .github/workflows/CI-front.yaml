@@ -1,0 +1,54 @@
+name: CI
+
+on:
+    pull_request:
+        branches:
+            - 'dev'
+    push:
+        tags:
+            - "*.*.*"
+        branches:
+            - 'dev'
+        paths:
+            - 'frontend/**'
+
+env:
+    IMAGE: ${{ vars.NCR_REGISTRY }}/wp-frontend
+    IMAGE_TAG: ${{ vars.NCR_REGISTRY }}/wp-frontend:latest
+
+jobs:
+    build-push:
+        name: build-push
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: set up docker buildx
+              uses: docker/setup-buildx-action@v2
+            
+            - name: Login to NCR
+              uses: docker/login-action@v2
+              with:
+                registry: ${{ vars.NCR_REGISTRY }}
+                username: ${{ secrets.NCR_ACCESS_KEY }}
+                password: ${{ secrets.NCR_SECRET_KEY }}
+
+            - name: Get current timestamp
+              id: timestamp
+              run: echo "timestamp=$(date '+%s')" >> "$GITHUB_OUTPUT"
+
+            - name: bulid and push refs/heads
+              if: startsWith(github.ref, 'refs/heads')
+              uses: docker/build-push-action@v4
+              with:
+                  context: frontend
+                  tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ steps.timestamp.outputs.timestamp }}"
+                  push: true
+
+            - name: bulid and push refs/tags
+              if: startsWith(github.ref, 'refs/tags')
+              uses: docker/build-push-action@v4
+              with:
+                  context: frontend
+                  tags: ${{ env.IMAGE_TAG }},"${{ env.IMAGE }}:${{ github.ref_name }}"
+                  push: true
