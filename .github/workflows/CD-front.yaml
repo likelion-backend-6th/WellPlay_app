@@ -15,7 +15,6 @@ jobs:
           uses: actions/checkout@v3
 
         - name: change apiVersion
-          if: startsWith(github.ref, 'refs/tags')
           run: |
             cd k8s/wp-frontend/
             sed -i 's/appVersion: ".*"/appVersion: "${{ github.ref_name }}"/g' Chart.yaml
