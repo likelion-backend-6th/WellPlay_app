@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import pagination
 from drf_spectacular.utils import extend_schema
 from django.conf import settings
 from django.db.models import Count
@@ -27,6 +28,7 @@ class FeedViewSet(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
     permission_classes = (IsAuthenticated,)
+    pagination_class = pagination.PageNumberPagination
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -41,6 +43,12 @@ class FeedViewSet(viewsets.ModelViewSet):
     @extend_schema(summary="최신순 피드 리스트")
     def list(self, request, *args, **kwargs):
         feeds = Feed.objects.order_by("-created_at")
+
+        page = self.paginate_queryset(feeds)
+        if page is not None:
+            serializer = FeedSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -54,6 +62,12 @@ class FeedViewSet(viewsets.ModelViewSet):
             .order_by(*ordering)
             .filter(created_at__gte=(today - timedelta(days=7)))
         )
+
+        page = self.paginate_queryset(feeds)
+        if page is not None:
+            serializer = FeedSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = FeedSerializer(feeds, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
