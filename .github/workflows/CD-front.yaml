@@ -1,10 +1,9 @@
-name: CD
+name: CD-front
 
 on:
     workflow_run:
       workflows: ["CI-front"]
-      types:
-        - completed
+      types: [completed]
     push:
         branches:
           - 'dev'
