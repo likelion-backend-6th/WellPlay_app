@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Follow, Profile, Infolol
+from .models import User, Follow, Profile, Infolol, Infoval
 
 
 class ProfileInline(admin.StackedInline):
@@ -14,6 +14,12 @@ class InfololInline(admin.StackedInline):
     verbose_name_plural = "Infolol"
 
 
+class InfovalInline(admin.StackedInline):
+    model = Infoval
+    can_delete = False
+    verbose_name_plural = "Infoval"
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = (
@@ -25,7 +31,7 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
-    inlines = (ProfileInline, InfololInline)
+    inlines = (ProfileInline, InfololInline, InfovalInline)
 
 
 @admin.register(Follow)

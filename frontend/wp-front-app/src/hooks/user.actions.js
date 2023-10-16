@@ -20,6 +20,8 @@ function useUserActions() {
         updateUsernameLol,
         apiPostLol,
         apiGetLol,
+        apiPostVal,
+        apiGetVal,
     };
 
     function updateUsernameLol(data, axiosConfig) {
@@ -30,8 +32,16 @@ function useUserActions() {
         return axiosService.post(`${baseURL}/account/riot_summoner_info/`, data, axiosConfig);
     }
 
+    function apiPostVal(data, axiosConfig) {
+        return axiosService.post(`${baseURL}/account/riot_val_info/`, data, axiosConfig);
+    }
+
     function apiGetLol(user_id, axiosConfig) {
         return axiosService.get(`${baseURL}/account/riot_summoner_info/${user_id}/`, axiosConfig);
+    }
+
+    function apiGetVal(user_id, axiosConfig) {
+        return axiosService.get(`${baseURL}/account/riot_val_info/${user_id}/`, axiosConfig);
     }
 
     function setUserData(data) {
