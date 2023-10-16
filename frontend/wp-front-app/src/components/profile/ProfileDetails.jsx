@@ -21,7 +21,8 @@ function UserProfile(props) {
     const [isFollowing, setIsFollowing] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [showLOLModal, setShowLOLModal] = useState(false);
-
+    const [showFollowerList, setShowFollowerList] = useState(false);
+    const [showFollowingList, setShowFollowingList] = useState(false);
     const [showGameinfoList, setShowGameinfoList] = useState(false);
     const [showUserStoryList, setShowUserStoryList] = useState(true);
 
@@ -373,7 +374,7 @@ function UserProfile(props) {
                     </Row>
                 </div>
             ) : (
-                <div>""</div>
+                <div></div>
             )}
             <ProfileFormModal showModal={showModal} closeModal={closeModal} profileData={profile}
                               onSave={handleSaveModal}/>
