@@ -1,0 +1,35 @@
+name: CD Staging server
+
+on:
+    workflow_run:
+      workflows: ["CI"]
+      types:
+        - completed
+    push:
+        branches:
+          - 'dev'
+        tags:
+          - '*.*.*'
+        paths:
+          - 'frontend/**'
+
+jobs:
+    deploy:
+        name: deploy
+        runs-on: ubuntu-latest
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        steps:
+        - name: checkout
+          uses: actions/checkout@v3
+
+        - name: change apiVersion
+          if: startsWith(github.ref, 'refs/tags')
+          run: |
+            cd k8s/wp-frontend/
+            sed -i 's/appVersion: ".*"/appVersion: "${{ github.ref_name }}"/g' Chart.yaml
+            cat Chart.yaml
+            git add .
+            git config --global user.email "hjklo0220@gmail.com"
+            git config --global user.name "JunYoung_Kim"
+            git commit -m "change apiVersion in actions"
+            git push
