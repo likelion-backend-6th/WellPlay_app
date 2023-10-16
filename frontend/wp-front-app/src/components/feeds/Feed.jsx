@@ -6,8 +6,8 @@ import axiosService from "../../helpers/axios"
 import {Link} from "react-router-dom"
 import {getUser, useUserActions} from "../../hooks/user.actions"
 import CommentModal from "../comments/CommentModal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
 import "../default.css"
 
 function Feed(props) {
@@ -23,7 +23,7 @@ function Feed(props) {
     const data = new FormData();
 
     data.append('content', form.body);
-	const [showCommentModal, setShowCommentModal] = useState(false);
+    const [showCommentModal, setShowCommentModal] = useState(false);
 
     const fetchProfile = (userid) => {
         getUserProfile(userid)
@@ -95,14 +95,16 @@ function Feed(props) {
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
-                            <Image
-                                src={feed.profile_image}
-                                roundedCircle
-                                width={48}
-                                height={48}
-                                className="me-2 border border-dark
+                            <Link to={`/profile/${feed.user_id}`}>
+                                <Image
+                                    src={feed.profile_image}
+                                    roundedCircle
+                                    width={48}
+                                    height={48}
+                                    className="me-2 border border-dark
                           border-2"
-                            />
+                                />
+                            </Link>
                             <div className="d-flex flex-column justify-content-start align-self-center mt-2">
                                 <p className="fs-6 m-0">{profile.nickname}</p>
                                 <p className="fs-6 fw-lighter">
@@ -113,7 +115,7 @@ function Feed(props) {
                         {user && user.user_id === feed.user_id && (
                             <>
                                 <DropdownButton
-                                    title={<FontAwesomeIcon icon={faEllipsisV} />}
+                                    title={<FontAwesomeIcon icon={faEllipsisV}/>}
                                     id="menu-dropdown"
                                     show={showMenu}
                                     onClick={handleMenuClick}
@@ -169,22 +171,22 @@ function Feed(props) {
                         </div>
                         {feed.image_url && (
                             <Image
-                            src={feed.image_url}
-                            style={{ maxWidth: "100%", height: "400px", width:"auto" }}
-                            className="me-2 mb-3 border border-dark border-2"
+                                src={feed.image_url}
+                                style={{maxWidth: "100%", height: "400px", width: "auto"}}
+                                className="me-2 mb-3 border border-dark border-2"
                             />
                         )}
                         {feed.video_url && (
                             <video
-                            src={feed.video_url}
-                            style={{ maxWidth: "100%", height: "400px", width:"auto" }}
-                            controls={true}
-                            className="border border-dark border-2"
-                            width="100%"
-                            height="100%"
-                            loop={false}
-                            muted={false}
-                        />
+                                src={feed.video_url}
+                                style={{maxWidth: "100%", height: "400px", width: "auto"}}
+                                controls={true}
+                                className="border border-dark border-2"
+                                width="100%"
+                                height="100%"
+                                loop={false}
+                                muted={false}
+                            />
                         )}
                     </Card.Text>
                 </Card.Body>
@@ -207,25 +209,25 @@ function Feed(props) {
                         </p>
                     </div>
                     {!isSingleFeed && (
-						<div className="d-flex flex-row">
-						<CommentOutlined
-							style={{
-							width: "24px",
-							height: "24px",
-							padding: "2px",
-							fontSize: "20px",
-							color: "#C4C4C4",
-							cursor: !user ? "not-allowed" : "pointer",
-							}}
-							onClick={() => {
-								if (!user) {
-									window.location.reload();
-									alert("로그인이 필요합니다");
-								  } else {
-									setShowCommentModal(true);
-								  }
-							}}
-						/>
+                        <div className="d-flex flex-row">
+                            <CommentOutlined
+                                style={{
+                                    width: "24px",
+                                    height: "24px",
+                                    padding: "2px",
+                                    fontSize: "20px",
+                                    color: "#C4C4C4",
+                                    cursor: !user ? "not-allowed" : "pointer",
+                                }}
+                                onClick={() => {
+                                    if (!user) {
+                                        window.location.reload();
+                                        alert("로그인이 필요합니다");
+                                    } else {
+                                        setShowCommentModal(true);
+                                    }
+                                }}
+                            />
                             <p className="ms-1 mb-0">
                                 <small>{feed.comment} Comment</small>
                             </p>
@@ -234,13 +236,13 @@ function Feed(props) {
                 </Card.Footer>
             </Card>
             <CommentModal
-					feedId={feed.id}
-					show={showCommentModal}
-					size="lg" //크게만들고싶은데
-					handleClose={() => setShowCommentModal(false)}
-                    props={props}
-					//refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
-			/>
+                feedId={feed.id}
+                show={showCommentModal}
+                size="lg" //크게만들고싶은데
+                handleClose={() => setShowCommentModal(false)}
+                props={props}
+                //refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
+            />
         </>
     )
 }
