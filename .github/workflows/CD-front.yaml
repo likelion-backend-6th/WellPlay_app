@@ -21,8 +21,9 @@ jobs:
         run: |
           cd k8s/wp-frontend
           sed -i 's/appVersion: ".*"/appVersion: "${{ github.event.workflow_run.head_branch }}"/g' Chart.yaml
+          git pull
           git add .
           git config --global user.email "hjklo0220@gmail.com"
           git config --global user.name "github-actions[bot]"
-          git commit -m "change apiVersion in actions"
+          git commit -m "change frontend apiVersion in actions"
           git push
