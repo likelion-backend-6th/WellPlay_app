@@ -67,7 +67,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR), "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -206,3 +206,10 @@ CORS_ALLOWED_ORIGINS = [
 CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
 
 RIOT_API_KEY = os.getenv("RIOT_API_KEY", "")
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.naver.com"  # 이메일 호스트
+EMAIL_PORT = 587  # 이메일 포트
+EMAIL_USE_TLS = True  # TLS 사용 여부
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")  # 이메일 발신자
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")  # 이메일 비밀번호

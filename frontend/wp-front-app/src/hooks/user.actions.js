@@ -56,8 +56,7 @@ function useUserActions() {
     }
 
     function register(data) {
-        return axios.post(`${baseURL}/account/register/`, data).then((res) => {
-            setUserData(res.data);
+        return axios.post(`${baseURL}/account/register/`, data).then(() => {
             navigate('/');
         });
     }

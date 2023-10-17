@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from django.core.files import File
 from django.conf import settings
-from django.http import HttpRequest
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
@@ -12,10 +12,86 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import views
 from celery.result import AsyncResult
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode
+import base64
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .serializers import *
 from account.tasks import *  # Celery 작업 import
 from common.uploader import FileUploader
+
+
+User = get_user_model()
+account_activation_token = PasswordResetTokenGenerator()
+
+
+class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return str(user.pk) + str(timestamp) + str(user.is_active)
+
+
+account_activation_token = AccountActivationTokenGenerator()
+
+
+def send_activation_email(user, request):
+    current_site = request.get_host()
+    subject = "활성화 링크를 확인해주세요."
+
+    html_message = render_to_string(
+        "activation_email.html",
+        {
+            "user": user,
+            "current_site": current_site,
+            "uidb64": user.pk,
+            "token": account_activation_token.make_token(user),
+        },
+    )
+    text_message = strip_tags(html_message)
+
+    # EmailMultiAlternatives를 사용하여 메일 보내기
+    email = EmailMultiAlternatives(
+        subject, text_message, settings.EMAIL_HOST_USER, [user.email]
+    )
+    email.attach_alternative(html_message, "text/html")
+    email.send()
+
+
+@api_view(["GET"])
+def activate_account(request, uidb64, token):
+    try:
+        uid = uidb64
+        user = User.objects.get(pk=uid)
+
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return HttpResponse(
+                """
+                <script>
+                    alert("Wall Play! 인증에 성공했습니다. 사이트로 돌아가 로그인 해주세요");
+                    window.close();
+                </script>
+            """
+            )
+        else:
+            return Response(
+                {"message": "활성화 링크가 유효하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
+            )
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist,
+        UnicodeDecodeError,
+    ) as e:
+        # 예외 처리 추가
+        return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterAPIView(APIView):
@@ -28,26 +104,14 @@ class RegisterAPIView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            user.is_active = False  # 사용자를 비활성화로 설정
+            user.save()
+            send_activation_email(user, request)  # 이메일 전송
 
-            token = TokenObtainPairSerializer.get_token(user)
-            refresh_token = str(token)
-            access_token = str(token.access_token)
-            res = Response(
-                {
-                    "user": serializer.data,
-                    "message": "register successs",
-                    "token": {
-                        "access": access_token,
-                        "refresh": refresh_token,
-                    },
-                },
+            return Response(
+                {"message": "회원가입이 성공적으로 이루어졌습니다. 이메일을 확인하여 계정을 활성화하세요."},
                 status=status.HTTP_200_OK,
             )
-
-            res.set_cookie("access", access_token, httponly=True)
-            res.set_cookie("refresh", refresh_token, httponly=True)
-
-            return res
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

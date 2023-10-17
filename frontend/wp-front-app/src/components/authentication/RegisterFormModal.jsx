@@ -29,13 +29,7 @@ function RegisterFormModal(props) {
     userActions
       .register(data)
       .then(() => {
-			setForm({ ...form, body: "" })
-			setToaster({
-				type: "success",
-				message: "당신의 모든 하이라이트를 함께하세요🚀",
-				show: true,
-				title: "환영합니다!",
-			})
+			      alert("환영합니다. 인증을 위해 이메일을 확인해주세요.");
             onHide(); // 회원가입 성공 시 모달을 닫습니다.
             window.location.reload();
       })
@@ -86,31 +80,31 @@ function RegisterFormModal(props) {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
               type="email"
-              placeholder="Enter email"
+              placeholder="로그인 및 인증에 사용됩니다"
             />
             <Form.Control.Feedback type="invalid">
                 올바른 이메일 형식이 필요해요!
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Nickname</Form.Label>
+            <Form.Label>ID</Form.Label>
             <Form.Control
               value={form.nickname}
               onChange={(e) => setForm({ ...form, nickname: e.target.value })}
               required
               type="text"
-              placeholder="Enter nickname"
+              placeholder="사용자의 아이디입니다."
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>비밀번호</Form.Label>
             <Form.Control
               value={form.password}
               minLength="4"
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
               type="password"
-              placeholder="Password"
+              placeholder="보안을 위해 안전한 비밀번호를 권장드립니다."
             />
           </Form.Group>
             {/*<div className="text-content text-danger">
