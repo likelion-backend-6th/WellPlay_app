@@ -18,20 +18,24 @@ function Profile() {
         <Layout hasNavigationBack>
             <Row className="justify-content-evenly">
                 <Col sm={9}>
-                    {user ? (
-                        <>
-                            {profileId === username.user_id ? (
+                {user ? (
+                    <>
+                        {username && username.user_id ? (
+                            profileId === username.user_id ? (
                                 // 로그인한 사용자의 프로필 정보를 표시
-                                <ProfileDetails user={user}/>
+                                <ProfileDetails user={user} />
                             ) : (
                                 // 다른 유저의 프로필 정보를 표시
-                                <UserProfileDetails user={user}/>
-                            )}
-                            {/* 다른 프로필 정보 표시 */}
-                        </>
-                    ) : (
-                        <div>Loading...</div>
-                    )}
+                                <UserProfileDetails user={user} />
+                            )
+                        ) : (
+                            <UserProfileDetails />
+                        )}
+                        {/* 다른 프로필 정보 표시 */}
+                    </>
+                ) : (
+                    <div>Loading...</div>
+                )}
                 </Col>
             </Row>
         </Layout>

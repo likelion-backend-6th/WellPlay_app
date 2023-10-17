@@ -204,9 +204,15 @@ function UserProfile() {
                     </div>
                 </div>
 
-                <div className="col-md-2">
-                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
-                </div>
+                {user ? (
+                    <div className="col-md-2">
+                        <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                    </div>
+                ):(
+                    <div>
+                        
+                    </div>
+                )};
             </div>
             <div className="container mt-5">
                 <div className="button-container">

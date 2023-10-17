@@ -14,9 +14,7 @@ function App() {
             <Route
                 path="/profile/:profileId/"
                 element={
-                    <ProtectedRoute>
                         <Profile/>
-                    </ProtectedRoute>
                 }/>
             <Route
                 path="/profile/:profileId/edit/"

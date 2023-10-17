@@ -108,7 +108,7 @@ function Feed(props) {
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
-                            <Link to={`/profile/${feed.user_id}`}>
+                            <Link to={`/profile/${feed.user_id}/`}>
                                 <Image
                                     src={feed.profile_image}
                                     roundedCircle
