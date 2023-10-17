@@ -364,6 +364,7 @@ class InfololList(generics.ListAPIView):
     def list(self, request, user_id=None):
         try:
             user_infolol = Infolol.objects.get(user__user_id=user_id)
+            user_infolol = Infolol.objects.get(user__user_id=user_id)
             serializer = InfololSerializer(user_infolol)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Infolol.DoesNotExist:
