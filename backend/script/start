@@ -5,4 +5,6 @@ python manage.py collectstatic --no-input
 python manage.py makemigrations
 python manage.py migrate
 
-gunicorn config.wsgi:application --config config/gunicorn_config.py  && celery -A config worker -l info
+celery -A config worker -l info &
+
+gunicorn config.wsgi:application --config config/gunicorn_config.py
