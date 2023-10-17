@@ -1,31 +1,30 @@
 name: CD-backend
 
 on:
-    push:
-      tags: '*.*.*'
-    workflow_run:
-      workflows: ["CI-backend"]
-      types: [completed]
+  push:
+    tags: "*.*.*"
+  workflow_run:
+    workflows: ["CI-backend"]
+    types: [completed]
 
 jobs:
-    deploy:
-        name: deploy
-        runs-on: ubuntu-latest
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
-        steps:
-        - name: checkout
-          uses: actions/checkout@v3
-          with:
-            repository: likelion-backend-6th/WellPlay_app
-            token: ${{ secrets.TOKEN }}
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          repository: likelion-backend-6th/WellPlay_app
+          token: ${{ secrets.TOKEN }}
 
-        - name: change apiVersion
-          run: |
-            cd k8s/wp-backend/
-            sed -ie 's/appVersion: ".*"/appVersion: "${{ github.event.workflow_run.head_branch }}"/g' Chart.yaml
-            cat Chart.yaml
-            git add .
-            git config --global user.email "hjklo0220@gmail.com"
-            git config --global user.name "github-actions[bot]"
-            git commit -m "change apiVersion in actions"
-            git push
+      - name: change apiVersion
+        run: |
+          cd k8s/wp-backend
+          sed -ie 's/appVersion: ".*"/appVersion: "${{ github.event.workflow_run.head_branch }}"/g' Chart.yaml
+          git add .
+          git config --global user.email "hjklo0220@gmail.com"
+          git config --global user.name "github-actions[bot]"
+          git commit -m "change apiVersion in actions"
+          git push
