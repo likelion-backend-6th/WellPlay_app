@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import CreateFeed from "../components/feeds/CreateFeed";
 import Feed from "../components/feeds/Feed";
 import {useInView} from 'react-intersection-observer';
+import "../App.css"
 
 function Home() {
     const [feeds, setFeeds] = useState([]);
@@ -103,7 +104,7 @@ function Home() {
 
     return (
         <Layout>
-            <Row className="justify-content-evenly">
+            <Row className="justify-content-evenly main">
                 <Col sm={7}>
                     <Col sm={12}> {/* 전체 가로 공간을 사용할 열 */}
                         <div className="button-container">
