@@ -40,9 +40,9 @@ jobs:
 
       - name: test
         run: |
-          pwd
-          docker-compose -f ./docker-compose-test.yaml up --build -d
-          docker compose -f ./docker-compose.test.yml exec lion-app python manage.py test
+          ls -l
+          docker-compose -f docker-compose-test.yaml up --build -d
+          docker compose -f docker-compose.test.yml exec lion-app python manage.py test
 
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v2
