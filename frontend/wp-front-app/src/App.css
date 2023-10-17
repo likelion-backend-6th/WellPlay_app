@@ -42,6 +42,11 @@
   justify-content: space-between;
 }
 
+
+.main{
+  margin-left: 10rem;
+}
+
 .button {
   display: inline-block;
   padding: 0px 20px;
@@ -49,6 +54,77 @@
   cursor: pointer;
   margin-bottom: 20px;
   background-color: #131313
+}
+
+.home-button {
+  display: flex;
+  align-items: center;
+  background-color: #1E1E1E;
+  border: none;
+}
+
+.home-button img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  margin-left: -15px;
+}
+
+.write-button {
+  display: flex;
+  align-items: center;
+  background-color: #1E1E1E;
+  border: none;
+}
+
+.write-button img {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  margin-left: -15px;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  background-color: #1E1E1E;
+  border: none;
+}
+
+.profile-button img {
+  width: 35px;
+  height: 35px;
+  margin-right: 3px;
+  margin-left: -15px;
+  border-radius: 50%;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  background-color: #1E1E1E;
+  border: none;
+}
+
+.login-button img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  margin-left: -15px;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  background-color: #1E1E1E;
+  border: none;
+}
+
+.logout-button img {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  margin-left: -15px;
 }
 
 .active {
@@ -114,8 +190,12 @@ body{
   height: 100%;
   max-height: 100%;
   border-radius: 4px;
-  width: 9rem;
+  width: 10rem;
   display: flex;
+}
+
+.logo{
+  margin: -30px 0px -20px -10px;
 }
 
 .custom-card-style{
