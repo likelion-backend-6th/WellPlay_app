@@ -117,3 +117,8 @@ body{
   width: 9rem;
   display: flex;
 }
+
+.custom-card-style{
+  background-color: #202020;
+  color: #ffffff;
+}

@@ -4,10 +4,6 @@ on:
   push:
     tags:
       - "*.*.*"
-    branches:
-      - "dev"
-    paths:
-      - "backend/**"
 
 env:
   IMAGE: ${{ vars.NCP_REGISTRY }}/wp-backend

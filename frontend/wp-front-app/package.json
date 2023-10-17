@@ -20,8 +20,7 @@
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "swr": "^2.2.2",
-    "timeago.js": "^4.0.2",
-    "web-vitals": "^2.1.0"
+    "timeago.js": "^4.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

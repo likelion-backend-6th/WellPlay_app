@@ -7,6 +7,7 @@ import { getUser, useUserActions } from "../../hooks/user.actions";
 import axiosService from "../../helpers/axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import {Link} from "react-router-dom";
 
 function Comment({ feedId, comment, refresh }) {
   const user = getUser();
@@ -66,8 +67,9 @@ function Comment({ feedId, comment, refresh }) {
     <Card className="custom-card my-2">
       <Card.Body className="d-flex justify-content-between align-items-start">
         <div className="d-flex align-items-start">
-          <Image src={comment.profile_image} roundedCircle alt={comment.user_id} width={48} height={48} className="me-2 border border-dark border-2" />
-
+          <Link to={`/profile/${comment.user_id}`}>
+            <Image src={comment.profile_image} roundedCircle alt={comment.user_id} width={48} height={48} className="me-2 border border-dark border-2" />
+          </Link>
           <div className="comment-content">
             <Card.Title className="comment-username">{comment.user_id}
               <p className="comment-small-text">
