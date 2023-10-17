@@ -3,6 +3,7 @@ import { Button, Form, Modal } from "react-bootstrap"
 import axiosService from "../../helpers/axios"
 import { getUser } from "../../hooks/user.actions"
 import { Context } from "../Layout"
+import "../../App.css"
 
 function CreateFeed() {
 	const [show, setShow] = useState(false)
@@ -78,8 +79,8 @@ function CreateFeed() {
 	
 	return (
 		<>
-			<Button onClick={handleShow}>
-				글쓰기
+			<Button onClick={handleShow} className="write-button">
+				<img src="/media/nav/plus.png" alt="글쓰기"/>글쓰기
 			</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton className="border-0">
