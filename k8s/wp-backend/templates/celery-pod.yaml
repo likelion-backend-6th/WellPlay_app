@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "celery.selectorLabels" . | nindent 4 }}
 spec:
+  imagePullSecrets:
+    - name: {{ .Values.image.imagePullSecrets }}
   containers:
     - name: {{ include "wellplay.celery.fullname" . }}
       image: {{ .Values.image.celery.name }}:{{ .Values.image.celery.tag }}
