@@ -9,6 +9,9 @@ image:
   redis:
     name: redis
     tag: 7
+  celery:
+    name: wp-registry.kr.ncr.ntruss.com/wp-celery
+    tag: latest
 
 nameOverride: ""
 fullnameOverride: ""
@@ -36,6 +39,12 @@ secret:
   type: Opaque
   django:
     DJANGO_SECRET_KEY: wfux#h904l(tez&w%s-q2q$xr(hf-w+xk-fyst+e0qvkc!!o4_
+    NCP_ACCESS_KEY: ""
+    NCP_SECRET_KEY: ""
+    RIOT_API_KEY: ""
+    EMAIL_HOST_USER: ""
+    EMAIL_HOST_PASSWORD: ""
+
   db:
     POSTGRES_DB: wellplay
     POSTGRES_USER: postgres
