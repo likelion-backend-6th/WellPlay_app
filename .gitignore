@@ -303,3 +303,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 *.lock.hcl
+frontend/wp-front-app/package-lock.json
+.gitignore
+frontend/wp-front-app/yarn.lock
+frontend/wp-front-app/yarn.lock
