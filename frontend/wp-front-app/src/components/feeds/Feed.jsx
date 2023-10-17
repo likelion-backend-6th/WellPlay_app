@@ -22,6 +22,8 @@ function Feed(props) {
     const [form, setForm] = useState({body: feed.content})
     const data = new FormData();
     let nowUrl = window.location.href;
+    let isLikedUser =  feed.liked_user.includes(user.user_id)
+
 
     data.append('content', form.body);
     const [showCommentModal, setShowCommentModal] = useState(false);
@@ -207,7 +209,7 @@ function Feed(props) {
                                 height: "24px",
                                 padding: "2px",
                                 fontSize: "20px",
-                                color: user && feed.like ? "#0D6EFD" : "#C4C4C4",
+                                color: user && isLikedUser ? "#0D6EFD" : "#C4C4C4",
                                 cursor: !user ? "not-allowed" : "pointer",
                             }}
                             onClick={() => {

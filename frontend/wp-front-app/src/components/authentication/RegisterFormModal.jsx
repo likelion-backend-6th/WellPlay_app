@@ -6,7 +6,7 @@ import { Context } from "../Layout"
 function RegisterFormModal(props) {
   const { show, onHide } = props;
   const [validated, setValidated] = useState(false);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({email: "", password: "", nickname: ""});
   const [error, setError] = useState(null);
   const userActions = useUserActions();
   const { setToaster } = useContext(Context)
