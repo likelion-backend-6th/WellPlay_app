@@ -2,7 +2,7 @@ name: CD-front
 
 on:
   workflow_run:
-    workflows: ["CI-front"]
+    workflows: ["CI-front", "CD-backend"]
     types: [completed]
 
 jobs:
@@ -20,7 +20,6 @@ jobs:
       - name: change apiVersion
         run: |
           cd k8s/wp-frontend
-          git pull
           sed -i 's/appVersion: ".*"/appVersion: "${{ github.event.workflow_run.head_branch }}"/g' Chart.yaml
           git add .
           git config --global user.email "hjklo0220@gmail.com"
