@@ -7,6 +7,7 @@ import axiosService from "../../helpers/axios";
 import { getUser } from "../../hooks/user.actions";
 import { Context } from "../Layout";
 import "../default.css";
+import axios from "axios";
 
 function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
   const user = getUser();
@@ -15,8 +16,8 @@ function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
 
   useEffect(() => {
     // API 요청을 사용하여 feedId에 해당하는 피드 데이터 가져오기
-    axiosService
-      .get(`/feed/${feedId}/`) // 예시 API 엔드포인트
+    axios
+      .get(process.env.REACT_APP_API_URL+`/feed/${feedId}/`) // 예시 API 엔드포인트
       .then((response) => {
         setFeedData(response.data);
       })
