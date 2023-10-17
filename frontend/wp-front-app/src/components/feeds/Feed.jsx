@@ -22,7 +22,10 @@ function Feed(props) {
     const [form, setForm] = useState({body: feed.content})
     const data = new FormData();
     let nowUrl = window.location.href;
-    let isLikedUser =  feed.liked_user.includes(user.user_id)
+    let isLikedUser = false
+    if (user) {
+        isLikedUser = feed.liked_user.includes(user.user_id)
+    }
 
 
     data.append('content', form.body);
@@ -108,7 +111,7 @@ function Feed(props) {
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
-                            <Link to={`/profile/${feed.user_id}`}>
+                            <Link to={`/profile/${feed.user_id}/`}>
                                 <Image
                                     src={feed.profile_image}
                                     roundedCircle

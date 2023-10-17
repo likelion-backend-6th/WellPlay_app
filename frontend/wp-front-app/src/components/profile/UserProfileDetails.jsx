@@ -10,6 +10,7 @@ import FollowingList from "../follow/Following";
 import axiosService from "../../helpers/axios";
 import {serverUrl} from "../../config";
 import Feed from "../feeds/Feed";
+import "../../App.css"
 
 function UserProfile() {
     const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal} = useUserActions();
@@ -186,7 +187,7 @@ function UserProfile() {
                 <div>
                     <div className='lol-card-container'>
                     {userInfolol && userInfolol.tier && (
-                        <Card style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{ width: '35rem' }}>
                             <Card.Body>
                             <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                             </Card.Body>
@@ -195,7 +196,7 @@ function UserProfile() {
                     </div>
                     <div className='val-card-container'>
                     {userInfoval && userInfoval.val_tag && (
-                        <Card style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{ width: '35rem' }}>
                             <Card.Body>
                             <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
                             </Card.Body>
@@ -204,9 +205,15 @@ function UserProfile() {
                     </div>
                 </div>
 
-                <div className="col-md-2">
-                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
-                </div>
+                {user ? (
+                    <div className="col-md-2">
+                        <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                    </div>
+                ):(
+                    <div>
+
+                    </div>
+                )};
             </div>
             <div className="container mt-5">
                 <div className="button-container">
