@@ -1,8 +1,6 @@
 name: CD-backend
 
 on:
-  push:
-    tags: "*.*.*"
   workflow_run:
     workflows: ["CI-backend"]
     types: [completed]
