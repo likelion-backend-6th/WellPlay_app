@@ -1,7 +1,5 @@
 db.sqlite3
 Dockerfile
-feed/migrations/*
-account/migrations/*
 
 */__pycache__
 *.pyc
