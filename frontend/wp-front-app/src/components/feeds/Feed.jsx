@@ -197,9 +197,15 @@ function Feed(props) {
                                 padding: "2px",
                                 fontSize: "20px",
                                 color: feed.like ? "#0D6EFD" : "#C4C4C4",
+                                cursor: !user ? "not-allowed" : "pointer",
                             }}
                             onClick={() => {
-                                handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                if (!user) {
+                                        window.location.reload();
+                                        alert("로그인이 필요합니다");
+                                    } else {
+                                        handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                    }
                             }}
                         />
                         <p className="ms-1">
