@@ -328,7 +328,7 @@ function UserProfile(props) {
             <div>
                 <div className='lol-card-container'>
                 {userInfolol && userInfolol.tier && (
-                    <Card style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '35rem' }}>
                         <Card.Body>
                         <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                         </Card.Body>
@@ -337,7 +337,7 @@ function UserProfile(props) {
                 </div>
                 <div className='val-card-container'>
                 {userInfoval && userInfoval.val_tag && (
-                    <Card style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '35rem' }}>
                         <Card.Body>
                         <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
                         </Card.Body>
