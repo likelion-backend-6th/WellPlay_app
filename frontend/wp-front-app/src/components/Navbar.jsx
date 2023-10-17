@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Image, Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { getUser, useUserActions } from '../hooks/user.actions';
 import { Link } from 'react-router-dom';
-import LoginFormModal from './authentication/LoginFormModal'; // LoginFormModal을 import
+import LoginFormModal from './authentication/LoginFormModal';
 import "./default.css"
 
 function Navigationbar() {
@@ -21,7 +21,7 @@ function Navigationbar() {
   }
   const [profile, setProfile] = useState({})
 
-  const [showLoginForm, setShowLoginForm] = useState(false); // 모달 표시 상태 추가
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -36,28 +36,29 @@ function Navigationbar() {
   }, []);
 
   return (
-    <Navbar className="content-backgroud" variant="dark">
+    <Navbar className="content-backgroud" variant="dark" style={{ flexDirection: 'column' }}>
       <Container>
-        <Navbar.Brand className="fw-bold" href="/">
-          Well Play
-        </Navbar.Brand>
-        <Navbar.Collapse className="justify-content-end">
-          <Nav>
-            {user ? ( // 사용자가 로그인한 경우에만 아바타표시
-              <Nav>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <Navbar.Brand className="fw-bold" href="/">
+              Well Play
+            </Navbar.Brand>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {user ? (
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <Nav.Item as={Link} to={`/profile/${user.user_id}/`}>
                   <Image src={profile.image_url} roundedCircle width={36} height={36} />
                 </Nav.Item>
-              </Nav>
+              </div>
             ) : (
-              <Nav.Item>
+              <div>
                 {/*로그인 안했을때 Nav바 비워두기*/}
-              </Nav.Item>
+              </div>
             )}
-            {/* 로그인 모달 */}
             <LoginFormModal show={showLoginForm} onHide={() => setShowLoginForm(false)} />
-          </Nav>
-        </Navbar.Collapse>
+          </div>
+        </div>
       </Container>
     </Navbar>
   );
