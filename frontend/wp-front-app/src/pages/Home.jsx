@@ -106,8 +106,10 @@ function Home() {
             <Row className="justify-content-evenly">
                 <Col sm={7}>
                     <Col sm={12}> {/* 전체 가로 공간을 사용할 열 */}
-                        <button onClick={handleSortByLatest}>최신</button>
-                        <button onClick={handleSortByRecommend}>추천순</button>
+                        <div className="button-container">
+                            <button id="order" onClick={() => setSortBy('latest')}>최신</button>
+                            <button id="order" onClick={() => setSortBy('recommend')}>추천순</button>
+                        </div>
                     </Col>
                     <Row className="border rounded align-items-center">
                         {(
