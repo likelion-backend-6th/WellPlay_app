@@ -78,14 +78,9 @@ function CreateFeed({refresh}) {
 	
 	return (
 		<>
-			<Form.Group>
-				<Form.Control
-					className="py-2 rounded-pill border-primary text-primary"
-					type="text"
-					placeholder="Write a feed"
-					onClick={handleShow}
-				/>
-			</Form.Group>
+			<Button onClick={handleShow}>
+				글쓰기
+			</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton className="border-0">
 					<Modal.Title>Create Feed</Modal.Title>
