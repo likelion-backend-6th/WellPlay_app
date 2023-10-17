@@ -14,6 +14,7 @@ class FeedSerializer(serializers.ModelSerializer):
         )
 
     like = serializers.SerializerMethodField()
+    liked_user = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
     profile_image = serializers.SerializerMethodField()
@@ -29,6 +30,13 @@ class FeedSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj) -> str:
         return obj.owner.profile.image_url if obj.owner else ""
+
+    def get_liked_user(self, obj):
+        like_users = Like.objects.filter(feed=obj)
+        user_list = [like.user for like in like_users]
+        serialized_users = [user.user_id for user in user_list]
+
+        return serialized_users
 
 
 class FeedUploadSerializer(serializers.ModelSerializer):
