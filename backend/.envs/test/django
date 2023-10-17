@@ -1,0 +1,4 @@
+DB_HOST=db
+
+DJANGO_SETTINGS_MODULE="config.settings.test"
+DJANGO_SECRET_KEY="pn-pp2)s3od5^w-6xu835j-v5^+j7+#07=v+w3k%5n)lpq(+f9"
