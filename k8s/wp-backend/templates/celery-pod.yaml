@@ -9,4 +9,4 @@ spec:
     - name: {{ include "wellplay.celery.fullname" . }}
       image: {{ .Values.image.celery.name }}:{{ .Values.image.celery.tag }}
       ports:
-        - containerPort: {{ .Values.containerPort.celery }}
+        - containerPort: {{ .Values.containerPort.redis }}
