@@ -49,7 +49,7 @@ function Navigationbar() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {user ? (
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <CreateFeed refresh={Home.fetchFeeds}/>
+                  <CreateFeed/>
                 <Nav.Item as={Link} to={`/profile/${user.user_id}/`}>
                   <Image src={profile.image_url} roundedCircle width={36} height={36} />
                 </Nav.Item>

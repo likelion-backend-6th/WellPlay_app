@@ -57,7 +57,6 @@ function RegisterFormModal(props) {
           }
         }
       });
-
   };
 
   return (
@@ -107,9 +106,6 @@ function RegisterFormModal(props) {
               placeholder="보안을 위해 안전한 비밀번호를 권장드립니다."
             />
           </Form.Group>
-            {/*<div className="text-content text-danger">
-              {error && <p>{error}</p>}
-              </div>*/}
           <Button variant="primary" type="submit">
             회원가입
           </Button>
