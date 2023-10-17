@@ -22,7 +22,10 @@ function Feed(props) {
     const [form, setForm] = useState({body: feed.content})
     const data = new FormData();
     let nowUrl = window.location.href;
-    let isLikedUser =  feed.liked_user.includes(user.user_id)
+    let isLikedUser = false
+    if (user) {
+        isLikedUser = feed.liked_user.includes(user.user_id)
+    }
 
 
     data.append('content', form.body);
