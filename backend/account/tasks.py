@@ -67,6 +67,8 @@ def summoner_league(user_infolol_id):
             logging.info(f"리그데이터.{league_data}")
             if league_data == []:
                 logging.info("소환사가 없거나, 랭크게임을 하지않았습니다. 초기화합니다")
+                user_infolol.summoner_id = None
+                user_infolol.summoner_puuid = None
                 user_infolol.summoner_name = None
                 user_infolol.summoner_tier = None
                 user_infolol.summoner_rank = None
