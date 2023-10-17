@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {Card, DropdownButton, Image, Modal, Dropdown, Button, Form} from "react-bootstrap"
 import {format} from "timeago.js"
-import {CommentOutlined, LikeFilled, LikeOutlined} from "@ant-design/icons"
+import {CommentOutlined, LikeFilled, LikeOutlined, ShareAltOutlined} from "@ant-design/icons"
 import axiosService from "../../helpers/axios"
 import {Link} from "react-router-dom"
 import {getUser, useUserActions} from "../../hooks/user.actions"
@@ -21,9 +21,11 @@ function Feed(props) {
     const [showUpdateFeed, setShowUpdateFeed] = useState(false);
     const [form, setForm] = useState({body: feed.content})
     const data = new FormData();
+    let nowUrl = window.location.href;
 
     data.append('content', form.body);
     const [showCommentModal, setShowCommentModal] = useState(false);
+
 
     const fetchProfile = (userid) => {
         getUserProfile(userid)
@@ -87,6 +89,15 @@ function Feed(props) {
     };
     const cancelUpdate = () => {
         setShowUpdateFeed(false);
+    };
+
+    const handleCopyClipBoard = async (text) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            alert("클립보드에 링크가 복사되었습니다.");
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
@@ -196,16 +207,16 @@ function Feed(props) {
                                 height: "24px",
                                 padding: "2px",
                                 fontSize: "20px",
-                                color: feed.like ? "#0D6EFD" : "#C4C4C4",
+                                color: user && feed.like ? "#0D6EFD" : "#C4C4C4",
                                 cursor: !user ? "not-allowed" : "pointer",
                             }}
                             onClick={() => {
                                 if (!user) {
-                                        window.location.reload();
-                                        alert("로그인이 필요합니다");
-                                    } else {
-                                        handleLikeClick("like", {"user": user.id, "feed": feed.id})
-                                    }
+                                    window.location.reload();
+                                    alert("로그인이 필요합니다");
+                                } else {
+                                    handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                }
                             }}
                         />
                         <p className="ms-1">
@@ -237,6 +248,23 @@ function Feed(props) {
                             </p>
                         </div>
                     )}
+                    <div className="d-flex flex-row">
+                        <ShareAltOutlined
+                            style={{
+                                width: "24px",
+                                height: "24px",
+                                padding: "2px",
+                                fontSize: "20px",
+                                color: "#C4C4C4",
+                            }}
+                            onClick={() => {
+                                handleCopyClipBoard(nowUrl)
+                            }}
+                        />
+                        <p className="ms-1 mb-0">
+                            <small>Share</small>
+                        </p>
+                    </div>
                 </Card.Footer>
             </Card>
             <CommentModal
