@@ -1,9 +1,6 @@
 name: CI-front
 
 on:
-    pull_request:
-        branches:
-            - 'dev'
     push:
         tags:
             - "*.*.*"
@@ -45,7 +42,7 @@ jobs:
                   echo "REACT_APP_API_URL=${{ secrets.BACKEND_LB }}" >> .env
 
             - name: bulid and push refs/heads
-              if: github.event.pull_request.merged == true
+              if: startsWith(github.ref, 'refs/heads')
               uses: docker/build-push-action@v4
               with:
                   context: frontend/wp-front-app

@@ -1,0 +1,33 @@
+name: PR-test
+
+on:
+  pull_request:
+    branches:
+      - "dev"
+
+jobs:
+  lint:
+    name: check lint (black)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: install black
+        run: pip install black
+      - name: check black
+        run: black backend
+
+  build-test-push:
+    needs: lint
+    name: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: test
+        run: |
+          docker-compose -f docker-compose-test.yml up --build -d
+          docker compose -f docker-compose-test.yml exec lion-app python manage.py test

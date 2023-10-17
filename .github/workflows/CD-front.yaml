@@ -1,8 +1,6 @@
 name: CD-front
 
 on:
-  push:
-    tags: "*.*.*"
   workflow_run:
     workflows: ["CI-front"]
     types: [completed]
