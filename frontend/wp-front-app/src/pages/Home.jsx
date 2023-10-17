@@ -111,15 +111,15 @@ function Home() {
                             <button id="order" onClick={() => setSortBy('recommend')}>추천순</button>
                         </div>
                     </Col>
-                    <Row className="border rounded align-items-center">
-                        {(
-                            <Col className="flex-shrink-1">
-                            </Col>
-                        )}
-                        <Col sm={10} className="flex-grow-1">
-                            <CreateFeed refresh={fetchFeeds}/>
-                        </Col>
-                    </Row>
+                    {/*<Row className="border rounded align-items-center">*/}
+                    {/*    {(*/}
+                    {/*        <Col className="flex-shrink-1">*/}
+                    {/*        </Col>*/}
+                    {/*    )}*/}
+                    {/*    <Col sm={10} className="flex-grow-1">*/}
+                    {/*        <CreateFeed refresh={fetchFeeds}/>*/}
+                    {/*    </Col> 기존 글 작성 코드(남겨두세요)*/}
+                    {/*</Row>*/}
                     <Row className="my-4">
                         {feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds}/>

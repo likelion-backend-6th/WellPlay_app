@@ -4,6 +4,8 @@ import { getUser, useUserActions } from '../hooks/user.actions';
 import { Link } from 'react-router-dom';
 import LoginFormModal from './authentication/LoginFormModal';
 import "./default.css"
+import CreateFeed from "./feeds/CreateFeed";
+import Home from "../pages/Home"
 
 function Navigationbar() {
   const userActions = useUserActions();
@@ -47,6 +49,7 @@ function Navigationbar() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {user ? (
               <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <CreateFeed refresh={Home.fetchFeeds}/>
                 <Nav.Item as={Link} to={`/profile/${user.user_id}/`}>
                   <Image src={profile.image_url} roundedCircle width={36} height={36} />
                 </Nav.Item>
