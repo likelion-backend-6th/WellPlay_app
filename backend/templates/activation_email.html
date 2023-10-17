@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellPlay 활성화 이메일</title>
+</head>
+<body>
+    <p>안녕하세요! WellPlay 에 오신 유저님을 환영합니다</p>
+    <p>계정을 활성화하기 위해 아래 링크를 클릭해주세요</p>
+    <a href="http://{{ current_site }}{% url 'activate' uidb64 token %}">WellPlay 계정 활성화 링크</a>
+    <p>이 링크는 1시간 후에 만료됩니다. 계정을 활성화하시려면 빠르게 이용해주시기 바랍니다.</p>
+    <p>문의 사항은 wellplaywhale@naver.com 으로 회신 주시면 도와 드리겠습니다.</p>
+    <p>감사합니다, WellPlay 드림</p>
+</body>
+</html>
