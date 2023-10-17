@@ -29,6 +29,15 @@
 {{- end }}
 {{- end }}
 
+{{- define "wellplay.celery.fullname" -}}
+{{- $name := .Chart.Name }}
+{{- if contains $name .Release.Name }}
+{{- printf "%s-%s" "celery" .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s-%s" "celery" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+
 {{- define "wellplay.labels" -}}
 {{ include "wellplay.selectorLabels" .}}
 app.kubernetes.io/version: "{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -49,4 +58,9 @@ component: postgresql
 {{- define "redis.selectorLabels" -}}
 app: db
 component: redis
+{{- end -}}
+
+{{- define "celery.selectorLabels" -}}
+app: db
+component: celery
 {{- end -}}

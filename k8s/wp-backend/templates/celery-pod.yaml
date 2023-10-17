@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "wellplay.celery.fullname" . }}
+  labels:
+    {{- include "celery.selectorLabels" . | nindent 4 }}
+spec:
+  containers:
+    - name: {{ include "wellplay.celery.fullname" . }}
+      image: {{ .Values.image.celery.name }}:{{ .Values.image.celery.tag }}
+      ports:
+        - containerPort: {{ .Values.containerPort.celery }}
