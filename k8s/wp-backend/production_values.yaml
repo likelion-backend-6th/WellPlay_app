@@ -1,12 +1,17 @@
 image:
-  name: devpos6th.kr.ncr.ntruss.com/trackmission
+  name: wp-registry.kr.ncr.ntruss.com/wp-backend
   tag: ""
-  pullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: regcred
+  pullPolicy: Always
+  imagePullSecrets: regcred
   db:
     name: postgres
     tag: 13
+  redis:
+    name: redis
+    tag: 7
+  celery:
+    name: wp-registry.kr.ncr.ntruss.com/wp-celery
+    tag: latest
 
 nameOverride: ""
 fullnameOverride: ""
@@ -20,17 +25,28 @@ service:
   db:
     type: NodePort
     port: 5432
+  redis:
+    type: NodePort
+    port: 6379
 
 containerPort:
   django: 8000
   db: 5432
+  react: 3000
+  redis: 6379
 
 secret:
   type: Opaque
   django:
-    DJANGO_SECRET_KEY: be74bixeol1-o0@zvm_$gw!(ce28p+y=dlm=+aodr4(vk&enx2
+    DJANGO_SECRET_KEY: ""
+    NCP_ACCESS_KEY: ""
+    NCP_SECRET_KEY: ""
+    RIOT_API_KEY: ""
+    EMAIL_HOST_USER: ""
+    EMAIL_HOST_PASSWORD: ""
+
   db:
-    POSTGRES_DB: trackmission
+    POSTGRES_DB: wellplay
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
     POSTGRES_PORT: "5432"
@@ -38,3 +54,4 @@ secret:
 configMap:
   django:
     DJANGO_SETTINGS_MODULE: config.settings.prod
+    FRONTEND_URL: http://default-wellplay-fronten-f71e4-19988775-9cfa9a90a245.kr.lb.naverncp.com
