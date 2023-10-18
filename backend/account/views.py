@@ -300,7 +300,7 @@ class FollowingList(generics.ListAPIView):
     )
     def get(self, request):
         queryset = Follow.objects.filter(from_user=self.request.user)
-        serializer = FollowerListSerializer(queryset, many=True)
+        serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
         response_data = {
