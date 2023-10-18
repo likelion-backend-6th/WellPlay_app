@@ -61,6 +61,6 @@ component: redis
 {{- end -}}
 
 {{- define "celery.selectorLabels" -}}
-app: db
+app: celery
 component: celery
 {{- end -}}

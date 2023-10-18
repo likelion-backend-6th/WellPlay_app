@@ -5,8 +5,20 @@ metadata:
   labels:
     {{- include "celery.selectorLabels" . | nindent 4 }}
 spec:
+  imagePullSecrets:
+    - name: {{ .Values.image.imagePullSecrets }}
   containers:
     - name: {{ include "wellplay.celery.fullname" . }}
       image: {{ .Values.image.celery.name }}:{{ .Values.image.celery.tag }}
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      envFrom:
+        - secretRef:
+            name: {{ include "wellplay.fullname" . }}
+        - secretRef:
+            name: {{ include "wellplay.db.fullname" . }}
+        - secretRef:
+            name: backend
+        - configMapRef:
+            name: {{ include "wellplay.fullname" . }}
       ports:
-        - containerPort: {{ .Values.containerPort.celery }}
+        - containerPort: {{ .Values.containerPort.redis }}

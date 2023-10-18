@@ -24,5 +24,5 @@ jobs:
           git add .
           git config --global user.email "hjklo0220@gmail.com"
           git config --global user.name "github-actions[bot]"
-          git commit -m "change apiVersion in actions"
+          git commit -m "change backend apiVersion in actions"
           git push

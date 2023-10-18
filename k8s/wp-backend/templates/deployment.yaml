@@ -25,6 +25,8 @@ spec:
                 name: {{ include "wellplay.fullname" . }}
             - secretRef:
                 name: {{ include "wellplay.db.fullname" . }}
+            - secretRef:
+                name: backend
             - configMapRef:
                 name: {{ include "wellplay.fullname" . }}
           ports:

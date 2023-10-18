@@ -20,7 +20,7 @@ jobs:
       - name: check black
         run: black backend
 
-  build-test-push:
+  build-test:
     needs: lint
     name: build-push
     runs-on: ubuntu-latest
