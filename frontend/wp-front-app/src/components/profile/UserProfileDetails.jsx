@@ -232,11 +232,11 @@ function UserProfile() {
 
             <div className="button-container user-button">
                 <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal}
-                     style={{cursor: 'pointer'}}>
+                     style={{cursor: 'pointer', width: '100px'}}>
                     팔로워 {follower.follower_count}
                 </div>
                 <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal}
-                     style={{cursor: 'pointer'}}>
+                     style={{cursor: 'pointer', width: '100px'}}>
                     팔로잉 {following.following_count}
                 </div>
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
@@ -247,7 +247,7 @@ function UserProfile() {
                              handleShowUserStoryList();
                          }
                      }}
-                     style={{cursor: 'pointer'}}
+                     style={{cursor: 'pointer', width: '100px'}}
                 >
                     이야기 {feeds.feed_count}
                 </div>
