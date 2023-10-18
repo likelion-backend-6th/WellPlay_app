@@ -17,16 +17,13 @@ function useUserActions() {
         getFollowing,
         getUserFollower,
         getUserFollowing,
-        updateUsernameLol,
         apiPostLol,
         apiGetLol,
         apiPostVal,
         apiGetVal,
+        apiPostFc,
+        apiGetFc,
     };
-
-    function updateUsernameLol(data, axiosConfig) {
-        return axiosService.post(`${baseURL}/account/LOLinfo/`, data, axiosConfig);
-    }
 
     function apiPostLol(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/riot_summoner_info/`, data, axiosConfig);
@@ -35,6 +32,10 @@ function useUserActions() {
     function apiPostVal(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/riot_val_info/`, data, axiosConfig);
     }
+    
+    function apiPostFc(data, axiosConfig) {
+        return axiosService.post(`${baseURL}/account/fc_name_info/`, data, axiosConfig);
+    }
 
     function apiGetLol(user_id, axiosConfig) {
         return axios.get(`${baseURL}/account/riot_summoner_info/${user_id}/`, axiosConfig);
@@ -42,6 +43,10 @@ function useUserActions() {
 
     function apiGetVal(user_id, axiosConfig) {
         return axios.get(`${baseURL}/account/riot_val_info/${user_id}/`, axiosConfig);
+    }
+
+    function apiGetFc(user_id, axiosConfig) {
+        return axios.get(`${baseURL}/account/fc_name_info/${user_id}/`, axiosConfig);
     }
 
     function setUserData(data) {

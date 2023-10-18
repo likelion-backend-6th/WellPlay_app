@@ -135,7 +135,7 @@ def fc_username(user_infofc_id, fc_name):
     try:
         user_infofc = Infofc.objects.get(id=user_infofc_id)
 
-        headers = {"Authorization": f"Bearer {settings.FC_API_KEY}"}
+        headers = {"Authorization": settings.FC_API_KEY}
         user_params = {"nickname": fc_name}
 
         response = requests.get(
@@ -152,7 +152,7 @@ def fc_username(user_infofc_id, fc_name):
             user_infofc.fc_level = data["level"]
             user_infofc.save()
 
-            summoner_league.delay(user_infofc_id)
+            fc_division.delay(user_infofc_id)
             return True
         else:
             logging.info(f"fc_username 요청 실패.{response.status_code}")
@@ -172,14 +172,11 @@ def fc_division(user_infofc_id):
     logging.info("start fc_division")
     try:
         user_infofc = Infofc.objects.get(id=user_infofc_id)
-        fc_id = user_infofc.fc_id  # 사용자의 summoner_id 가져오기
+        fc_id = user_infofc.fc_id
 
-        headers = {"Authorization": f"Bearer {settings.FC_API_KEY}"}
-        apiDefault = {
-            "region": "https://public.api.nexon.com/openapi/fconline/v1.0",
-            "fcId": fc_id,
-        }
-        url = f"{apiDefault['region']}/users/{apiDefault['fcId']}/maxdivision"
+        headers = {"Authorization": settings.FC_API_KEY}
+
+        url = f"https://public.api.nexon.com/openapi/fconline/v1.0/users/{fc_id}/maxdivision"
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:

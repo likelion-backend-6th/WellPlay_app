@@ -13,7 +13,7 @@ import Feed from "../feeds/Feed";
 import "../../App.css"
 
 function UserProfile() {
-    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal} = useUserActions();
+    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal, apiGetFc} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -30,6 +30,7 @@ function UserProfile() {
     const {profileId} = useParams();
     const [userInfolol, setUserInfolol] = useState(null);
     const [userInfoval, setUserInfoval] = useState(null);
+    const [userInfofc, setUserInfofc] = useState(null);
     const [error, setError] = useState(null);
     const baseURL = process.env.REACT_APP_API_URL;
 
@@ -98,6 +99,17 @@ function UserProfile() {
             .then((response) => {
                 console.log(profile.id)
                 setUserInfoval(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+
+        apiGetFc(profileId) // 유저의 Fc 정보를 불러옵니다
+            .then((response) => {
+                console.log(profile.id)
+                setUserInfofc(response.data);
             })
             .catch((error) => {
                 setError(error.response ? error.response.data.message : '서버 오류');
@@ -199,6 +211,15 @@ function UserProfile() {
                         <Card className="custom-card-style" style={{ width: '35rem' }}>
                             <Card.Body>
                             <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                            </Card.Body>
+                        </Card>
+                    )}
+                    </div>
+                    <div className='fc-card-container'>
+                    {userInfofc && userInfofc.fc_division && (
+                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                            <Card.Body>
+                            <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                             </Card.Body>
                         </Card>
                     )}
