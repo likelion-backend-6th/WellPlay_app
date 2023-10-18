@@ -17,7 +17,6 @@ function Comment({ feedId, comment, refresh }) {
   const [form, setForm] = useState({ body: comment.content });
   const data = new FormData();
 
-  console.log("Comment에서", feedId);
   const handleMenuClick = () => {
     setShowMenu(!showMenu);
   };

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Infoval, User, Profile, Follow, Infolol
+from .models import Infoval, User, Profile, Follow, Infolol, Infofc
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -35,6 +35,19 @@ class InfoLolSerializer(serializers.ModelSerializer):
 class InfoValSerializer(serializers.ModelSerializer):
     class Meta:
         model = Infoval
+        fields = "__all__"
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+
+        return instance
+
+
+class InfoFcSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Infofc
         fields = "__all__"
 
     def update(self, instance, validated_data):
