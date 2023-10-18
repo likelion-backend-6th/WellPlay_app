@@ -60,12 +60,12 @@ function RegisterFormModal(props) {
   };
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} className="custom-modal">
       <Modal.Header closeButton>
         <Modal.Title>회원가입</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <p className="text-muted">Well Play, 당신의 하이라이트를 공유하세요</p>
+        <p className="text-login">Well Play, 당신의 하이라이트를 공유하세요</p>
         <Form
           id="register-form"
           noValidate

@@ -106,7 +106,7 @@ function Feed(props) {
 
     return (
         <>
-            <Card className="custom-card rounded-3 my-4">
+            <Card className="custom-card rounded-5 mt-4 mb-2"> 
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
@@ -138,7 +138,7 @@ function Feed(props) {
                                     <Dropdown.Item onClick={handleDeleteClick}>삭제</Dropdown.Item>
                                     <Dropdown.Item onClick={handleEditClick}>수정</Dropdown.Item>
                                 </DropdownButton>
-                                <Modal show={showDeleteModal} onHide={cancelDelete}>
+                                <Modal show={showDeleteModal} onHide={cancelDelete} className="custom-modal">
                                     <Modal.Header closeButton>
                                         <Modal.Title>삭제 확인</Modal.Title>
                                     </Modal.Header>
@@ -152,7 +152,7 @@ function Feed(props) {
                                         </Button>
                                     </Modal.Footer>
                                 </Modal>
-                                <Modal show={showUpdateFeed} onHide={cancelUpdate}>
+                                <Modal show={showUpdateFeed} onHide={cancelUpdate} className="custom-modal">
                                     <Modal.Header closeButton>
                                         <Modal.Title>글 수정</Modal.Title>
                                     </Modal.Header>
@@ -181,7 +181,10 @@ function Feed(props) {
                         )}
                     </Card.Title>
                     <Card.Text>
-                        {feed.content}
+                        <div>
+                            {feed.content}
+                        </div>
+                        <br></br>
                         {feed.image_url && (
                             <Image
                                 src={feed.image_url}
@@ -203,8 +206,9 @@ function Feed(props) {
                         )}
                     </Card.Text>
                 </Card.Body>
-                <Card.Footer className="d-flex w-50 justify-content-between border-0">
-                    <div className="d-flex flex-row">
+            </Card>
+            <Card className="custom-card rounded-4 d-flex flex-row justify-content-between mb-4">
+                    <div className="d-flex flex-row w-100 justify-content-center mt-2">
                         <LikeOutlined
                             style={{
                                 width: "24px",
@@ -223,12 +227,12 @@ function Feed(props) {
                                 }
                             }}
                         />
-                        <p className="ms-1">
-                            <small>{feed.like} Like</small>
+                        <p className="ms-1 me-2">
+                            <small>{feed.like}</small>
                         </p>
                     </div>
                     {!isSingleFeed && (
-                        <div className="d-flex flex-row">
+                        <div className="d-flex flex-row w-100 justify-content-center mt-2">
                             <CommentOutlined
                                 style={{
                                     width: "24px",
@@ -247,12 +251,12 @@ function Feed(props) {
                                     }
                                 }}
                             />
-                            <p className="ms-1 mb-0">
-                                <small>{feed.comment} Comment</small>
+                            <p className="ms-1 me-2">
+                                <small>{feed.comment}</small>
                             </p>
                         </div>
                     )}
-                    <div className="d-flex flex-row">
+                    <div className="d-flex flex-row w-100 justify-content-center mt-2">
                         <ShareAltOutlined
                             style={{
                                 width: "24px",
@@ -265,12 +269,11 @@ function Feed(props) {
                                 handleCopyClipBoard(nowUrl)
                             }}
                         />
-                        <p className="ms-1 mb-0">
-                            <small>Share</small>
+                        <p className="ms-1 me-2">
+                            <small></small>
                         </p>
                     </div>
-                </Card.Footer>
-            </Card>
+                </Card>
             <CommentModal
                 feedId={feed.id}
                 show={showCommentModal}

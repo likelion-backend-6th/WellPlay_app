@@ -78,10 +78,10 @@ function CreateFeed() {
 	
 	return (
 		<>
-			<Button onClick={handleShow} className="write-button">
+			<Button onClick={handleShow} className="write-button" >
 				<img src="/media/nav/plus.png" alt="글쓰기"/>글쓰기
 			</Button>
-			<Modal show={show} onHide={handleClose}>
+			<Modal show={show} onHide={handleClose} className="custom-modal">
 				<Modal.Header closeButton className="border-0">
 					<Modal.Title>Create Feed</Modal.Title>
 				</Modal.Header>
