@@ -1,0 +1,46 @@
+.edit-button button {
+    border-color: #FFFFFF;
+    background-color: #131313;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.edit-button button:hover {
+    background-color: #EC6664;
+    color: #FFFFFF;
+    border: none;
+}
+
+.follow-button button {
+    border-color: #3A2E2E;
+    background-color: #EC6664;
+    padding: 6px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 20px;
+    border-radius: 20px;
+}
+
+.list-button {
+    white-space: nowrap;
+    font-size: 18px;
+    width: 50%;
+    padding: 10px 10px;
+    position: relative;
+}
+
+.user-button {
+    white-space: nowrap;
+    font-size: 18px;
+    width: 50%;
+    padding: 10px 10px;
+    position: relative;
+    left: -50px;
+}
+
+.button {
+    padding: 0px;
+    margin: 25px 0px 0px 0px;
+}

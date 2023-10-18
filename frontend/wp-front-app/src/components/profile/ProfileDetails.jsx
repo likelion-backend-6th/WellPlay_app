@@ -8,7 +8,7 @@ import ProfileFormModal from "./ProfileFormModal";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
-import '../../App.css'
+import "../profile.css"
 import Feed from "../feeds/Feed";
 
 
@@ -23,7 +23,7 @@ function UserProfile(props) {
     const [showLOLModal, setShowLOLModal] = useState(false);
     const [showVALModal, setShowVALModal] = useState(false);
     const [showFCModal, setShowFCModal] = useState(false);
-    
+
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
     const [showGameinfoList, setShowGameinfoList] = useState(false);
@@ -92,7 +92,7 @@ function UserProfile(props) {
     const openLOLModal = () => {
         setShowLOLModal(true);
     };
-    
+
     const closeLOLModal = () => {
         setShowLOLModal(false);
     };
@@ -100,7 +100,7 @@ function UserProfile(props) {
     const openVALModal = () => {
         setShowVALModal(true);
     };
-    
+
     const closeVALModal = () => {
         setShowVALModal(false);
     };
@@ -143,13 +143,13 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
             setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
             alert('서버 요청에 실패했습니다.');
-            window.location.reload(); 
+            window.location.reload();
         });
 
         setTimeout(() => {
@@ -182,7 +182,7 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
@@ -219,7 +219,7 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
@@ -283,7 +283,7 @@ function UserProfile(props) {
             })
             .finally(() => {
             });
-            
+
     }, [profileId]);
 
     const handleModalInputChange = (e) => {
@@ -368,17 +368,17 @@ function UserProfile(props) {
                         />
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-10">
                     <div className="d-flex flex-column">
-                        <div className="d-flex align-items-center justify-content-between mb-3">
+                        <div className="d-flex align-items-center justify-content-between mb-3 edit-button">
                             <h2><strong>{profile.nickname}</strong></h2>
-                            <Button variant="primary" onClick={openModal}>편집</Button>
+                            <Button variant="primary" onClick={openModal}>프로필 편집</Button>
                         </div>
                         <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
                     </div>
                 </div>
             </div>
-            
+
             <div>
                 <div className='lol-card-container'>
                 {userInfolol && userInfolol.tier && (
@@ -408,13 +408,12 @@ function UserProfile(props) {
                 )}
                 </div>
             </div>
-            
-            <div className="button-container">
-                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
+
+            <div className="button-container list-button">
+                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer', width: '100px'}}>
                     팔로워 {follower.follower_count}
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}
-                >
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer', width: '100px'}}>
                     팔로잉 {following.following_count}
                 </div>
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
@@ -425,7 +424,7 @@ function UserProfile(props) {
                             handleShowUserStoryList();
                         }
                     }}
-                    style={{cursor: 'pointer'}}
+                    style={{cursor: 'pointer', width: '100px'}}
                 >
                     이야기 {feeds.feed_count}
 
@@ -438,13 +437,13 @@ function UserProfile(props) {
                             handleShowGameinfoList();
                         }
                     }}
-                    style={{cursor: 'pointer'}}
+                    style={{cursor: 'pointer', width: '100px'}}
                 >
                     연동하기
                 </div>
             </div>
             {showFollowerModal &&
-                <div>
+                <div className="modal-background">
                     <Modal show={showFollowerModal} onHide={closeFollowerModal}>
                         <Modal.Header closeButton>
                           <Modal.Title>팔로워</Modal.Title>
