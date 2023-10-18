@@ -3,10 +3,6 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {Button, Form, Image, Card, Row, Modal} from "react-bootstrap";
-import ProfileFormModal from "./ProfileFormModal";
-import UserFollowerList from "../follow/UserFollower";
-import UserFollowingList from "../follow/UserFollowing";
-import FollowingList from "../follow/Following";
 import axiosService from "../../helpers/axios";
 import {serverUrl} from "../../config";
 import Feed from "../feeds/Feed";
@@ -35,6 +31,8 @@ function UserProfile() {
     const baseURL = process.env.REACT_APP_API_URL;
 
     const user = getUser();
+
+    const [check, setCheck] = useState(false);
 
     const fetchProfile = (profileId) => {
         getUserProfile(profileId)
@@ -114,7 +112,24 @@ function UserProfile() {
             .finally(() => {
             });
 
-    }, [profileId]);
+    }, [profileId, check]);
+
+    useEffect(() => {
+        getUserFollower(profileId)
+            .then((response) => {
+                setFollower(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+        getUserFollowing(profileId)
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로잉 정보를 가져오는 중 오류 발생:', error);
+            })
+    }, [check]);
 
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
@@ -141,30 +156,19 @@ function UserProfile() {
     };
 
     const toggleFollow = () => {
-        const toUserId = profileId;
-        const followURL = `${baseURL}/account/follow/${toUserId}/`
-        const unfollowURL = `${baseURL}/account/follow/${toUserId}/`
+        const followURL = `${baseURL}/account/follow/${profileId}/`
 
-        if (isFollowing) {
-            axiosService
-                .post(unfollowURL, {to_user: profileId})
-                .then((response) => {
-                    setIsFollowing(false);
-                })
-                .catch((error) => {
-                    console.error('언팔로우 요청 중 오류 발생:', error);
-                });
-        } else {
-            axiosService
-                .post(followURL, {to_user: profileId})
-                .then((response) => {
-                    setIsFollowing(true);
-                })
-                .catch((error) => {
-                    console.error('팔로우 요청 중 오류 발생:', error);
-                });
-        }
+        axiosService
+            .post(followURL, {to_user: profileId})
+            .then((response) => {
+                fetchProfile(profileId);
+            })
+            .catch((error) => {
+                console.error('팔로우 요청 중 오류 발생:', error);
+            });
+        setCheck(!check)
     };
+
     return (
         <div className="profile-container" style={{color: "white"}}>
             <div className="row">
@@ -185,7 +189,9 @@ function UserProfile() {
                         <div className="d-flex align-items-center justify-content-between mb-3 follow-button">
                             <h2><strong>{profile.nickname}</strong></h2>
                             {user ? (
-                                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                                <Button onClick={toggleFollow} variant="danger">
+                                    {follower.follower_users && user.user_id && follower.follower_users.includes(user.user_id) ? '언팔로우' : '팔로우'}
+                                </Button>
                             ) : (
                                 <div>
 
@@ -202,7 +208,10 @@ function UserProfile() {
                     {userInfolol && userInfolol.tier && (
                         <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
-                                <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{width: '50px', height: '50px'}}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                                <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{
+                                    width: '50px',
+                                    height: '50px'
+                                }}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                             </Card.Body>
                         </Card>
                     )}
@@ -211,21 +220,27 @@ function UserProfile() {
                     {userInfoval && userInfoval.val_tag && (
                         <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
-                                <img src={`/media/val/val.png`} style={{width: '50px', height: '50px'}}/> {userInfoval.val_name} #{userInfoval.val_tag}
+                                <img src={`/media/val/val.png`} style={{
+                                    width: '50px',
+                                    height: '50px'
+                                }}/> {userInfoval.val_name} #{userInfoval.val_tag}
                             </Card.Body>
                         </Card>
                     )}
-                    </div>
-                    <div className='fc-card-container'>
-                    {userInfofc && userInfofc.fc_division && (
-                        <Card className="custom-card-style" style={{ width: '30rem' }}>
-                            <Card.Body>
-                            <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
-                            </Card.Body>
-                        </Card>
-                    )}
-                    </div>
                 </div>
+                <div className='fc-card-container'>
+                    {userInfofc && userInfofc.fc_division && (
+                        <Card className="custom-card-style" style={{width: '30rem'}}>
+                            <Card.Body>
+                                <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{
+                                    width: '50px',
+                                    height: '50px'
+                                }}/> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
+                            </Card.Body>
+                        </Card>
+                    )}
+                </div>
+            </div>
 
             <div className="button-container user-button">
                 <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal}
@@ -260,8 +275,15 @@ function UserProfile() {
                                 {follower.follower_list.map((followerItem) => (
                                     <li key={followerItem.id}>
                                         <Link to={`/profile/${followerItem.from_user}`}>
-                                            {followerItem.from_user}
+                                            <Image
+                                                src={followerItem.profile_image}
+                                                roundedCircle
+                                                width={48}
+                                                height={48}
+                                                className="me-2 border border-dark border-2"
+                                            />
                                         </Link>
+                                        {followerItem.from_user}
                                     </li>
                                 ))}
                             </ul>
@@ -282,8 +304,15 @@ function UserProfile() {
                                 {following.following_list.map((followingItem) => (
                                     <li key={followingItem.id}>
                                         <Link to={`/profile/${followingItem.to_user}`}>
-                                            {followingItem.to_user}
+                                            <Image
+                                                src={followingItem.profile_image}
+                                                roundedCircle
+                                                width={48}
+                                                height={48}
+                                                className="me-2 border border-dark border-2"
+                                            />
                                         </Link>
+                                        {followingItem.to_user}
                                     </li>
                                 ))}
                             </ul>
@@ -294,7 +323,7 @@ function UserProfile() {
                     </Modal>
                 </div>}
             {feeds && feeds.feed_count > 0 ? (
-                <div style={{ width: '30em' }}>
+                <div style={{width: '30em'}}>
                     <Row className="my-4">
                         {feeds.feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds}/>

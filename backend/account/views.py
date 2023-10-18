@@ -281,8 +281,10 @@ class UserFollowerList(generics.ListAPIView):
         serializer = FollowerListSerializer(queryset, many=True)
 
         follower_count = queryset.count()
+        follower_users = [follow.from_user.user_id for follow in queryset]
         response_data = {
             "follower_count": follower_count,
+            "follower_users": follower_users,
             "follower_list": serializer.data,
         }
         return Response(response_data)
@@ -298,7 +300,7 @@ class FollowingList(generics.ListAPIView):
     )
     def get(self, request):
         queryset = Follow.objects.filter(from_user=self.request.user)
-        serializer = FollowerListSerializer(queryset, many=True)
+        serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
         response_data = {
@@ -320,8 +322,10 @@ class UserFollowingList(generics.ListAPIView):
         serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
+        following_users = [follow.to_user.user_id for follow in queryset]
         response_data = {
             "following_count": following_count,
+            "following_users": following_users,
             "following_list": serializer.data,
         }
         return Response(response_data)

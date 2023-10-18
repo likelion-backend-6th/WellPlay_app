@@ -83,19 +83,27 @@ class FollowSerializer(serializers.ModelSerializer):
 class FollowingListSerializer(serializers.ModelSerializer):
     from_user = serializers.ReadOnlyField(source="from_user.user_id")
     to_user = serializers.ReadOnlyField(source="to_user.user_id")
+    profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Follow
         fields = "__all__"
+
+    def get_profile_image(self, obj) -> str:
+        return obj.to_user.profile.image_url if obj.to_user else ""
 
 
 class FollowerListSerializer(serializers.ModelSerializer):
     to_user = serializers.ReadOnlyField(source="to_user.user_id")
     from_user = serializers.ReadOnlyField(source="from_user.user_id")
+    profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = Follow
         fields = "__all__"
+
+    def get_profile_image(self, obj) -> str:
+        return obj.from_user.profile.image_url if obj.from_user else ""
 
 
 class InfololSerializer(serializers.ModelSerializer):
