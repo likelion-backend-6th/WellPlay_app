@@ -8,7 +8,7 @@ import ProfileFormModal from "./ProfileFormModal";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
-import '../../App.css'
+import "../profile.css"
 import Feed from "../feeds/Feed";
 
 
@@ -368,11 +368,11 @@ function UserProfile(props) {
                         />
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-10">
                     <div className="d-flex flex-column">
-                        <div className="d-flex align-items-center justify-content-between mb-3">
+                        <div className="d-flex align-items-center justify-content-between mb-3 edit-button">
                             <h2><strong>{profile.nickname}</strong></h2>
-                            <Button variant="primary" onClick={openModal}>편집</Button>
+                            <Button variant="primary" onClick={openModal}>프로필 편집</Button>
                         </div>
                         <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
                     </div>
@@ -409,12 +409,11 @@ function UserProfile(props) {
                 </div>
             </div>
             
-            <div className="button-container">
+            <div className="button-container list-button">
                 <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
                     팔로워 {follower.follower_count}
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}
-                >
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}>
                     팔로잉 {following.following_count}
                 </div>
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
