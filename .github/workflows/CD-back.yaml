@@ -2,7 +2,7 @@ name: CD-backend
 
 on:
   workflow_run:
-    workflows: ["CI-backend"]
+    workflows: ["CD-front"]
     types: [completed]
 
 jobs:
