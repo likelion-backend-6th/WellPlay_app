@@ -3,10 +3,6 @@ import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {Button, Form, Image, Card, Row, Modal} from "react-bootstrap";
-import ProfileFormModal from "./ProfileFormModal";
-import UserFollowerList from "../follow/UserFollower";
-import UserFollowingList from "../follow/UserFollowing";
-import FollowingList from "../follow/Following";
 import axiosService from "../../helpers/axios";
 import {serverUrl} from "../../config";
 import Feed from "../feeds/Feed";
@@ -17,7 +13,6 @@ function UserProfile() {
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
-    const [isFollowing, setIsFollowing] = useState(false);
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
     const [showUserStoryList, setShowUserStoryList] = useState(true);
@@ -35,6 +30,8 @@ function UserProfile() {
     const baseURL = process.env.REACT_APP_API_URL;
 
     const user = getUser();
+
+    const [check, setCheck] = useState(false);
 
     const fetchProfile = (profileId) => {
         getUserProfile(profileId)
@@ -61,6 +58,7 @@ function UserProfile() {
             console.error('API 요청 오류:', error);
         }
     };
+
 
     useEffect(() => {
         // 프로필 정보를 가져오기
@@ -114,7 +112,24 @@ function UserProfile() {
             .finally(() => {
             });
 
-    }, [profileId]);
+    }, [profileId, check]);
+
+    useEffect(() => {
+        getUserFollower(profileId)
+            .then((response) => {
+                setFollower(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로워 정보를 가져오는 중 오류 발생:', error);
+            })
+        getUserFollowing(profileId)
+            .then((response) => {
+                setFollowing(response.data);
+            })
+            .catch((error) => {
+                console.error('팔로잉 정보를 가져오는 중 오류 발생:', error);
+            })
+    }, [check]);
 
     const handleShowUserStoryList = () => {
         setShowUserStoryList(true);
@@ -143,28 +158,18 @@ function UserProfile() {
     const toggleFollow = () => {
         const toUserId = profileId;
         const followURL = `${baseURL}/account/follow/${toUserId}/`
-        const unfollowURL = `${baseURL}/account/follow/${toUserId}/`
 
-        if (isFollowing) {
-            axiosService
-                .post(unfollowURL, {to_user: profileId})
-                .then((response) => {
-                    setIsFollowing(false);
-                })
-                .catch((error) => {
-                    console.error('언팔로우 요청 중 오류 발생:', error);
-                });
-        } else {
-            axiosService
-                .post(followURL, {to_user: profileId})
-                .then((response) => {
-                    setIsFollowing(true);
-                })
-                .catch((error) => {
-                    console.error('팔로우 요청 중 오류 발생:', error);
-                });
-        }
+        axiosService
+            .post(followURL, {to_user: profileId})
+            .then((response) => {
+                fetchProfile(profileId);
+            })
+            .catch((error) => {
+                console.error('팔로우 요청 중 오류 발생:', error);
+            });
+        setCheck(!check)
     };
+
     return (
         <div className="profile-container" style={{color: "white"}}>
             <div className="row">
@@ -185,7 +190,8 @@ function UserProfile() {
                         <div className="d-flex align-items-center justify-content-between mb-3 follow-button">
                             <h2><strong>{profile.nickname}</strong></h2>
                             {user ? (
-                                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                                <Button onClick={toggleFollow}
+                                        variant="danger">{follower.follower_users && user.user_id && follower.follower_users.includes(user.user_id) ? '언팔로우' : '팔로우'}</Button>
                             ) : (
                                 <div>
 
@@ -195,117 +201,137 @@ function UserProfile() {
                         <p style={{color: '#808080', fontweight: 'lighter'}} className="userid">@{profileId}</p>
                     </div>
                 </div>
-            </div>
-
-            <div>
-                <div className='lol-card-container'>
-                    {userInfolol && userInfolol.tier && (
-                        <Card className="custom-card-style" style={{width: '30rem'}}>
-                            <Card.Body>
-                                <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{width: '50px', height: '50px'}}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
-                            </Card.Body>
-                        </Card>
-                    )}
-                </div>
-                <div className='val-card-container'>
-                    {userInfoval && userInfoval.val_tag && (
-                        <Card className="custom-card-style" style={{width: '30rem'}}>
-                            <Card.Body>
-                                <img src={`/media/val/val.png`} style={{width: '50px', height: '50px'}}/> {userInfoval.val_name} #{userInfoval.val_tag}
-                            </Card.Body>
-                        </Card>
-                    )}
+                <div>
+                    <div className='lol-card-container'>
+                        {userInfolol && userInfolol.tier && (
+                            <Card className="custom-card-style" style={{width: '30rem'}}>
+                                <Card.Body>
+                                    <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{
+                                        width: '50px',
+                                        height: '50px'
+                                    }}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                                </Card.Body>
+                            </Card>
+                        )}
+                    </div>
+                    <div className='val-card-container'>
+                        {userInfoval && userInfoval.val_tag && (
+                            <Card className="custom-card-style" style={{width: '30rem'}}>
+                                <Card.Body>
+                                    <img src={`/media/val/val.png`} style={{
+                                        width: '50px',
+                                        height: '50px'
+                                    }}/> {userInfoval.val_name} #{userInfoval.val_tag}
+                                </Card.Body>
+                            </Card>
+                        )}
                     </div>
                     <div className='fc-card-container'>
-                    {userInfofc && userInfofc.fc_division && (
-                        <Card className="custom-card-style" style={{ width: '30rem' }}>
-                            <Card.Body>
-                            <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
-                            </Card.Body>
-                        </Card>
-                    )}
+                        {userInfofc && userInfofc.fc_division && (
+                            <Card className="custom-card-style" style={{width: '30rem'}}>
+                                <Card.Body>
+                                    <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{
+                                        width: '50px',
+                                        height: '50px'
+                                    }}/> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
+                                </Card.Body>
+                            </Card>
+                        )}
                     </div>
                 </div>
 
-            <div className="button-container user-button">
-                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal}
-                     style={{cursor: 'pointer', width: '60%'}}>
-                    팔로워 {follower.follower_count}
+                <div className="button-container user-button">
+                    <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal}
+                         style={{cursor: 'pointer', width: '60%'}}>
+                        팔로워 {follower.follower_count}
+                    </div>
+                    <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal}
+                         style={{cursor: 'pointer', width: '60%'}}>
+                        팔로잉 {following.following_count}
+                    </div>
+                    <div className={`button ${showUserStoryList ? 'active' : ''}`}
+                         onClick={() => {
+                             if (showUserStoryList) {
+                                 handleHideUserStoryList();
+                             } else {
+                                 handleShowUserStoryList();
+                             }
+                         }}
+                         style={{cursor: 'pointer', width: '60%'}}
+                    >
+                        이야기 {feeds.feed_count}
+                    </div>
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal}
-                     style={{cursor: 'pointer', width: '60%'}}>
-                    팔로잉 {following.following_count}
-                </div>
-                <div className={`button ${showUserStoryList ? 'active' : ''}`}
-                     onClick={() => {
-                         if (showUserStoryList) {
-                             handleHideUserStoryList();
-                         } else {
-                             handleShowUserStoryList();
-                         }
-                     }}
-                     style={{cursor: 'pointer', width: '60%'}}
-                >
-                    이야기 {feeds.feed_count}
-                </div>
-            </div>
-            {showFollowerModal &&
-                <div>
-                    <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
-                        <Modal.Header closeButton>
-                            <Modal.Title>팔로워</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ul>
-                                {follower.follower_list.map((followerItem) => (
-                                    <li key={followerItem.id}>
-                                        <Link to={`/profile/${followerItem.from_user}`}>
+                {showFollowerModal &&
+                    <div>
+                        <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
+                            <Modal.Header closeButton>
+                                <Modal.Title>팔로워</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <ul>
+                                    {follower.follower_list.map((followerItem) => (
+                                        <li key={followerItem.id}>
+                                            <Link to={`/profile/${followerItem.from_user}`}>
+                                                <Image
+                                                    src={followerItem.profile_image}
+                                                    roundedCircle
+                                                    width={48}
+                                                    height={48}
+                                                    className="me-2 border border-dark border-2"
+                                                />
+                                            </Link>
                                             {followerItem.from_user}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={closeFollowerModal}>x</button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>}
-            {showFollowingModal &&
-                <div>
-                    <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
-                        <Modal.Header closeButton>
-                            <Modal.Title>팔로잉</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <ul>
-                                {following.following_list.map((followingItem) => (
-                                    <li key={followingItem.id}>
-                                        <Link to={`/profile/${followingItem.to_user}`}>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <button onClick={closeFollowerModal}>x</button>
+                            </Modal.Footer>
+                        </Modal>
+                    </div>}
+                {showFollowingModal &&
+                    <div>
+                        <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
+                            <Modal.Header closeButton>
+                                <Modal.Title>팔로잉</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <ul>
+                                    {following.following_list.map((followingItem) => (
+                                        <li key={followingItem.id}>
+                                            <Link to={`/profile/${followingItem.to_user}`}>
+                                                <Image
+                                                    src={followingItem.profile_image}
+                                                    roundedCircle
+                                                    width={48}
+                                                    height={48}
+                                                    className="me-2 border border-dark border-2"
+                                                />
+                                            </Link>
                                             {followingItem.to_user}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={closeFollowingModal}>x</button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>}
-            {feeds && feeds.feed_count > 0 ? (
-                <div style={{ width: '30em' }}>
-                    <Row className="my-4">
-                        {feeds.feeds.map((feed, index) => (
-                            <Feed key={index} feed={feed} refresh={fetchFeeds}/>
-                        ))}
-                    </Row>
-                </div>
-            ) : (
-                <div></div>
-            )}
-        </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <button onClick={closeFollowingModal}>x</button>
+                            </Modal.Footer>
+                        </Modal>
+                    </div>}
+                {feeds && feeds.feed_count > 0 ? (
+                    <div style={{width: '30em'}}>
+                        <Row className="my-4">
+                            {feeds.feeds.map((feed, index) => (
+                                <Feed key={index} feed={feed} refresh={fetchFeeds}/>
+                            ))}
+                        </Row>
+                    </div>
+                ) : (
+                    <div></div>
+                )}
+            </div>
     )
 }
-
 export default UserProfile;
