@@ -38,10 +38,22 @@
 }
 
 .button-container {
-  display: block;
-  justify-content: space-between;
+  display: flex;
+  justify-content: center;
 }
 
+.button-container button {
+  white-space: nowrap;
+  width: 50%;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 10px 30px;
+  font-size: 16px;
+}
+
+.recommend-button {
+
+}
 
 .main{
   margin-left: 10rem;
@@ -100,10 +112,13 @@
 }
 
 .login-button {
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+  position: fixed;
+  bottom: 0;
 }
 
 .login-button img {
@@ -114,10 +129,13 @@
 }
 
 .logout-button {
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+  position: fixed;
+  bottom: 0;
 }
 
 .logout-button img {
