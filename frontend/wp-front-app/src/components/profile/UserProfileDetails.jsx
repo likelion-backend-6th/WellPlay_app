@@ -13,7 +13,7 @@ import Feed from "../feeds/Feed";
 import "../../App.css"
 
 function UserProfile() {
-    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal} = useUserActions();
+    const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal, apiGetFc} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -30,6 +30,7 @@ function UserProfile() {
     const {profileId} = useParams();
     const [userInfolol, setUserInfolol] = useState(null);
     const [userInfoval, setUserInfoval] = useState(null);
+    const [userInfofc, setUserInfofc] = useState(null);
     const [error, setError] = useState(null);
     const baseURL = process.env.REACT_APP_API_URL;
 
@@ -85,7 +86,6 @@ function UserProfile() {
 
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
             .then((response) => {
-                console.log(profile.id)
                 setUserInfolol(response.data);
             })
             .catch((error) => {
@@ -96,8 +96,17 @@ function UserProfile() {
 
         apiGetVal(profileId) // 유저의 val 정보를 불러옵니다
             .then((response) => {
-                console.log(profile.id)
                 setUserInfoval(response.data);
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류');
+            })
+            .finally(() => {
+            });
+
+        apiGetFc(profileId) // 유저의 Fc 정보를 불러옵니다
+            .then((response) => {
+                setUserInfofc(response.data);
             })
             .catch((error) => {
                 setError(error.response ? error.response.data.message : '서버 오류');
@@ -135,15 +144,12 @@ function UserProfile() {
         const toUserId = profileId;
         const followURL = `${baseURL}/account/follow/${toUserId}/`
         const unfollowURL = `${baseURL}/account/follow/${toUserId}/`
-        console.log(followURL)
-        console.log(unfollowURL)
 
         if (isFollowing) {
             axiosService
                 .post(unfollowURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(false);
-                    console.log('unfollow')
                 })
                 .catch((error) => {
                     console.error('언팔로우 요청 중 오류 발생:', error);
@@ -153,7 +159,6 @@ function UserProfile() {
                 .post(followURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(true);
-                    console.log('follow')
                 })
                 .catch((error) => {
                     console.error('팔로우 요청 중 오류 발생:', error);
@@ -199,6 +204,15 @@ function UserProfile() {
                         <Card className="custom-card-style" style={{ width: '35rem' }}>
                             <Card.Body>
                             <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                            </Card.Body>
+                        </Card>
+                    )}
+                    </div>
+                    <div className='fc-card-container'>
+                    {userInfofc && userInfofc.fc_division && (
+                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                            <Card.Body>
+                            <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                             </Card.Body>
                         </Card>
                     )}

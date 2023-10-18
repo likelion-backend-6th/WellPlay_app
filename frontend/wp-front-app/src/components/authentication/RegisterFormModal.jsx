@@ -79,7 +79,7 @@ function RegisterFormModal(props) {
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
               type="email"
-              placeholder="로그인 및 인증에 사용됩니다"
+              placeholder="로그인 및 인증에 사용됩니다(@naver.com 권장)"
             />
             <Form.Control.Feedback type="invalid">
                 올바른 이메일 형식이 필요해요!

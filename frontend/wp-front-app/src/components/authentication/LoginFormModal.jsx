@@ -48,7 +48,6 @@ function LoginFormModal() {
                 window.location.reload();
             })
             .catch((err) => {
-                console.log(err.response.data.message)
                 if (err.message) {
                     if (err.response.data.message && err.response.data.message.includes("email not exists")) {
                         setError("이메일이 존재하지 않습니다.");

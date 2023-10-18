@@ -105,6 +105,10 @@ class RegisterAPIView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             user.is_active = False  # 사용자를 비활성화로 설정
+            infofc_instance = Infofc.objects.create(
+                user=user, fc_name="default_fc_name"
+            )
+            infofc_instance.save()
             user.save()
             send_activation_email(user, request)  # 이메일 전송
 
@@ -385,6 +389,21 @@ class InfovalList(generics.ListAPIView):
             )
 
 
+class InfofcList(generics.ListAPIView):
+    serializer_class = InfoFcSerializer
+    queryset = Infofc.objects.all()
+
+    def list(self, request, user_id=None):
+        try:
+            user_infofc = Infofc.objects.get(user__user_id=user_id)
+            serializer = InfoFcSerializer(user_infofc)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Infofc.DoesNotExist:
+            return Response(
+                {"error": "Infofc 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
 @api_view(["POST"])
 def riot_val_info(request):
     permission_classes = [
@@ -414,3 +433,38 @@ def riot_val_info(request):
         return Response(
             {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+@api_view(["POST"])
+def fc_name_info(request):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    fc_name = request.data.get("fc_name")
+
+    try:
+        user = request.user
+        if hasattr(user, "infofc"):
+            user_infofc = user.infofc  # 현재 로그인한 사용자의 Infofc
+            print(user_infofc.id, "Celery tasks async start")  # 정수형 (장고 유저 ID)
+            result = fc_username.delay(user_infofc.id, fc_name)
+            try:
+                task_result = result.get(timeout=10)  # 10초 동안 대기
+                if task_result:  # 작업이 성공한 경우
+                    return Response(True, status=status.HTTP_200_OK)
+                else:  # 작업이 실패한 경우
+                    return Response(False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except TimeoutError:
+                return Response(False, status=status.HTTP_408_REQUEST_TIMEOUT)
+        else:
+            # Infofc 모델이 존재하지 않는 경우
+            # 여기서 새로운 Infofc 인스턴스를 생성하여 User 인스턴스와 연결할 수 있습니다.
+            infofc_instance = Infofc.objects.create(
+                user=user, fc_name="default_fc_name"
+            )
+            infofc_instance.save()
+            return Response(
+                {"message": "Infofc 인스턴스가 생성되었습니다."}, status=status.HTTP_201_CREATED
+            )
+    except Infofc.DoesNotExist:
+        return Response({"error": "Infofc 문제."}, status=status.HTTP_404_NOT_FOUND)
