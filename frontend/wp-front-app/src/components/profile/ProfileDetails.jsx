@@ -8,8 +8,9 @@ import ProfileFormModal from "./ProfileFormModal";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
-import '../../App.css'
+import "../profile.css"
 import Feed from "../feeds/Feed";
+import "../default.css"
 
 
 function UserProfile(props) {
@@ -23,7 +24,7 @@ function UserProfile(props) {
     const [showLOLModal, setShowLOLModal] = useState(false);
     const [showVALModal, setShowVALModal] = useState(false);
     const [showFCModal, setShowFCModal] = useState(false);
-    
+
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
     const [showGameinfoList, setShowGameinfoList] = useState(false);
@@ -92,7 +93,7 @@ function UserProfile(props) {
     const openLOLModal = () => {
         setShowLOLModal(true);
     };
-    
+
     const closeLOLModal = () => {
         setShowLOLModal(false);
     };
@@ -100,7 +101,7 @@ function UserProfile(props) {
     const openVALModal = () => {
         setShowVALModal(true);
     };
-    
+
     const closeVALModal = () => {
         setShowVALModal(false);
     };
@@ -143,13 +144,13 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
             setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
             alert('서버 요청에 실패했습니다.');
-            window.location.reload(); 
+            window.location.reload();
         });
 
         setTimeout(() => {
@@ -182,7 +183,7 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
@@ -219,7 +220,7 @@ function UserProfile(props) {
                 } else {
                     alert('연동이 실패하였습니다.');
                 }
-                window.location.reload(); 
+                window.location.reload();
             }
         })
         .catch((error) => {
@@ -283,7 +284,7 @@ function UserProfile(props) {
             })
             .finally(() => {
             });
-            
+
     }, [profileId]);
 
     const handleModalInputChange = (e) => {
@@ -354,7 +355,7 @@ function UserProfile(props) {
     };
 
     return (
-        <div className="container" style={{ color: "white" }}>
+        <div className="profile-container" style={{ color: "white" }}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
@@ -368,21 +369,21 @@ function UserProfile(props) {
                         />
                     </div>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-10">
                     <div className="d-flex flex-column">
-                        <div className="d-flex align-items-center justify-content-between mb-3">
+                        <div className="d-flex align-items-center justify-content-between mb-3 edit-button">
                             <h2><strong>{profile.nickname}</strong></h2>
-                            <Button variant="primary" onClick={openModal}>편집</Button>
+                            <Button onClick={openModal}>프로필 편집</Button>
                         </div>
-                        <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
+                        <p style={{ color: '#808080', fontWeight: 'lighter' }} className="userid">@{user.user_id}</p>
                     </div>
                 </div>
             </div>
-            
+
             <div>
-                <div className='lol-card-container'>
+                <div className='val-card-container'>
                 {userInfolol && userInfolol.tier && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                         </Card.Body>
@@ -391,7 +392,7 @@ function UserProfile(props) {
                 </div>
                 <div className='val-card-container'>
                 {userInfoval && userInfoval.val_tag && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
                         </Card.Body>
@@ -400,7 +401,7 @@ function UserProfile(props) {
                 </div>
                 <div className='fc-card-container'>
                 {userInfofc && userInfofc.fc_division && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                         </Card.Body>
@@ -408,13 +409,12 @@ function UserProfile(props) {
                 )}
                 </div>
             </div>
-            
-            <div className="button-container">
-                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
+
+            <div className="button-container list-button">
+                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer', width: '75%'}}>
                     팔로워 {follower.follower_count}
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}
-                >
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer', width: '75%'}}>
                     팔로잉 {following.following_count}
                 </div>
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
@@ -425,7 +425,7 @@ function UserProfile(props) {
                             handleShowUserStoryList();
                         }
                     }}
-                    style={{cursor: 'pointer'}}
+                    style={{cursor: 'pointer', width: '75%'}}
                 >
                     이야기 {feeds.feed_count}
 
@@ -438,14 +438,14 @@ function UserProfile(props) {
                             handleShowGameinfoList();
                         }
                     }}
-                    style={{cursor: 'pointer'}}
+                    style={{cursor: 'pointer', width: '75%'}}
                 >
                     연동하기
                 </div>
             </div>
             {showFollowerModal &&
-                <div>
-                    <Modal show={showFollowerModal} onHide={closeFollowerModal}>
+                <div className="modal-background">
+                    <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
                         <Modal.Header closeButton>
                           <Modal.Title>팔로워</Modal.Title>
                         </Modal.Header>
@@ -467,7 +467,7 @@ function UserProfile(props) {
                 </div>}
             {showFollowingModal &&
                 <div>
-                    <Modal show={showFollowingModal} onHide={closeFollowingModal}>
+                    <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
                         <Modal.Header closeButton>
                           <Modal.Title>팔로잉</Modal.Title>
                         </Modal.Header>
@@ -490,7 +490,7 @@ function UserProfile(props) {
             {showGameinfoList && (
             <div>
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
-                    <Modal show={showLOLModal} onHide={closeLOLModal}>
+                    <Modal show={showLOLModal} onHide={closeLOLModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
                     </Modal.Header>
@@ -513,7 +513,7 @@ function UserProfile(props) {
                     </Modal.Body>
                     </Modal>
                 <Button variant="primary" onClick={openVALModal}>발로란트</Button>
-                    <Modal show={showVALModal} onHide={closeVALModal}>
+                    <Modal show={showVALModal} onHide={closeVALModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>발로란트 계정 연동</Modal.Title>
                     </Modal.Header>
@@ -542,7 +542,7 @@ function UserProfile(props) {
                     </Modal.Body>
                     </Modal>
                 <Button variant="primary" onClick={openFCModal}>FC온라인</Button>
-                    <Modal show={showFCModal} onHide={closeFCModal}>
+                    <Modal show={showFCModal} onHide={closeFCModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>FC온라인 계정 연동</Modal.Title>
                     </Modal.Header>
@@ -567,8 +567,8 @@ function UserProfile(props) {
             </div>
             )}
             {feeds && feeds.feed_count > 0 ? (
-                <div>
-                    <Row className="my-4">
+                <div style={{ width: '30em'}}>
+                    <Row className="my-4" style={{ margin: '10px' }}>
                         {feeds.feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds} />
                         ))}

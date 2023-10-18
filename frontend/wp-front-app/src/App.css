@@ -38,13 +38,22 @@
 }
 
 .button-container {
-  display: block;
-  justify-content: space-between;
+  display: flex;
+  justify-content: center;
+  margin-left: -10em;
 }
 
+.button-container button {
+  white-space: nowrap;
+  width: 31.62%;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 10px 30px;
+  font-size: 16px;
+}
 
 .main{
-  margin-left: 10rem;
+  margin-left: 15rem;
 }
 
 .button {
@@ -52,7 +61,7 @@
   padding: 0px 20px;
   border: none;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   background-color: #131313
 }
 
@@ -100,10 +109,13 @@
 }
 
 .login-button {
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+  position: fixed;
+  bottom: 0;
 }
 
 .login-button img {
@@ -114,10 +126,13 @@
 }
 
 .logout-button {
+  margin-bottom: 40px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+  position: fixed;
+  bottom: 0;
 }
 
 .logout-button img {
@@ -200,5 +215,17 @@ body{
 
 .custom-card-style{
   background-color: #202020;
+  color: #ffffff;
+  border-radius: 30px;
+  margin-top: 10px;
+}
+
+.modal-content {
+  background-color: #202020;
+  color: #ffffff;
+}
+
+.text-login {
+  font-weight: 50;
   color: #ffffff;
 }

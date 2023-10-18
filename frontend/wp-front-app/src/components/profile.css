@@ -1,0 +1,65 @@
+.edit-button {
+    margin: 10px 0px 0px 10px;
+}
+
+.follow-button {
+    margin: 10px 0px 0px 10px;
+}
+
+.userid {
+    margin: -25px 0px 0px 10px;
+}
+
+.edit-button button {
+    border-color: #FFFFFF;
+    background-color: #131313;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 240px;
+    border-radius: 20px;
+}
+
+.edit-button button:hover {
+    background-color: #EC6664;
+    color: #FFFFFF;
+    border: none;
+}
+
+.follow-button button {
+    border-color: #3A2E2E;
+    background-color: #EC6664;
+    padding: 6px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 218px;
+    border-radius: 20px;
+}
+
+.list-button {
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 400;
+    width: 70%;
+    margin-left: 20px;
+    padding: 10px 10px;
+    position: relative;
+}
+
+.user-button {
+    white-space: nowrap;
+    font-size: 16px;
+    width: 70%;
+    margin-left: 20px;
+    padding: 10px 10px;
+    position: relative;
+}
+
+.button {
+    font-size: 16px;
+    padding: 0px;
+    margin: 20px 0px -20px 0px;
+}
+
+.profile-container {
+    margin-left: 250px;
+}

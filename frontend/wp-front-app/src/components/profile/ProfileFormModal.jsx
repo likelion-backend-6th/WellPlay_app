@@ -51,7 +51,7 @@ function ProfileFormModal({showModal, closeModal, profileData, onSave}) {
     };
 
     return (
-        <Modal show={showModal} onHide={closeModal}>
+        <Modal show={showModal} onHide={closeModal} className="custom-modal">
             <Modal.Header closeButton>
                 <Modal.Title>프로필 편집</Modal.Title>
             </Modal.Header>

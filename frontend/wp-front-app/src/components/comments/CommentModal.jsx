@@ -27,7 +27,7 @@ function CommentModal({ feedId, show, handleClose, refreshComments, props,}) {
   }, [feedId]);
 
   return (
-    <Modal show={show} onHide={handleClose} size="xl" centered>
+    <Modal show={show} onHide={handleClose} size="xl" centered className="custom-modal">
       <Modal.Body className="border-0" style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}>
         <Row>
           <Col sm={8}>

@@ -10,7 +10,7 @@ import FollowingList from "../follow/Following";
 import axiosService from "../../helpers/axios";
 import {serverUrl} from "../../config";
 import Feed from "../feeds/Feed";
-import "../../App.css"
+import "../profile.css"
 
 function UserProfile() {
     const {getUserProfile, getUserFollowing, getUserFollower, apiGetLol, apiGetVal, apiGetFc} = useUserActions();
@@ -166,7 +166,7 @@ function UserProfile() {
         }
     };
     return (
-        <div className="container mt-5">
+        <div className="profile-container" style={{color: "white"}}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
@@ -180,37 +180,45 @@ function UserProfile() {
                         />
                     </div>
                 </div>
-                <div className="col-md-8">
-                    <div className="border-bottom pb-3">
-                        <h2 className="mb-3">{profile.nickname}</h2>
-                        <p>
-                            <strong>@{profileId}</strong>
-                        </p>
+                <div className="col-md-10">
+                    <div className="d-flex flex-column">
+                        <div className="d-flex align-items-center justify-content-between mb-3 follow-button">
+                            <h2><strong>{profile.nickname}</strong></h2>
+                            {user ? (
+                                    <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
+                            ) : (
+                                <div>
+
+                                </div>
+                            )}
+                        </div>
+                        <p style={{color: '#808080', fontweight: 'lighter'}} className="userid">@{profileId}</p>
                     </div>
                 </div>
-                
-                <div>
-                    <div className='lol-card-container'>
+            </div>
+
+            <div>
+                <div className='lol-card-container'>
                     {userInfolol && userInfolol.tier && (
-                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
-                            <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                                <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{width: '50px', height: '50px'}}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                             </Card.Body>
                         </Card>
                     )}
-                    </div>
-                    <div className='val-card-container'>
+                </div>
+                <div className='val-card-container'>
                     {userInfoval && userInfoval.val_tag && (
-                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
-                            <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                                <img src={`/media/val/val.png`} style={{width: '50px', height: '50px'}}/> {userInfoval.val_name} #{userInfoval.val_tag}
                             </Card.Body>
                         </Card>
                     )}
                     </div>
                     <div className='fc-card-container'>
                     {userInfofc && userInfofc.fc_division && (
-                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{ width: '30rem' }}>
                             <Card.Body>
                             <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                             </Card.Body>
@@ -219,92 +227,83 @@ function UserProfile() {
                     </div>
                 </div>
 
-                {user ? (
-                    <div className="col-md-2">
-                        <Button onClick={toggleFollow} variant="danger">{isFollowing ? '언팔로우' : '팔로우'}</Button>
-                    </div>
-                ):(
-                    <div>
-
-                    </div>
-                )};
-            </div>
-            <div className="container mt-5">
-                <div className="button-container">
-                    <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer'}}>
-                        팔로워 {follower.follower_count}
-                    </div>
-                    <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer'}}>
-                        팔로잉 {following.following_count}
-                    </div>
-                    <div className={`button ${showUserStoryList ? 'active' : ''}`}
-                         onClick={() => {
-                             if (showUserStoryList) {
-                                 handleHideUserStoryList();
-                             } else {
-                                 handleShowUserStoryList();
-                             }
-                         }}
-                         style={{cursor: 'pointer'}}>
-                        이야기 {feeds.feed_count}
-                    </div>
-                    {showFollowerModal &&
-                        <div>
-                            <Modal show={showFollowerModal} onHide={closeFollowerModal}>
-                                <Modal.Header closeButton>
-                                  <Modal.Title>팔로워</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  <ul>
-                                    {follower.follower_list.map((followerItem) => (
-                                      <li key={followerItem.id}>
-                                        <Link to={`/profile/${followerItem.from_user}`}>
-                                          {followerItem.from_user}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <button onClick={closeFollowerModal}>x</button>
-                                </Modal.Footer>
-                              </Modal>
-                        </div>}
-                    {showFollowingModal &&
-                        <div>
-                            <Modal show={showFollowingModal} onHide={closeFollowingModal}>
-                                <Modal.Header closeButton>
-                                  <Modal.Title>팔로잉</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  <ul>
-                                    {following.following_list.map((followingItem) => (
-                                      <li key={followingItem.id}>
-                                        <Link to={`/profile/${followingItem.to_user}`}>
-                                          {followingItem.to_user}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <button onClick={closeFollowingModal}>x</button>
-                                </Modal.Footer>
-                              </Modal>
-                        </div>}
-                        {feeds && feeds.feed_count > 0 ? (
-                            <div>
-                                <Row className="my-4">
-                                    {feeds.feeds.map((feed, index) => (
-                                        <Feed key={index} feed={feed} refresh={fetchFeeds} />
-                                    ))}
-                                </Row>
-                            </div>
-                        ) : (
-                            <div></div>
-                        )}
+            <div className="button-container user-button">
+                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal}
+                     style={{cursor: 'pointer', width: '60%'}}>
+                    팔로워 {follower.follower_count}
+                </div>
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal}
+                     style={{cursor: 'pointer', width: '60%'}}>
+                    팔로잉 {following.following_count}
+                </div>
+                <div className={`button ${showUserStoryList ? 'active' : ''}`}
+                     onClick={() => {
+                         if (showUserStoryList) {
+                             handleHideUserStoryList();
+                         } else {
+                             handleShowUserStoryList();
+                         }
+                     }}
+                     style={{cursor: 'pointer', width: '60%'}}
+                >
+                    이야기 {feeds.feed_count}
                 </div>
             </div>
+            {showFollowerModal &&
+                <div>
+                    <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
+                        <Modal.Header closeButton>
+                            <Modal.Title>팔로워</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <ul>
+                                {follower.follower_list.map((followerItem) => (
+                                    <li key={followerItem.id}>
+                                        <Link to={`/profile/${followerItem.from_user}`}>
+                                            {followerItem.from_user}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <button onClick={closeFollowerModal}>x</button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>}
+            {showFollowingModal &&
+                <div>
+                    <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
+                        <Modal.Header closeButton>
+                            <Modal.Title>팔로잉</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <ul>
+                                {following.following_list.map((followingItem) => (
+                                    <li key={followingItem.id}>
+                                        <Link to={`/profile/${followingItem.to_user}`}>
+                                            {followingItem.to_user}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <button onClick={closeFollowingModal}>x</button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>}
+            {feeds && feeds.feed_count > 0 ? (
+                <div style={{ width: '30em' }}>
+                    <Row className="my-4">
+                        {feeds.feeds.map((feed, index) => (
+                            <Feed key={index} feed={feed} refresh={fetchFeeds}/>
+                        ))}
+                    </Row>
+                </div>
+            ) : (
+                <div></div>
+            )}
         </div>
     )
 }
