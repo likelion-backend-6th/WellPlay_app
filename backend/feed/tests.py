@@ -37,24 +37,29 @@ class FeedTest(APITestCase):
 
         # post
         res: Response = login_client.post("/feed/", self.post_data)
+        feed_id = res.data["id"]
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
         # put
-        res: Response = login_client.put("/feed/1/", {"content": "test content update"})
+        res: Response = login_client.put(
+            f"/feed/{feed_id}/", {"content": "test content update"}
+        )
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
         # another user put
         login_client.force_authenticate(user=self.authorized_user2)
-        res: Response = login_client.put("/feed/1/", {"content": "another user update"})
+        res: Response = login_client.put(
+            f"/feed/{feed_id}/", {"content": "another user update"}
+        )
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
         # another user delete
-        res: Response = login_client.delete("/feed/1/")
+        res: Response = login_client.delete(f"/feed/{feed_id}/")
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
         # delete
         login_client.force_authenticate(user=self.authorized_user1)
-        res: Response = login_client.delete("/feed/1/")
+        res: Response = login_client.delete(f"/feed/{feed_id}/")
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
     @patch("common.uploader.boto3.client")
