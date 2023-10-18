@@ -203,7 +203,7 @@ function UserProfile() {
             <div>
                 <div className='lol-card-container'>
                     {userInfolol && userInfolol.tier && (
-                        <Card className="custom-card-style" style={{width: '35rem'}}>
+                        <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
                                 <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{width: '50px', height: '50px'}}/> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                             </Card.Body>
@@ -212,7 +212,7 @@ function UserProfile() {
                 </div>
                 <div className='val-card-container'>
                     {userInfoval && userInfoval.val_tag && (
-                        <Card className="custom-card-style" style={{width: '35rem'}}>
+                        <Card className="custom-card-style" style={{width: '30rem'}}>
                             <Card.Body>
                                 <img src={`/media/val/val.png`} style={{width: '50px', height: '50px'}}/> {userInfoval.val_name} #{userInfoval.val_tag}
                             </Card.Body>
@@ -221,7 +221,7 @@ function UserProfile() {
                     </div>
                     <div className='fc-card-container'>
                     {userInfofc && userInfofc.fc_division && (
-                        <Card className="custom-card-style" style={{ width: '35rem' }}>
+                        <Card className="custom-card-style" style={{ width: '30rem' }}>
                             <Card.Body>
                             <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                             </Card.Body>
@@ -254,7 +254,7 @@ function UserProfile() {
             </div>
             {showFollowerModal &&
                 <div>
-                    <Modal show={showFollowerModal} onHide={closeFollowerModal}>
+                    <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
                         <Modal.Header closeButton>
                             <Modal.Title>팔로워</Modal.Title>
                         </Modal.Header>
@@ -276,7 +276,7 @@ function UserProfile() {
                 </div>}
             {showFollowingModal &&
                 <div>
-                    <Modal show={showFollowingModal} onHide={closeFollowingModal}>
+                    <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
                         <Modal.Header closeButton>
                             <Modal.Title>팔로잉</Modal.Title>
                         </Modal.Header>

@@ -10,6 +10,7 @@ import FollowerList from "../follow/Follower"
 import FollowingList from "../follow/Following"
 import "../profile.css"
 import Feed from "../feeds/Feed";
+import "../default.css"
 
 
 function UserProfile(props) {
@@ -380,9 +381,9 @@ function UserProfile(props) {
             </div>
 
             <div>
-                <div className='lol-card-container'>
+                <div className='val-card-container'>
                 {userInfolol && userInfolol.tier && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
                         </Card.Body>
@@ -391,7 +392,7 @@ function UserProfile(props) {
                 </div>
                 <div className='val-card-container'>
                 {userInfoval && userInfoval.val_tag && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
                         </Card.Body>
@@ -400,7 +401,7 @@ function UserProfile(props) {
                 </div>
                 <div className='fc-card-container'>
                 {userInfofc && userInfofc.fc_division && (
-                    <Card className="custom-card-style" style={{ width: '35rem' }}>
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
                         <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
                         </Card.Body>
@@ -444,7 +445,7 @@ function UserProfile(props) {
             </div>
             {showFollowerModal &&
                 <div className="modal-background">
-                    <Modal show={showFollowerModal} onHide={closeFollowerModal}>
+                    <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
                         <Modal.Header closeButton>
                           <Modal.Title>팔로워</Modal.Title>
                         </Modal.Header>
@@ -466,7 +467,7 @@ function UserProfile(props) {
                 </div>}
             {showFollowingModal &&
                 <div>
-                    <Modal show={showFollowingModal} onHide={closeFollowingModal}>
+                    <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
                         <Modal.Header closeButton>
                           <Modal.Title>팔로잉</Modal.Title>
                         </Modal.Header>
@@ -489,7 +490,7 @@ function UserProfile(props) {
             {showGameinfoList && (
             <div>
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
-                    <Modal show={showLOLModal} onHide={closeLOLModal}>
+                    <Modal show={showLOLModal} onHide={closeLOLModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
                     </Modal.Header>
@@ -512,7 +513,7 @@ function UserProfile(props) {
                     </Modal.Body>
                     </Modal>
                 <Button variant="primary" onClick={openVALModal}>발로란트</Button>
-                    <Modal show={showVALModal} onHide={closeVALModal}>
+                    <Modal show={showVALModal} onHide={closeVALModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>발로란트 계정 연동</Modal.Title>
                     </Modal.Header>
@@ -541,7 +542,7 @@ function UserProfile(props) {
                     </Modal.Body>
                     </Modal>
                 <Button variant="primary" onClick={openFCModal}>FC온라인</Button>
-                    <Modal show={showFCModal} onHide={closeFCModal}>
+                    <Modal show={showFCModal} onHide={closeFCModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>FC온라인 계정 연동</Modal.Title>
                     </Modal.Header>

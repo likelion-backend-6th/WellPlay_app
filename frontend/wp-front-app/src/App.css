@@ -37,20 +37,6 @@
   }
 }
 
-.button-container {
-  display: flex;
-  justify-content: center;
-}
-
-.button-container button {
-  white-space: nowrap;
-  width: 50%;
-  margin-right: 10px;
-  margin-left: 10px;
-  padding: 10px 30px;
-  font-size: 16px;
-}
-
 .main{
   margin-left: 10rem;
 }
@@ -214,5 +200,17 @@ body{
 
 .custom-card-style{
   background-color: #202020;
+  color: #ffffff;
+  border-radius: 30px;
+  margin-top: 10px;
+}
+
+.modal-content {
+  background-color: #202020;
+  color: #ffffff;
+}
+
+.text-login {
+  font-weight: 50;
   color: #ffffff;
 }

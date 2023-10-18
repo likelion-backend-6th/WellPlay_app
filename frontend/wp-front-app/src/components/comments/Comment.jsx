@@ -93,7 +93,7 @@ function Comment({ feedId, comment, refresh }) {
         )}
       </Card.Body>
 
-      <Modal show={showDeleteModal} onHide={cancelDelete}>
+      <Modal show={showDeleteModal} onHide={cancelDelete} className="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>삭제 확인</Modal.Title>
         </Modal.Header>
@@ -108,7 +108,7 @@ function Comment({ feedId, comment, refresh }) {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={ShowUpdateComment} onHide={cancelUpdate}>
+      <Modal show={ShowUpdateComment} onHide={cancelUpdate} className="custom-modal">
         <Modal.Header closeButton>
           <Modal.Title>댓글 수정</Modal.Title>
         </Modal.Header>

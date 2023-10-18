@@ -73,7 +73,7 @@ function Navigationbar() {
                         )}
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column', margin: '10px'}}>
-                        <LoginFormModal show={showLoginForm} onHide={() => setShowLoginForm(false)}/>
+                        <LoginFormModal className="custom-modal" show={showLoginForm} onHide={() => setShowLoginForm(false)}/>
                     </div>
                 </div>
             </Container>

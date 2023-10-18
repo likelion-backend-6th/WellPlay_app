@@ -3,6 +3,7 @@ import {Button, Form, Modal} from "react-bootstrap";
 import {useUserActions, getUser} from "../../hooks/user.actions";
 import RegisterFormModal from "./RegisterFormModal"; // RegisterFormModal 컴포넌트를 import
 import {Context} from "../Layout"
+import "../default.css"
 
 function LoginFormModal() {
     const [showModal, setShowModal] = useState(false);
@@ -82,12 +83,12 @@ function LoginFormModal() {
                 </Button>
             )}
 
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal className="custom-modal" show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>로그인</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="text-muted">Well Play, 당신의 하이라이트를 공유하세요</p>
+                    <p className="text-login">Well Play, 당신의 하이라이트를 공유하세요</p>
                     <Form
                         id="login-form"
                         noValidate
@@ -128,7 +129,7 @@ function LoginFormModal() {
                         <Button variant="primary" type="submit">
                             로그인
                         </Button>
-                        <p className="text-muted">
+                        <p className="text-login">
                             아직 회원이 아니신가요?
                             <Button variant="link" onClick={handleShowRegisterModal}>
                                 가입하기

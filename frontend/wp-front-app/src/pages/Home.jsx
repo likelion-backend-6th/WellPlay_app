@@ -5,11 +5,13 @@ import CreateFeed from "../components/feeds/CreateFeed";
 import Feed from "../components/feeds/Feed";
 import {useInView} from 'react-intersection-observer';
 import "../App.css"
+import "../components/default.css"
 
 function Home() {
     const [feeds, setFeeds] = useState([]);
     const [tempFeeds, setTempFeeds] = useState([]);
     const [sortBy, setSortBy] = useState('latest');
+    const [selectedButton, setSelectedButton] = useState(null);
 
     const [ref, inView] = useInView();
     const [page, setPage] = useState(0)
@@ -18,12 +20,14 @@ function Home() {
     const [initialLoad, setInitialLoad] = useState(false);
 
     const handleSortByLatest = () => {
+        setSelectedButton('latest');
         setSortBy('latest');
         setPage(1);
         setInitialLoad(true);
     }
 
     const handleSortByRecommend = () => {
+        setSelectedButton('recommend');
         setSortBy('recommend');
         setPage(1);
         setInitialLoad(true);
@@ -108,8 +112,22 @@ function Home() {
                 <Col sm={7}>
                     <Col sm={12}> {/* 전체 가로 공간을 사용할 열 */}
                         <div className="button-container">
-                            <button id="order" onClick={handleSortByLatest}>최신</button>
-                            <button id="order" onClick={handleSortByRecommend}>추천순</button>
+                        <button
+                            className={`button-bottom ${
+                            selectedButton === 'latest' ? 'selected' : ''
+                            }`}
+                            onClick={handleSortByLatest}
+                        >
+                            최신
+                        </button>
+                        <button
+                            className={`button-bottom ${
+                            selectedButton === 'recommend' ? 'selected' : ''
+                            }`}
+                            onClick={handleSortByRecommend}
+                        >
+                            추천순
+                        </button>
                         </div>
                     </Col>
                     <Row className="my-4">
