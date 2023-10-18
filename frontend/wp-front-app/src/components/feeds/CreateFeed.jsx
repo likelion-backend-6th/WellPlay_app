@@ -73,7 +73,6 @@ function CreateFeed() {
 					show: true,
 					title: "Post Error",
 				})
-				console.log(error)
 			})
 	}
 	

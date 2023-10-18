@@ -86,7 +86,6 @@ function UserProfile() {
 
         apiGetLol(profileId) // 유저의 lol 정보를 불러옵니다
             .then((response) => {
-                console.log(profile.id)
                 setUserInfolol(response.data);
             })
             .catch((error) => {
@@ -97,7 +96,6 @@ function UserProfile() {
 
         apiGetVal(profileId) // 유저의 val 정보를 불러옵니다
             .then((response) => {
-                console.log(profile.id)
                 setUserInfoval(response.data);
             })
             .catch((error) => {
@@ -108,7 +106,6 @@ function UserProfile() {
 
         apiGetFc(profileId) // 유저의 Fc 정보를 불러옵니다
             .then((response) => {
-                console.log(profile.id)
                 setUserInfofc(response.data);
             })
             .catch((error) => {
@@ -147,15 +144,12 @@ function UserProfile() {
         const toUserId = profileId;
         const followURL = `${baseURL}/account/follow/${toUserId}/`
         const unfollowURL = `${baseURL}/account/follow/${toUserId}/`
-        console.log(followURL)
-        console.log(unfollowURL)
 
         if (isFollowing) {
             axiosService
                 .post(unfollowURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(false);
-                    console.log('unfollow')
                 })
                 .catch((error) => {
                     console.error('언팔로우 요청 중 오류 발생:', error);
@@ -165,7 +159,6 @@ function UserProfile() {
                 .post(followURL, {to_user: profileId})
                 .then((response) => {
                     setIsFollowing(true);
-                    console.log('follow')
                 })
                 .catch((error) => {
                     console.error('팔로우 요청 중 오류 발생:', error);
