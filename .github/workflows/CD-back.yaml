@@ -2,7 +2,7 @@ name: CD-backend
 
 on:
   workflow_run:
-    workflows: ["CD-front"]
+    workflows: ["CI-backend"]
     types: [completed]
 
 jobs:
@@ -25,4 +25,4 @@ jobs:
           git config --global user.email "hjklo0220@gmail.com"
           git config --global user.name "github-actions[bot]"
           git commit -m "change backend apiVersion in actions"
-          git push
+          git push || { git fetch origin dev && git rebase origin/dev && git push; }
