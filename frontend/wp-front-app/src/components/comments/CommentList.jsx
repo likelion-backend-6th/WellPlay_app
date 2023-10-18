@@ -16,7 +16,6 @@ function CommentList({ feedId, onCommentPosted, props, }) {
         const sortedComments = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // 최신 댓글 순으로 정렬
         setComments(sortedComments);
         console.log("Commentlist에서",feedId)
-        refresh();
       })
       .catch((error) => {
         console.error(error);
