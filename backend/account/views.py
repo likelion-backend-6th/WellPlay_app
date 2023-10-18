@@ -414,3 +414,29 @@ def riot_val_info(request):
         return Response(
             {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+@api_view(["POST"])
+def fc_name_info(request):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    fc_name = request.data.get("fc_name")
+
+    try:
+        user_infofc = request.user.infofc  # 현재 로그인한 사용자의 Infofc
+        print(user_infofc.id, "Celery tasks async start")  # 정수형 (장고 유저 ID)
+        result = fc_username.delay(user_infofc.id, fc_name)
+        try:
+            task_result = result.get(timeout=10)  # 10초 동안 대기
+            if task_result:  # 작업이 성공한 경우
+                return Response(True, status=status.HTTP_200_OK)
+            else:  # 작업이 실패한 경우
+                return Response(False, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except TimeoutError:
+            return Response(False, status=status.HTTP_408_REQUEST_TIMEOUT)
+    except Infofc.DoesNotExist:
+        # Infofc 모델이 존재하지 않는 경우
+        return Response(
+            {"error": "Infofc 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+        )

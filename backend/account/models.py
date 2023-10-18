@@ -85,6 +85,17 @@ class Infoval(models.Model):
         return f"{self.val_name}'s Val Info"
 
 
+class Infofc(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infofc")
+    fc_name = models.CharField(max_length=30, null=True, blank=True)
+    fc_id = models.CharField(max_length=128, null=True, blank=True)
+    fc_level = models.IntegerField(null=True, blank=True)
+    fc_division = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.fc_name}'s FC Info"
+
+
 # Profile 모델로 분리
 class Profile(CommonModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")

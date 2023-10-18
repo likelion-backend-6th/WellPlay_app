@@ -1,7 +1,7 @@
 from django.conf import settings
 from celery import shared_task
 import requests
-from .models import Infolol, Infoval
+from .models import Infolol, Infoval, Infofc
 import logging
 
 
@@ -126,4 +126,84 @@ def account_v1(user_infoval_id, val_name, val_tag):
 
     except Infolol.DoesNotExist:
         logging.info("Dose not exist Infoval.")
+        return False
+
+
+@shared_task
+def fc_username(user_infofc_id, fc_name):
+    logging.info("start fc_username")
+    try:
+        user_infofc = Infofc.objects.get(id=user_infofc_id)
+
+        headers = {"Authorization": f"Bearer {settings.FC_API_KEY}"}
+        user_params = {"nickname": fc_name}
+
+        response = requests.get(
+            "https://public.api.nexon.com/openapi/fconline/v1.0/users?",
+            params=user_params,
+            headers=headers,
+        )
+
+        if response.status_code == 200:
+            logging.info(f"fc_username 요청 성공.{response.status_code}")
+            data = response.json()
+            user_infofc.fc_name = data["nickname"]
+            user_infofc.fc_id = data["accessId"]
+            user_infofc.fc_level = data["level"]
+            user_infofc.save()
+
+            summoner_league.delay(user_infofc_id)
+            return True
+        else:
+            logging.info(f"fc_username 요청 실패.{response.status_code}")
+            user_infofc.fc_name = None
+            user_infofc.fc_id = None
+            user_infofc.fc_level = None
+            user_infofc.save()
+            return False
+
+    except Infofc.DoesNotExist:
+        logging.info("Does not exist Infofc.")
+        return False
+
+
+@shared_task
+def fc_division(user_infofc_id):
+    logging.info("start fc_division")
+    try:
+        user_infofc = Infofc.objects.get(id=user_infofc_id)
+        fc_id = user_infofc.fc_id  # 사용자의 summoner_id 가져오기
+
+        headers = {"Authorization": f"Bearer {settings.FC_API_KEY}"}
+        apiDefault = {
+            "region": "https://public.api.nexon.com/openapi/fconline/v1.0",
+            "fcId": fc_id,
+        }
+        url = f"{apiDefault['region']}/users/{apiDefault['fcId']}/maxdivision"
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            logging.info(f"fc_division 요청 성공.{response.status_code}")
+            data = response.json()
+            logging.info(f"디비전랭킹데이터.{data}")
+            if data == []:
+                logging.info("최대 디비전이 없습니다. 하지않았습니다. 초기화합니다")
+                user_infofc.fc_id = None
+                user_infofc.fc_name = None
+                user_infofc.fc_level = None
+                user_infofc.fc_division = None
+                user_infofc.save()
+                return False
+            else:
+                for item in data:
+                    if item["matchType"] == 50:
+                        user_infofc.fc_division = item["division"]
+                        user_infofc.save()
+                        return True
+        else:
+            logging.info(f"fc_division 요청 실패.{response.status_code}")
+            return False
+
+    except Infofc.DoesNotExist:
+        logging.info("Does not exist Infofc.")
         return False
