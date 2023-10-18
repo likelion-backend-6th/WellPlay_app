@@ -355,7 +355,7 @@ function UserProfile(props) {
     };
 
     return (
-        <div className="container" style={{ color: "white" }}>
+        <div className="profile-container" style={{ color: "white" }}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
@@ -373,9 +373,9 @@ function UserProfile(props) {
                     <div className="d-flex flex-column">
                         <div className="d-flex align-items-center justify-content-between mb-3 edit-button">
                             <h2><strong>{profile.nickname}</strong></h2>
-                            <Button variant="primary" onClick={openModal}>프로필 편집</Button>
+                            <Button onClick={openModal}>프로필 편집</Button>
                         </div>
-                        <p style={{ color: '#808080', fontWeight: 'lighter' }}>@{user.user_id}</p>
+                        <p style={{ color: '#808080', fontWeight: 'lighter' }} className="userid">@{user.user_id}</p>
                     </div>
                 </div>
             </div>
@@ -411,10 +411,10 @@ function UserProfile(props) {
             </div>
 
             <div className="button-container list-button">
-                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer', width: '100px'}}>
+                <div className={`button ${showFollowerList ? 'active' : ''}`} onClick={openFollowerModal} style={{cursor: 'pointer', width: '75%'}}>
                     팔로워 {follower.follower_count}
                 </div>
-                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer', width: '100px'}}>
+                <div className={`button ${showFollowingList ? 'active' : ''}`} onClick={openFollowingModal} style={{cursor: 'pointer', width: '75%'}}>
                     팔로잉 {following.following_count}
                 </div>
                 <div className={`button ${showUserStoryList ? 'active' : ''}`}
@@ -425,7 +425,7 @@ function UserProfile(props) {
                             handleShowUserStoryList();
                         }
                     }}
-                    style={{cursor: 'pointer', width: '100px'}}
+                    style={{cursor: 'pointer', width: '75%'}}
                 >
                     이야기 {feeds.feed_count}
 
@@ -438,7 +438,7 @@ function UserProfile(props) {
                             handleShowGameinfoList();
                         }
                     }}
-                    style={{cursor: 'pointer', width: '100px'}}
+                    style={{cursor: 'pointer', width: '75%'}}
                 >
                     연동하기
                 </div>
@@ -567,8 +567,8 @@ function UserProfile(props) {
             </div>
             )}
             {feeds && feeds.feed_count > 0 ? (
-                <div>
-                    <Row className="my-4">
+                <div style={{ width: '30em'}}>
+                    <Row className="my-4" style={{ margin: '10px' }}>
                         {feeds.feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds} />
                         ))}

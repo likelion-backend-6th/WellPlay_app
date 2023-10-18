@@ -195,11 +195,9 @@ function Feed(props) {
                         {feed.video_url && (
                             <video
                                 src={feed.video_url}
-                                style={{maxWidth: "100%", height: "400px", width: "auto"}}
+                                style={{maxWidth: "100%", height: "100%", width: "auto"}}
                                 controls={true}
                                 className="border border-dark border-2"
-                                width="100%"
-                                height="100%"
                                 loop={false}
                                 muted={false}
                             />

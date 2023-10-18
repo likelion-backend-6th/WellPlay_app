@@ -37,8 +37,23 @@
   }
 }
 
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-left: -10em;
+}
+
+.button-container button {
+  white-space: nowrap;
+  width: 31.62%;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 10px 30px;
+  font-size: 16px;
+}
+
 .main{
-  margin-left: 10rem;
+  margin-left: 15rem;
 }
 
 .button {
@@ -46,7 +61,7 @@
   padding: 0px 20px;
   border: none;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   background-color: #131313
 }
 

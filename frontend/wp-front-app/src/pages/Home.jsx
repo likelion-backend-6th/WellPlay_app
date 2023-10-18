@@ -130,7 +130,7 @@ function Home() {
                         </button>
                         </div>
                     </Col>
-                    <Row className="my-4">
+                    <Row className="my-4" style={{ width: '30em'}}>
                         {feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds}/>
                         ))}
