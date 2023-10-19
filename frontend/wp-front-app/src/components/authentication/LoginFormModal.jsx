@@ -85,10 +85,16 @@ function LoginFormModal() {
 
             <Modal className="custom-modal" show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>로그인</Modal.Title>
+                    <Modal.Title>
+                    <img src={`/media/nav/logo.png`} style={{ width: '75px', height: '75px' }} />    
+                        로그인
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="text-login">Well Play, 당신의 하이라이트를 공유하세요</p>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src={`/media/site/dog-bg.png`} style={{ width: '50px', height: '50px', marginRight: '10px' }} />
+                    <p className="text-login" style={{ display: 'inline-block', marginTop: '14px' }}>당신의 하이라이트를 공유하세요!</p>
+                </div>
                     <Form
                         id="login-form"
                         noValidate

@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 
 function Comment({ feedId, comment, refresh }) {
   const user = getUser();
+  const userActions = useUserActions();
   const [showMenu, setShowMenu] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [ShowUpdateComment, setShowUpdateComment] = useState(false);
@@ -70,7 +71,7 @@ function Comment({ feedId, comment, refresh }) {
             <Image src={comment.profile_image} roundedCircle alt={comment.user_id} width={48} height={48} className="me-2 border border-dark border-2" />
           </Link>
           <div className="comment-content">
-            <Card.Title className="comment-username">{comment.user_id}
+            <Card.Title className="comment-username">{comment.nickname}
               <p className="comment-small-text">
                 <small>{format(comment.created_at)}</small>
               </p>
