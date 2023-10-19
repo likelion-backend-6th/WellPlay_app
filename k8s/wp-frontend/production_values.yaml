@@ -1,12 +1,8 @@
 image:
-  name: devpos6th.kr.ncr.ntruss.com/trackmission
-  tag: ""
-  pullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: regcred
-  db:
-    name: postgres
-    tag: 13
+  name: wp-registry.kr.ncr.ntruss.com/wp-frontend
+  tag: "latest"
+  pullPolicy: Always
+  imagePullSecrets: regcred
 
 nameOverride: ""
 fullnameOverride: ""
@@ -17,24 +13,6 @@ service:
   lb:
     type: LoadBalancer
     port: 80
-  db:
-    type: NodePort
-    port: 5432
 
 containerPort:
-  django: 8000
-  db: 5432
-
-secret:
-  type: Opaque
-  django:
-    DJANGO_SECRET_KEY: be74bixeol1-o0@zvm_$gw!(ce28p+y=dlm=+aodr4(vk&enx2
-  db:
-    POSTGRES_DB: trackmission
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_PORT: "5432"
-
-configMap:
-  django:
-    DJANGO_SETTINGS_MODULE: config.settings.prod
+  react: 3000

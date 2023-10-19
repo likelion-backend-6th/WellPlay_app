@@ -14,8 +14,10 @@ import "../default.css"
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower,
-        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc } = useUserActions();
+    const {
+        getProfile, getFollowing, getFollower,
+        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc
+    } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -447,45 +449,59 @@ function UserProfile(props) {
                 <div className="modal-background">
                     <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
                         <Modal.Header closeButton>
-                          <Modal.Title>팔로워</Modal.Title>
+                            <Modal.Title>팔로워</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                          <ul>
-                            {follower.follower_list.map((followerItem) => (
-                              <li key={followerItem.id}>
-                                <Link to={`/profile/${followerItem.from_user}`}>
-                                  {followerItem.from_user}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
+                            <ul>
+                                {follower.follower_list.map((followerItem) => (
+                                    <li key={followerItem.id}>
+                                        <Link to={`/profile/${followerItem.from_user}`}>
+                                            <Image
+                                                src={followerItem.profile_image}
+                                                roundedCircle
+                                                width={48}
+                                                height={48}
+                                                className="me-2 border border-dark border-2"
+                                            />
+                                        </Link>
+                                        {followerItem.from_user}
+                                    </li>
+                                ))}
+                            </ul>
                         </Modal.Body>
                         <Modal.Footer>
-                          <button onClick={closeFollowerModal}>x</button>
+                            <button onClick={closeFollowerModal}>x</button>
                         </Modal.Footer>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showFollowingModal &&
                 <div>
                     <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
                         <Modal.Header closeButton>
-                          <Modal.Title>팔로잉</Modal.Title>
+                            <Modal.Title>팔로잉</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                          <ul>
-                            {following.following_list.map((followingItem) => (
-                              <li key={followingItem.id}>
-                                <Link to={`/profile/${followingItem.to_user}`}>
-                                  {followingItem.to_user}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
+                            <ul>
+                                {following.following_list.map((followingItem) => (
+                                    <li key={followingItem.id}>
+                                        <Link to={`/profile/${followingItem.to_user}`}>
+                                            <Image
+                                                src={followingItem.profile_image}
+                                                roundedCircle
+                                                width={48}
+                                                height={48}
+                                                className="me-2 border border-dark border-2"
+                                            />
+                                        </Link>
+                                        {followingItem.to_user}
+                                    </li>
+                                ))}
+                            </ul>
                         </Modal.Body>
                         <Modal.Footer>
-                          <button onClick={closeFollowingModal}>x</button>
+                            <button onClick={closeFollowingModal}>x</button>
                         </Modal.Footer>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showGameinfoList && (
             <div>
@@ -564,13 +580,13 @@ function UserProfile(props) {
                         </Button>
                     </Modal.Body>
                     </Modal>
-            </div>
+                </div>
             )}
             {feeds && feeds.feed_count > 0 ? (
                 <div style={{ width: '30em'}}>
                     <Row className="my-4" style={{ margin: '10px' }}>
                         {feeds.feeds.map((feed, index) => (
-                            <Feed key={index} feed={feed} refresh={fetchFeeds} />
+                            <Feed key={index} feed={feed} refresh={fetchFeeds}/>
                         ))}
                     </Row>
                 </div>

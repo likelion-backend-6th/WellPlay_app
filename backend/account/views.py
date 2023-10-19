@@ -2,7 +2,6 @@ from django.contrib.auth import authenticate
 from django.core.files import File
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -10,20 +9,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import views
 from celery.result import AsyncResult
-from django.core.mail import send_mail
-from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.utils.http import urlsafe_base64_decode
-import base64
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 from .serializers import *
-from account.tasks import *  # Celery 작업 import
+from account.tasks import *
 from common.uploader import FileUploader
 
 
@@ -287,8 +281,10 @@ class UserFollowerList(generics.ListAPIView):
         serializer = FollowerListSerializer(queryset, many=True)
 
         follower_count = queryset.count()
+        follower_users = [follow.from_user.user_id for follow in queryset]
         response_data = {
             "follower_count": follower_count,
+            "follower_users": follower_users,
             "follower_list": serializer.data,
         }
         return Response(response_data)
@@ -304,7 +300,7 @@ class FollowingList(generics.ListAPIView):
     )
     def get(self, request):
         queryset = Follow.objects.filter(from_user=self.request.user)
-        serializer = FollowerListSerializer(queryset, many=True)
+        serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
         response_data = {
@@ -326,8 +322,10 @@ class UserFollowingList(generics.ListAPIView):
         serializer = FollowingListSerializer(queryset, many=True)
 
         following_count = queryset.count()
+        following_users = [follow.to_user.user_id for follow in queryset]
         response_data = {
             "following_count": following_count,
+            "following_users": following_users,
             "following_list": serializer.data,
         }
         return Response(response_data)
