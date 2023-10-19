@@ -11,6 +11,7 @@
 }
 
 .edit-button button {
+    white-space: nowrap;
     border-color: #FFFFFF;
     background-color: #131313;
     font-size: 16px;
@@ -26,6 +27,7 @@
 }
 
 .follow-button button {
+    white-space: nowrap;
     border-color: #3A2E2E;
     background-color: #EC6664;
     padding: 6px 20px;

@@ -40,7 +40,6 @@
 .button-container {
   display: flex;
   justify-content: center;
-  margin-left: -10em;
 }
 
 .button-container button {
@@ -50,6 +49,12 @@
   margin-left: 10px;
   padding: 10px 30px;
   font-size: 16px;
+}
+
+.home {
+  display: grid;
+  justify-items: center;
+  margin-right: 250px;
 }
 
 .main{
