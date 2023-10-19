@@ -1,13 +1,14 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
+from django_prometheus.models import ExportModelOperationsMixin
 
 from common.models import CommonModel
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 # Helper Class
@@ -43,7 +44,9 @@ class UserManager(BaseUserManager):
 
 
 # AbstractBaseUser를 상속해서 유저 커스텀
-class User(CommonModel, AbstractBaseUser, PermissionsMixin):
+class User(
+    ExportModelOperationsMixin("user"), CommonModel, AbstractBaseUser, PermissionsMixin
+):
     user_id = models.CharField(max_length=30, unique=True, null=False, blank=False)
     email = models.EmailField(max_length=30, unique=True, null=False, blank=False)
     is_superuser = models.BooleanField(default=False)
@@ -60,7 +63,7 @@ class User(CommonModel, AbstractBaseUser, PermissionsMixin):
         return self.user_id
 
 
-class Infolol(models.Model):
+class Infolol(ExportModelOperationsMixin("infolol"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infolol")
     summoner_name = models.CharField(max_length=30, null=True, blank=True)
     summoner_id = models.CharField(max_length=128, null=True, blank=True)
@@ -75,7 +78,7 @@ class Infolol(models.Model):
         return f"{self.summoner_name}'s LoL Info"
 
 
-class Infoval(models.Model):
+class Infoval(ExportModelOperationsMixin("infoval"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infoval")
     val_name = models.CharField(max_length=30, null=True, blank=True)
     val_tag = models.CharField(max_length=10, null=True, blank=True)
@@ -85,7 +88,7 @@ class Infoval(models.Model):
         return f"{self.val_name}'s Val Info"
 
 
-class Infofc(models.Model):
+class Infofc(ExportModelOperationsMixin("infofc"), models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="infofc")
     fc_name = models.CharField(max_length=30, null=True, blank=True)
     fc_id = models.CharField(max_length=128, null=True, blank=True)
@@ -97,7 +100,7 @@ class Infofc(models.Model):
 
 
 # Profile 모델로 분리
-class Profile(CommonModel):
+class Profile(ExportModelOperationsMixin("profile"), CommonModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     nickname = models.CharField(max_length=30, null=True, blank=True)
     image_url = models.URLField(null=True, blank=True)
@@ -119,7 +122,7 @@ def create_user_lolinfo(sender, instance, created, **kwargs):
 
 
 # follow
-class Follow(CommonModel):
+class Follow(ExportModelOperationsMixin("follow"), CommonModel):
     from_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="from_user"
     )
