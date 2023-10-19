@@ -253,7 +253,8 @@ function Feed(props) {
                                 color: "#C4C4C4",
                                 cursor: !user ? "not-allowed" : "pointer",
                             }}
-                            onClick={() => {
+                            onClick={(event) => {
+                                event.preventDefault();
                                 if (!user) {
                                     window.location.reload();
                                     alert("로그인이 필요합니다");
