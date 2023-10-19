@@ -11,7 +11,7 @@ import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
 import "../default.css"
 
 function Feed(props) {
-    const {feed, refresh, isSingleFeed} = props
+    const {feed, refresh, isSingleFeed, handleLikeClickinModal} = props
     const user = getUser();
     const {getUserProfile} = useUserActions();
     const [profile, setProfile] = useState({});
@@ -43,7 +43,7 @@ function Feed(props) {
     };
     useEffect(() => {
         fetchProfile(userid);
-    }, []);
+    }, [userid]);
 
     const handleLikeClick = (action, data) => {
         axiosService
@@ -96,17 +96,24 @@ function Feed(props) {
         setShowUpdateFeed(false);
     };
 
-    const handleCopyClipBoard = async (text) => {
+    const handleCopyClipBoard = (text) => {
         try {
-            await navigator.clipboard.writeText(text);
+            // navigator.clipboard.writeText(text);
+            const $textarea = document.createElement('textarea');
+            document.body.appendChild($textarea);
+            $textarea.value = text;
+            $textarea.select();
+            document.execCommand("copy")
+            document.body.removeChild($textarea);
             alert("클립보드에 링크가 복사되었습니다.");
         } catch (err) {
         }
     };
 
+
     return (
         <>
-            <Card className="custom-card rounded-5 mt-4 mb-2"> 
+            <Card className="custom-card rounded-5 mt-4 mb-2">
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
@@ -181,10 +188,10 @@ function Feed(props) {
                         )}
                     </Card.Title>
                     <Card.Text>
-                        <div>
-                        <div dangerouslySetInnerHTML={{ __html: feed.content.replace(/\n/g, '<br>') }} />
-                        </div>
-                        <br></br>
+                        <span>
+                        <span dangerouslySetInnerHTML={{ __html: feed.content.replace(/\n/g, '<br>') }} />
+                        </span>
+                        <br/><br/>
                         {feed.image_url && (
                             <Image
                                 src={feed.image_url}
@@ -206,14 +213,44 @@ function Feed(props) {
                 </Card.Body>
             </Card>
             <Card className="custom-card rounded-4 d-flex flex-row justify-content-between mb-4">
+                <div className="d-flex flex-row w-100 justify-content-center mt-2">
+                    <LikeOutlined
+                        style={{
+                            width: "24px",
+                            height: "24px",
+                            padding: "2px",
+                            fontSize: "20px",
+                            color: user && isLikedUser ? "#0D6EFD" : "#C4C4C4",
+                            cursor: !user ? "not-allowed" : "pointer",
+                        }}
+                        onClick={() => {
+                            if (!user) {
+                                window.location.reload();
+                                alert("로그인이 필요합니다");
+                            } else {
+                                {
+                                    isSingleFeed ? (
+                                        handleLikeClickinModal("like", {"user": user.id, "feed": feed.id})
+                                    ) : (
+                                        handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                    )
+                                }
+                            }
+                        }}
+                    />
+                    <p className="ms-1 me-2">
+                        <small>{feed.like}</small>
+                    </p>
+                </div>
+                {!isSingleFeed && (
                     <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                        <LikeOutlined
+                        <CommentOutlined
                             style={{
                                 width: "24px",
                                 height: "24px",
                                 padding: "2px",
                                 fontSize: "20px",
-                                color: user && isLikedUser ? "#0D6EFD" : "#C4C4C4",
+                                color: "#C4C4C4",
                                 cursor: !user ? "not-allowed" : "pointer",
                             }}
                             onClick={() => {
@@ -221,64 +258,40 @@ function Feed(props) {
                                     window.location.reload();
                                     alert("로그인이 필요합니다");
                                 } else {
-                                    handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                    setShowCommentModal(true);
                                 }
                             }}
                         />
                         <p className="ms-1 me-2">
-                            <small>{feed.like}</small>
+                            <small>{feed.comment}</small>
                         </p>
                     </div>
-                    {!isSingleFeed && (
-                        <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                            <CommentOutlined
-                                style={{
-                                    width: "24px",
-                                    height: "24px",
-                                    padding: "2px",
-                                    fontSize: "20px",
-                                    color: "#C4C4C4",
-                                    cursor: !user ? "not-allowed" : "pointer",
-                                }}
-                                onClick={() => {
-                                    if (!user) {
-                                        window.location.reload();
-                                        alert("로그인이 필요합니다");
-                                    } else {
-                                        setShowCommentModal(true);
-                                    }
-                                }}
-                            />
-                            <p className="ms-1 me-2">
-                                <small>{feed.comment}</small>
-                            </p>
-                        </div>
-                    )}
-                    <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                        <ShareAltOutlined
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                padding: "2px",
-                                fontSize: "20px",
-                                color: "#C4C4C4",
-                            }}
-                            onClick={() => {
-                                handleCopyClipBoard(nowUrl)
-                            }}
-                        />
-                        <p className="ms-1 me-2">
-                            <small></small>
-                        </p>
-                    </div>
-                </Card>
+                )}
+                <div className="d-flex flex-row w-100 justify-content-center mt-2">
+                    <ShareAltOutlined
+                        style={{
+                            width: "24px",
+                            height: "24px",
+                            padding: "2px",
+                            fontSize: "20px",
+                            color: "#C4C4C4",
+                        }}
+                        onClick={() => {
+                            handleCopyClipBoard(nowUrl)
+                        }}
+                    />
+                    <p className="ms-1 me-2">
+                        <small></small>
+                    </p>
+                </div>
+            </Card>
             <CommentModal
                 feedId={feed.id}
                 show={showCommentModal}
-                size="lg" //크게만들고싶은데
+                size="lg"
                 handleClose={() => setShowCommentModal(false)}
                 props={props}
-                //refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
+                referesh={refresh}
             />
         </>
     )
