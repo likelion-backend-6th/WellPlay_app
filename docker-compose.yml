@@ -21,20 +21,6 @@ services:
       - ./backend/.envs/staging/server
       - ./backend/.envs/staging/db
 
-  frontend:
-    container_name: wp-front
-    build:
-      context: ./frontend/wp-front-app
-      dockerfile: Dockerfile
-    image: "wp-frontend:latest"
-    volumes:
-      - ./frontend/wp-front-app:/frontend
-    ports:
-      - 3000:3000
-    command:
-      - "/start"
-
-
   db:
     container_name: wp-postgres
     image: postgres:15
@@ -44,6 +30,28 @@ services:
       - ./backend/.envs/staging/db
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+  prom:
+    container_name: prom
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./backend/prometheus:/etc/prometheus
+    command:
+      - "--web.console.templates=/etc/prometheus/consoles/"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=wellplay
+      - GF_SECURITY_ADMIN_PASSWORD=rhfoqkq1234
+
 
 volumes:
   wellplay-app-v:
