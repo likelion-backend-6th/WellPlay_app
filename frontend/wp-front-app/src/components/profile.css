@@ -92,3 +92,7 @@
     border: 1px solid white;
     margin: 5px;
 }
+
+.connect-button button:hover {
+    background-color: #EC6664;
+}
