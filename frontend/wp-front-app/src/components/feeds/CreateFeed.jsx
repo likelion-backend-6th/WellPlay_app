@@ -90,11 +90,12 @@ function CreateFeed() {
 						<Form.Group className="mb-3">
 							<Form.Label>Content</Form.Label>
 							<Form.Control
-								name="body"
-								value={form.body}
-								onChange={(e) => setForm({ ...form, body: e.target.value })}
-								as="textarea"
-								rows={3}
+							name="body"
+							value={form.body}
+							onChange={(e) => setForm({ ...form, body: e.target.value })}
+							as="textarea"
+							rows={3}
+							style={{ whiteSpace: 'pre-line' }}
 							/>
 							<Form.Label className="mt-3">Upload image</Form.Label>
 							<Form.Control
