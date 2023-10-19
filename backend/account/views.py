@@ -364,7 +364,6 @@ class InfololList(generics.ListAPIView):
     def list(self, request, user_id=None):
         try:
             user_infolol = Infolol.objects.get(user__user_id=user_id)
-            user_infolol = Infolol.objects.get(user__user_id=user_id)
             serializer = InfololSerializer(user_infolol)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Infolol.DoesNotExist:
@@ -385,21 +384,6 @@ class InfovalList(generics.ListAPIView):
         except Infoval.DoesNotExist:
             return Response(
                 {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
-            )
-
-
-class InfofcList(generics.ListAPIView):
-    serializer_class = InfoFcSerializer
-    queryset = Infofc.objects.all()
-
-    def list(self, request, user_id=None):
-        try:
-            user_infofc = Infofc.objects.get(user__user_id=user_id)
-            serializer = InfoFcSerializer(user_infofc)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Infofc.DoesNotExist:
-            return Response(
-                {"error": "Infofc 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
             )
 
 
@@ -467,3 +451,18 @@ def fc_name_info(request):
             )
     except Infofc.DoesNotExist:
         return Response({"error": "Infofc 문제."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class InfofcList(generics.ListAPIView):
+    serializer_class = InfoFcSerializer
+    queryset = Infofc.objects.all()
+
+    def list(self, request, user_id=None):
+        try:
+            user_infofc = Infofc.objects.get(user__user_id=user_id)
+            serializer = InfoFcSerializer(user_infofc)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Infofc.DoesNotExist:
+            return Response(
+                {"error": "Infofc 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+            )
