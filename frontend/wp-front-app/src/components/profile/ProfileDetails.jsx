@@ -504,7 +504,7 @@ function UserProfile(props) {
                     </Modal>
                 </div>}
             {showGameinfoList && (
-            <div>
+            <div className="mt-4 connect-button">
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
                     <Modal show={showLOLModal} onHide={closeLOLModal} className="custom-modal">
                     <Modal.Header closeButton>

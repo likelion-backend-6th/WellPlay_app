@@ -65,3 +65,30 @@
 .profile-container {
     margin-left: 250px;
 }
+
+.connect-button {
+    background-color: #202020;
+    width: 65%;
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 1px 1px 3px rgba(228,226,226,0.8), 6px 6px 10px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    margin-left: 5px;
+}
+
+.connect-button button {
+    white-space: nowrap;
+    width: 150px;
+    height: 40px;
+    background: #131313;
+    position: relative;
+    text-align: center;
+    border-radius: 50px;
+    transition: all 0.1s ease-in-out;
+    font-size: 1em;
+    box-shadow: 1px 1px 3px rgba(228,226,226,0.8), 6px 6px 10px rgba(0,0,0,0.2);
+    color: #FFFFFF;
+    border: 1px solid white;
+    margin: 5px;
+}
