@@ -382,10 +382,19 @@ function UserProfile(props) {
 
             <div>
                 <div className='val-card-container'>
+                {userInfolol && userInfolol.summonerName && !userInfolol.tier && (
+                    <Card className="custom-card-style" style={{ width: '30rem' }}>
+                        <Card.Body>
+                        <img src={`/media/lol/unrank.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName}
+                        </Card.Body>
+                    </Card>
+                )}
+                </div>
+                <div className='val-card-container'>
                 {userInfolol && userInfolol.tier && (
                     <Card className="custom-card-style" style={{ width: '30rem' }}>
                         <Card.Body>
-                        <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} 승률: {userInfolol.winrate}%
+                        <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} {userInfolol.lp} {userInfolol.winrate}%
                         </Card.Body>
                     </Card>
                 )}

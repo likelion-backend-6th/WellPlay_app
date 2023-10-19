@@ -115,6 +115,7 @@ class InfololSerializer(serializers.ModelSerializer):
     tier = serializers.CharField(source="summoner_tier")
     rank = serializers.CharField(source="summoner_rank")
     summonerName = serializers.CharField(source="summoner_name")
+    lp = serializers.IntegerField(source="summoner_lp")
 
     def get_winrate(self, obj) -> int:
         if obj.summoner_win is not None and obj.summoner_loss is not None:
