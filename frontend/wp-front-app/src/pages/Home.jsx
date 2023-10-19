@@ -109,7 +109,7 @@ function Home() {
     return (
         <Layout>
             <Row className="justify-content-evenly main">
-                <Col sm={7}>
+                <Col sm={7} className="home">
                     <Col sm={12}> {/* 전체 가로 공간을 사용할 열 */}
                         <div className="button-container">
                         <button
@@ -130,7 +130,7 @@ function Home() {
                         </button>
                         </div>
                     </Col>
-                    <Row className="my-4" style={{ width: '30em'}}>
+                    <Row className="my-4" style={{ width: '50em'}}>
                         {feeds.map((feed, index) => (
                             <Feed key={index} feed={feed} refresh={fetchFeeds}/>
                         ))}
