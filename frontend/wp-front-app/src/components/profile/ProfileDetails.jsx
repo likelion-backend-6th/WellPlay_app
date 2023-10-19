@@ -14,10 +14,8 @@ import "../default.css"
 
 
 function UserProfile(props) {
-    const {
-        getProfile, getFollowing, getFollower,
-        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc
-    } = useUserActions();
+    const {getProfile, getFollowing, getFollower,
+        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -469,10 +467,7 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={closeFollowerModal}>x</button>
-                        </Modal.Footer>
-                    </Modal>
+                      </Modal>
                 </div>}
             {showFollowingModal &&
                 <div>
@@ -498,13 +493,10 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={closeFollowingModal}>x</button>
-                        </Modal.Footer>
-                    </Modal>
+                      </Modal>
                 </div>}
             {showGameinfoList && (
-            <div>
+            <div className="mt-4 connect-button">
                 <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
                     <Modal show={showLOLModal} onHide={closeLOLModal} className="custom-modal">
                     <Modal.Header closeButton>

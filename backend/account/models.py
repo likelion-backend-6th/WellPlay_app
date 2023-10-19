@@ -103,7 +103,7 @@ class Infofc(ExportModelOperationsMixin("infofc"), models.Model):
 class Profile(ExportModelOperationsMixin("profile"), CommonModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
     nickname = models.CharField(max_length=30, null=True, blank=True)
-    image_url = models.URLField(null=True, blank=True)
+    image_url = models.URLField(default="https://kr.object.ncloudstorage.com/wellplay/welsh.png", blank=True)
 
     def __str__(self):
         return f"{self.user.user_id} Profile"

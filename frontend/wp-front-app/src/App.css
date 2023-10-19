@@ -40,7 +40,6 @@
 .button-container {
   display: flex;
   justify-content: center;
-  margin-left: -10em;
 }
 
 .button-container button {
@@ -50,6 +49,12 @@
   margin-left: 10px;
   padding: 10px 30px;
   font-size: 16px;
+}
+
+.home {
+  display: grid;
+  justify-items: center;
+  margin-right: 250px;
 }
 
 .main{
@@ -66,10 +71,15 @@
 }
 
 .home-button {
+  width: 110px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+}
+
+.home-button:hover {
+  background-color: #3a3a3a
 }
 
 .home-button img {
@@ -80,10 +90,15 @@
 }
 
 .write-button {
+  width: 110px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
+}
+
+.write-button:hover {
+  background-color: #3a3a3a
 }
 
 .write-button img {
@@ -94,6 +109,7 @@
 }
 
 .profile-button {
+  width: 110px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
@@ -108,7 +124,12 @@
   border-radius: 50%;
 }
 
+.profile-button:hover {
+  background-color: #3a3a3a
+}
+
 .login-button {
+  width: 110px;
   margin-bottom: 40px;
   display: flex;
   align-items: center;
@@ -125,7 +146,12 @@
   margin-left: -15px;
 }
 
+.login-button:hover {
+  background-color: #3a3a3a;
+}
+
 .logout-button {
+  width: 110px;
   margin-bottom: 40px;
   display: flex;
   align-items: center;
@@ -140,6 +166,10 @@
   height: 28px;
   margin-right: 10px;
   margin-left: -15px;
+}
+
+.logout-button:hover {
+  background-color: #3a3a3a;
 }
 
 .active {
