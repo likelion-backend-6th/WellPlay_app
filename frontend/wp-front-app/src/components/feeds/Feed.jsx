@@ -106,7 +106,7 @@ function Feed(props) {
 
     return (
         <>
-            <Card className="custom-card rounded-5 mt-4 mb-2"> 
+            <Card className="custom-card rounded-5 mt-4 mb-2">
                 <Card.Body>
                     <Card.Title className="d-flex flex-row justify-content-between">
                         <div className="d-flex flex-row">
@@ -181,9 +181,9 @@ function Feed(props) {
                         )}
                     </Card.Title>
                     <Card.Text>
-                        <div>
+                        <span>
                         <div dangerouslySetInnerHTML={{ __html: feed.content.replace(/\n/g, '<br>') }} />
-                        </div>
+                        </span>
                         <br></br>
                         {feed.image_url && (
                             <Image
@@ -206,14 +206,38 @@ function Feed(props) {
                 </Card.Body>
             </Card>
             <Card className="custom-card rounded-4 d-flex flex-row justify-content-between mb-4">
+                <div className="d-flex flex-row w-100 justify-content-center mt-2">
+                    <LikeOutlined
+                        style={{
+                            width: "24px",
+                            height: "24px",
+                            padding: "2px",
+                            fontSize: "20px",
+                            color: user && isLikedUser ? "#0D6EFD" : "#C4C4C4",
+                            cursor: !user ? "not-allowed" : "pointer",
+                        }}
+                        onClick={() => {
+                            if (!user) {
+                                window.location.reload();
+                                alert("로그인이 필요합니다");
+                            } else {
+                                handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                            }
+                        }}
+                    />
+                    <p className="ms-1 me-2">
+                        <small>{feed.like}</small>
+                    </p>
+                </div>
+                {!isSingleFeed && (
                     <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                        <LikeOutlined
+                        <CommentOutlined
                             style={{
                                 width: "24px",
                                 height: "24px",
                                 padding: "2px",
                                 fontSize: "20px",
-                                color: user && isLikedUser ? "#0D6EFD" : "#C4C4C4",
+                                color: "#C4C4C4",
                                 cursor: !user ? "not-allowed" : "pointer",
                             }}
                             onClick={() => {
@@ -221,57 +245,33 @@ function Feed(props) {
                                     window.location.reload();
                                     alert("로그인이 필요합니다");
                                 } else {
-                                    handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                    setShowCommentModal(true);
                                 }
                             }}
                         />
                         <p className="ms-1 me-2">
-                            <small>{feed.like}</small>
+                            <small>{feed.comment}</small>
                         </p>
                     </div>
-                    {!isSingleFeed && (
-                        <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                            <CommentOutlined
-                                style={{
-                                    width: "24px",
-                                    height: "24px",
-                                    padding: "2px",
-                                    fontSize: "20px",
-                                    color: "#C4C4C4",
-                                    cursor: !user ? "not-allowed" : "pointer",
-                                }}
-                                onClick={() => {
-                                    if (!user) {
-                                        window.location.reload();
-                                        alert("로그인이 필요합니다");
-                                    } else {
-                                        setShowCommentModal(true);
-                                    }
-                                }}
-                            />
-                            <p className="ms-1 me-2">
-                                <small>{feed.comment}</small>
-                            </p>
-                        </div>
-                    )}
-                    <div className="d-flex flex-row w-100 justify-content-center mt-2">
-                        <ShareAltOutlined
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                padding: "2px",
-                                fontSize: "20px",
-                                color: "#C4C4C4",
-                            }}
-                            onClick={() => {
-                                handleCopyClipBoard(nowUrl)
-                            }}
-                        />
-                        <p className="ms-1 me-2">
-                            <small></small>
-                        </p>
-                    </div>
-                </Card>
+                )}
+                <div className="d-flex flex-row w-100 justify-content-center mt-2">
+                    <ShareAltOutlined
+                        style={{
+                            width: "24px",
+                            height: "24px",
+                            padding: "2px",
+                            fontSize: "20px",
+                            color: "#C4C4C4",
+                        }}
+                        onClick={() => {
+                            handleCopyClipBoard(nowUrl)
+                        }}
+                    />
+                    <p className="ms-1 me-2">
+                        <small></small>
+                    </p>
+                </div>
+            </Card>
             <CommentModal
                 feedId={feed.id}
                 show={showCommentModal}
