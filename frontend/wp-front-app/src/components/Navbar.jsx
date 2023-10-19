@@ -41,8 +41,8 @@ function Navigationbar() {
     return (
         <Navbar className="content-backgroud" variant="dark" style={{flexDirection: 'column'}}>
             <Container>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div className="wellplay-nav"  style={{display: 'flex', flexDirection: 'column'}}>
+                    <div style={{display: 'flex', flexDirection: 'column'}} >
                         <Navbar.Brand className="fw-bold" href="/">
                             <img src="/media/nav/logo.png" alt="logo" width={130} height={130} className="logo"/>
                         </Navbar.Brand>
