@@ -189,9 +189,9 @@ function Feed(props) {
                     </Card.Title>
                     <Card.Text>
                         <span>
-                        <div dangerouslySetInnerHTML={{ __html: feed.content.replace(/\n/g, '<br>') }} />
+                        <span dangerouslySetInnerHTML={{ __html: feed.content.replace(/\n/g, '<br>') }} />
                         </span>
-                        <br></br>
+                        <br/><br/>
                         {feed.image_url && (
                             <Image
                                 src={feed.image_url}
