@@ -22,6 +22,7 @@ def summoner_v4(user_infolol_id, summoner_name):
             logging.info(f"summoner_v4 요청 성공.{response.status_code}")
             data = response.json()
             user_infolol.summoner_name = data["name"]
+            user_infolol.summoner_name = summoner_name
             user_infolol.summoner_id = data["id"]
             user_infolol.summoner_puuid = data["puuid"]
             user_infolol.save()
