@@ -364,11 +364,27 @@ class InfololList(generics.ListAPIView):
     def list(self, request, user_id=None):
         try:
             user_infolol = Infolol.objects.get(user__user_id=user_id)
+            user_infolol = Infolol.objects.get(user__user_id=user_id)
             serializer = InfololSerializer(user_infolol)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Infolol.DoesNotExist:
             return Response(
                 {"error": "Infolol 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class InfovalList(generics.ListAPIView):
+    serializer_class = InfoValSerializer
+    queryset = Infoval.objects.all()
+
+    def list(self, request, user_id=None):
+        try:
+            user_infoval = Infoval.objects.get(user__user_id=user_id)
+            serializer = InfoValSerializer(user_infoval)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Infoval.DoesNotExist:
+            return Response(
+                {"error": "Infoval 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
             )
 
 
