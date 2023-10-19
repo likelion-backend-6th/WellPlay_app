@@ -43,7 +43,7 @@ function Feed(props) {
     };
     useEffect(() => {
         fetchProfile(userid);
-    }, []);
+    }, [userid]);
 
     const handleLikeClick = (action, data) => {
         axiosService
