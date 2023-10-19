@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.db import models
+from django_prometheus.models import ExportModelOperationsMixin
 
 from common.models import CommonModel
 
 
-class Feed(CommonModel):
+class Feed(ExportModelOperationsMixin("feed"), CommonModel):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="feed_owner"
     )
@@ -25,7 +26,7 @@ class Feed(CommonModel):
         return self.owner == user or user.is_superuser
 
 
-class Comment(CommonModel):
+class Comment(ExportModelOperationsMixin("comment"), CommonModel):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
     content = models.TextField(max_length=64)
@@ -42,7 +43,7 @@ class Comment(CommonModel):
         return self.owner == user or user.is_superuser
 
 
-class Like(models.Model):
+class Like(ExportModelOperationsMixin("like"), models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE, related_name="likes")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -53,7 +54,7 @@ class Like(models.Model):
     ordering = ["-created_at"]
 
 
-class Notification(models.Model):
+class Notification(ExportModelOperationsMixin("notification"), models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
