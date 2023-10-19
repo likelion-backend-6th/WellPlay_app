@@ -11,7 +11,7 @@ import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
 import "../default.css"
 
 function Feed(props) {
-    const {feed, refresh, isSingleFeed} = props
+    const {feed, refresh, isSingleFeed, handleLikeClickinModal} = props
     const user = getUser();
     const {getUserProfile} = useUserActions();
     const [profile, setProfile] = useState({});
@@ -96,13 +96,20 @@ function Feed(props) {
         setShowUpdateFeed(false);
     };
 
-    const handleCopyClipBoard = async (text) => {
+    const handleCopyClipBoard = (text) => {
         try {
-            await navigator.clipboard.writeText(text);
+            // navigator.clipboard.writeText(text);
+            const $textarea = document.createElement('textarea');
+            document.body.appendChild($textarea);
+            $textarea.value = text;
+            $textarea.select();
+            document.execCommand("copy")
+            document.body.removeChild($textarea);
             alert("클립보드에 링크가 복사되었습니다.");
         } catch (err) {
         }
     };
+
 
     return (
         <>
@@ -221,7 +228,13 @@ function Feed(props) {
                                 window.location.reload();
                                 alert("로그인이 필요합니다");
                             } else {
-                                handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                {
+                                    isSingleFeed ? (
+                                        handleLikeClickinModal("like", {"user": user.id, "feed": feed.id})
+                                    ) : (
+                                        handleLikeClick("like", {"user": user.id, "feed": feed.id})
+                                    )
+                                }
                             }
                         }}
                     />
@@ -275,10 +288,10 @@ function Feed(props) {
             <CommentModal
                 feedId={feed.id}
                 show={showCommentModal}
-                size="lg" //크게만들고싶은데
+                size="lg"
                 handleClose={() => setShowCommentModal(false)}
                 props={props}
-                //refreshComments={/* 함수를 호출하여 덧글 목록 업데이트 */}
+                referesh={refresh}
             />
         </>
     )
