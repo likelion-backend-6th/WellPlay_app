@@ -6,16 +6,14 @@
   margin: 10px 0;
 }
 
-.profile-image {
-}
-
 .comment-content {
   display: flex;
   flex-direction: column;
-  width: 100%; /* 콘텐츠 너비를 100%로 설정하여 오른쪽 정렬이 잘 이루어지도록 함 */
+  width: 100%;
 }
 
 .comment-username {
+  font-size: 1em;
 }
 
 .comment-text {
@@ -36,4 +34,25 @@
   display: flex;
   justify-content: flex-end;
   margin-left: auto;
+}
+
+.comment-form button {
+  white-space: nowrap;
+  background-color: #202020;
+  color: #4C5ABF;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+}
+
+.comment-form {
+  justify-content: space-between;
+}
+
+.comment-form input {
+  width: 16em;
+  background-color: #202020;
+  color: #FFFFFF;
+  border: none;
+  border-bottom: 1px solid #FFFFFF;
 }

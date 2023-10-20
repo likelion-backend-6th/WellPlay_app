@@ -1,6 +1,7 @@
 // 덧글 작성하는 컴포넌트
 import React, { useState } from "react";
 import axiosService from "../../helpers/axios";
+import "./Comment.css"
 
 function CommentForm({ feedId, onCommentPosted }) { // 여기에도 콜백 함수 적어주고
   const [content, setContent] = useState("");
@@ -21,13 +22,11 @@ function CommentForm({ feedId, onCommentPosted }) { // 여기에도 콜백 함�
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex" }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex" }} className="comment-form">
       <input
         type="text"
-        placeholder="WOW Well Play!"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        style={{ marginRight: "10px" }}
       />
       <button type="submit">작성</button>
     </form>
