@@ -10,7 +10,9 @@ function useUserActions() {
         login,
         register,
         logout,
+        quit,
         edit,
+        changePassword,
         getProfile,
         getUserProfile,
         getFollower,
@@ -33,7 +35,7 @@ function useUserActions() {
     function apiPostVal(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/riot_val_info/`, data, axiosConfig);
     }
-    
+
     function apiPostFc(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/fc_name_info/`, data, axiosConfig);
     }
@@ -65,6 +67,14 @@ function useUserActions() {
         );
     }
 
+    function changePassword(data) {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            return Promise.reject('액세스 토큰이 없습니다.');
+        }
+        return axiosService.post(`${baseURL}/account/pwchange/`, data)
+    }
+
     function register(data) {
         return axios.post(`${baseURL}/account/register/`, data).then(() => {
             navigate('/');
@@ -81,6 +91,11 @@ function useUserActions() {
     function logout() {
         localStorage.removeItem('auth');
         navigate('/');
+    }
+
+    function quit() {
+        axiosService.delete(`${baseURL}/account/quit/`)
+        window.location.replace('/')
     }
 
     function edit(data, userId) {

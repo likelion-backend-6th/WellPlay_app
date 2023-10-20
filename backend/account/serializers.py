@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth import password_validation
 
 from .models import Infoval, User, Profile, Follow, Infolol, Infofc
 
@@ -10,6 +11,10 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("refresh",)
         # read_only_field = ('last_login', 'is_superuser', ' is_active', 'is_staff', 'groups', 'user_permissions')
 
+    def validate_password(self, data):
+        password_validation.validate_password(data, self.instance)
+        return data
+
     def create(self, validated_data):
         user = User.objects.create_user(
             user_id=validated_data["user_id"],
@@ -18,6 +23,14 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate_new_password(self, data):
+        password_validation.validate_password(data, self.instance)
+        return data
 
 class InfoLolSerializer(serializers.ModelSerializer):
     class Meta:

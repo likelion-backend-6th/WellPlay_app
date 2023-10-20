@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card, Modal, Row} from 'react-bootstrap';
+import React, {useContext, useEffect, useState} from 'react';
+import {Button, Image, Form, Spinner, Card, Modal, Row, Dropdown, DropdownButton} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -11,12 +11,17 @@ import FollowingList from "../follow/Following"
 import "../profile.css"
 import Feed from "../feeds/Feed";
 import "../default.css"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
+import {Context} from "../Layout";
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower,
-        apiPostLol, apiGetLol, apiPostVal,
-        apiGetVal, apiPostFc, apiGetFc, apiDeleteGame} = useUserActions();
+    const {
+        getProfile, getFollowing, getFollower, quit, changePassword,
+        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc, apiDeleteGame
+    } = useUserActions();
+    const {setToaster} = useContext(Context)
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -25,6 +30,8 @@ function UserProfile(props) {
     const [showLOLModal, setShowLOLModal] = useState(false);
     const [showVALModal, setShowVALModal] = useState(false);
     const [showFCModal, setShowFCModal] = useState(false);
+    const [showQuitModal, setShowQuitModal] = useState(false);
+    const [showChangepwModal, setShowChangepwModal] = useState(false);
 
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
@@ -44,6 +51,8 @@ function UserProfile(props) {
     const [modalInputValueValName, setModalInputValueValName] = useState("");
     const [modalInputValueValTag, setModalInputValueValTag] = useState("");
     const [modalInputValueFcName, setModalInputValueFcName] = useState("");
+    const [modalOldPassword, setModalOldPassword] = useState("");
+    const [modalNewPassword, setModalNewPassword] = useState("");
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -141,30 +150,30 @@ function UserProfile(props) {
         setIsLoading(true);
 
         const newLolName = modalInputValue;
-        const requestData = { summoner_name: newLolName };
+        const requestData = {summoner_name: newLolName};
 
         // 롤 api연동 백그라운드 작업
         apiPostLol(requestData)
-        .then((response) => {
-            if (response.data) {
-                setSuccessMessage(response.data.message);
-                alert('연동이 성공적으로 완료되었습니다.');
-                window.location.reload();
-            } else {
-                if (response.data.message) {
-                    setError(response.data.message);
-                    alert('연동이 실패하였습니다: ' + response.data.message);
+            .then((response) => {
+                if (response.data) {
+                    setSuccessMessage(response.data.message);
+                    alert('연동이 성공적으로 완료되었습니다.');
+                    window.location.reload();
                 } else {
-                    alert('연동이 실패하였습니다.');
+                    if (response.data.message) {
+                        setError(response.data.message);
+                        alert('연동이 실패하였습니다: ' + response.data.message);
+                    } else {
+                        alert('연동이 실패하였습니다.');
+                    }
+                    window.location.reload();
                 }
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+                alert('서버 요청에 실패했습니다.');
                 window.location.reload();
-            }
-        })
-        .catch((error) => {
-            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
-            alert('서버 요청에 실패했습니다.');
-            window.location.reload();
-        });
+            });
 
         setTimeout(() => {
             fetchProfile(profileId);
@@ -181,28 +190,28 @@ function UserProfile(props) {
 
         const newValName = modalInputValueValName;
         const newValTag = modalInputValueValTag;
-        const requestData = { val_name: newValName, val_tag: newValTag  };
+        const requestData = {val_name: newValName, val_tag: newValTag};
 
         apiPostVal(requestData)
-        .then((response) => {
-            if (response.data) {
-                setSuccessMessage(response.data.message);
-                alert('연동이 성공적으로 완료되었습니다.');
-                window.location.reload();
-            } else {
-                if (response.data.message) {
-                    setError(response.data.message);
-                    alert('연동이 실패하였습니다: ' + response.data.message);
+            .then((response) => {
+                if (response.data) {
+                    setSuccessMessage(response.data.message);
+                    alert('연동이 성공적으로 완료되었습니다.');
+                    window.location.reload();
                 } else {
-                    alert('연동이 실패하였습니다.');
+                    if (response.data.message) {
+                        setError(response.data.message);
+                        alert('연동이 실패하였습니다: ' + response.data.message);
+                    } else {
+                        alert('연동이 실패하였습니다.');
+                    }
+                    window.location.reload();
                 }
-                window.location.reload();
-            }
-        })
-        .catch((error) => {
-            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
-            alert('서버 요청에 실패했습니다.');
-        });
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+                alert('서버 요청에 실패했습니다.');
+            });
 
         setTimeout(() => {
             fetchProfile(profileId);
@@ -218,28 +227,28 @@ function UserProfile(props) {
         setIsLoading(true);
 
         const newFcName = modalInputValueFcName;
-        const requestData = { fc_name: newFcName};
+        const requestData = {fc_name: newFcName};
 
         apiPostFc(requestData)
-        .then((response) => {
-            if (response.data) {
-                setSuccessMessage(response.data.message);
-                alert('연동이 성공적으로 완료되었습니다.');
-                window.location.reload();
-            } else {
-                if (response.data.message) {
-                    setError(response.data.message);
-                    alert('연동이 실패하였습니다: ' + response.data.message);
+            .then((response) => {
+                if (response.data) {
+                    setSuccessMessage(response.data.message);
+                    alert('연동이 성공적으로 완료되었습니다.');
+                    window.location.reload();
                 } else {
-                    alert('연동이 실패하였습니다.');
+                    if (response.data.message) {
+                        setError(response.data.message);
+                        alert('연동이 실패하였습니다: ' + response.data.message);
+                    } else {
+                        alert('연동이 실패하였습니다.');
+                    }
+                    window.location.reload();
                 }
-                window.location.reload();
-            }
-        })
-        .catch((error) => {
-            setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
-            alert('서버 요청에 실패했습니다.');
-        });
+            })
+            .catch((error) => {
+                setError(error.response ? error.response.data.message : '서버 오류'); // 요청 자체가 실패한 경우
+                alert('서버 요청에 실패했습니다.');
+            });
 
         setTimeout(() => {
             fetchProfile(profileId);
@@ -318,6 +327,47 @@ function UserProfile(props) {
         setError(null);
     }
 
+    const handleModalInputChangeOldPassword = (e) => {
+        setModalOldPassword(e.target.value);
+        setError(null);
+    }
+
+    const handleModalInputChangeNewPassword = (e) => {
+        setModalNewPassword(e.target.value);
+        setError(null);
+    }
+
+    const handleChangePassword = () => {
+        const data = {
+            old_password: modalOldPassword,
+            new_password: modalNewPassword,
+        };
+        changePassword(data)
+            .then(() => {
+                setToaster({
+                    type: "success",
+                    message: "비밀번호가 성공적으로 변경되었습니다.",
+                    show: true,
+                    title: "비밀번호 변경 완료",
+                })
+            })
+            .catch((error) => {
+                setToaster({
+                    type: "danger",
+                    message: <>
+                        비밀번호 변경에 실패했습니다.
+                        <br/>
+                        기존 비밀번호, 신규 비밀번호의 조건을 다시 확인해주세요.
+                    </>,
+                    show: true,
+                    title: "비밀번호 변경 실패",
+                })
+            })
+        setShowChangepwModal(false);
+        setModalOldPassword('')
+        setModalNewPassword('')
+    }
+
     const handleShowFollowerList = () => {
         setShowFollowerList(true);
         setShowFollowingList(false);
@@ -367,8 +417,30 @@ function UserProfile(props) {
         setShowFollowingModal(false);
     };
 
+    const handleChangepw = () => {
+        setShowChangepwModal(true);
+    };
+
+    const closeChangepw = () => {
+        setShowChangepwModal(false);
+        setModalOldPassword('')
+        setModalNewPassword('')
+    };
+
+    const handleQuitClick = () => {
+        quit();
+    }
+
+    const handleUserQuit = () => {
+        setShowQuitModal(true);
+    };
+
+    const closeUserQuit = () => {
+        setShowQuitModal(false);
+    };
+
     return (
-        <div className="profile-container" style={{ color: "white" }}>
+        <div className="profile-container" style={{color: "white"}}>
             <div className="row">
                 <div className="col-md-2">
                     <div className="d-flex flex-column align-items-center">
@@ -388,7 +460,60 @@ function UserProfile(props) {
                             <h2><strong>{profile.nickname}</strong></h2>
                             <Button onClick={openModal}>프로필 편집</Button>
                         </div>
-                        <p style={{ color: '#808080', fontWeight: 'lighter' }} className="userid">@{user.user_id}</p>
+                        <DropdownButton
+                            title={<FontAwesomeIcon icon={faEllipsisV}/>}
+                            id="menu-dropdown"
+                        >
+                            <Dropdown.Item onClick={handleChangepw} >비밀번호 변경</Dropdown.Item>
+                            <Modal show={showChangepwModal} onHide={closeChangepw} className="custom-modal">
+                                <Modal.Header closeButton>
+                                    <Modal.Title>비밀번호 변경</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Form.Group>
+                                <Form.Control
+                                    type="password"
+                                    placeholder="기존 비밀번호"
+                                    value={modalOldPassword}
+                                    onChange={handleModalInputChangeOldPassword}
+                                />
+                                        <br/>
+                                <Form.Control
+                                    type="password"
+                                    placeholder="변경할 비밀번호(8자 이상, 알파벳이나 특수문자 포함)"
+                                    value={modalNewPassword}
+                                    onChange={handleModalInputChangeNewPassword}
+                                />
+                            </Form.Group>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button
+                                        variant="warning"
+                                        onClick={handleChangePassword}
+                                    >
+                                        변경
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                            <Dropdown.Item onClick={handleUserQuit} >회원탈퇴</Dropdown.Item>
+                            <Modal show={showQuitModal} onHide={closeUserQuit} className="custom-modal">
+                                <Modal.Header closeButton>
+                                    <Modal.Title>회원탈퇴 확인</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    회원탈퇴를 하시면 작성하신 이야기, 사진, 영상들이 전부 삭제되고 복구가 불가능합니다. 정말 탈퇴하시겠습니까?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button
+                                        variant="warning"
+                                        onClick={handleQuitClick}
+                                    >
+                                        탈퇴
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </DropdownButton>
+                        <p style={{color: '#808080', fontWeight: 'lighter'}} className="userid">@{user.user_id}</p>
                     </div>
                 </div>
             </div>
@@ -473,14 +598,14 @@ function UserProfile(props) {
 
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
-                    onClick={() => {
-                        if (showGameinfoList) {
-                            handleHideGameinfoList();
-                        } else {
-                            handleShowGameinfoList();
-                        }
-                    }}
-                    style={{cursor: 'pointer', width: '75%'}}
+                     onClick={() => {
+                         if (showGameinfoList) {
+                             handleHideGameinfoList();
+                         } else {
+                             handleShowGameinfoList();
+                         }
+                     }}
+                     style={{cursor: 'pointer', width: '75%'}}
                 >
                     연동하기
                 </div>
@@ -509,7 +634,7 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showFollowingModal &&
                 <div>
@@ -535,7 +660,7 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showGameinfoList && (
             <div className="mt-4 connect-button">
