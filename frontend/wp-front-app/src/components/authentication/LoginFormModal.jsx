@@ -73,12 +73,12 @@ function LoginFormModal() {
     return (
         <>
             {user ? ( // 사용자가 로그인한 경우
-                <Button onClick={handleLogout} className="logout-button">
+                <Button variant="secondary" onClick={handleLogout} className="logout-button">
                     <img src="/media/nav/logout.png" alt="로그아웃"/>로그아웃
                 </Button>
             ) : (
                 // 사용자가 로그인하지 않은 경우
-                <Button onClick={handleShowModal} className="login-button">
+                <Button variant="secondary" onClick={handleShowModal} className="login-button">
                     <img src="/media/nav/login.png" alt="로그인"/>로그인
                 </Button>
             )}

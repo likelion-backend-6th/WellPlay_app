@@ -48,7 +48,7 @@ function Navigationbar() {
                         </Navbar.Brand>
                     </div>
                     <div style={{display: 'flex', flexDirection: 'column', margin: '10px'}}>
-                        <Button className="home-button" href="/">
+                        <Button variant="secondary" className="home-button" href="/">
                             <img src="/media/nav/home.png" alt="홈"/>홈
                         </Button>
                     </div>
@@ -63,7 +63,7 @@ function Navigationbar() {
                     )}
                     <div style={{display: 'flex', flexDirection: 'column', margin: '10px'}}>
                         {user ? (
-                            <Button as={Link} to={`/profile/${user.user_id}/`} className="profile-button">
+                            <Button variant="secondary" as={Link} to={`/profile/${user.user_id}/`} className="profile-button">
                                 <img src={profile.image_url} width={36} height={36}/> 프로필
                             </Button>
                         ) : (

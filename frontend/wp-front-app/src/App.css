@@ -74,8 +74,8 @@
   width: 110px;
   display: flex;
   align-items: center;
-  background-color: #1E1E1E;
   border: none;
+  background-color: #1E1E1E;
 }
 
 .home-button:hover {
@@ -90,10 +90,10 @@
 }
 
 .write-button {
+  background-color: #1E1E1E;
   width: 110px;
   display: flex;
   align-items: center;
-  background-color: #1E1E1E;
   border: none;
 }
 
