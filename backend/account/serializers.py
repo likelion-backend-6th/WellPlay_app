@@ -24,6 +24,14 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
+
+    def validate_new_password(self, data):
+        password_validation.validate_password(data, self.instance)
+        return data
+
 class InfoLolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Infolol

@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, update_session_auth_hash
 from django.core.files import File
 from django.conf import settings
 from django.http import HttpResponse
@@ -19,7 +19,6 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .serializers import *
 from account.tasks import *
 from common.uploader import FileUploader
-
 
 User = get_user_model()
 account_activation_token = PasswordResetTokenGenerator()
@@ -78,11 +77,11 @@ def activate_account(request, uidb64, token):
                 {"message": "활성화 링크가 유효하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
             )
     except (
-        TypeError,
-        ValueError,
-        OverflowError,
-        User.DoesNotExist,
-        UnicodeDecodeError,
+            TypeError,
+            ValueError,
+            OverflowError,
+            User.DoesNotExist,
+            UnicodeDecodeError,
     ) as e:
         # 예외 처리 추가
         return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -110,6 +109,31 @@ class RegisterAPIView(APIView):
                 {"message": "회원가입이 성공적으로 이루어졌습니다. 이메일을 확인하여 계정을 활성화하세요."},
                 status=status.HTTP_200_OK,
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = PasswordChangeSerializer(data=request.data)
+
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            user = request.user
+
+            if not user.check_password(old_password):
+                return Response({'message': '기존 비밀번호가 일치하지 않습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(new_password)
+            user.save()
+
+            update_session_auth_hash(request, user)
+
+            return Response({'message': '비밀번호가 성공적으로 변경되었습니다.'}, status=status.HTTP_200_OK)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
