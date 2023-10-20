@@ -74,8 +74,8 @@
   width: 110px;
   display: flex;
   align-items: center;
-  background-color: #1E1E1E;
   border: none;
+  background-color: #1E1E1E;
 }
 
 .home-button:hover {
@@ -90,10 +90,10 @@
 }
 
 .write-button {
+  background-color: #1E1E1E;
   width: 110px;
   display: flex;
   align-items: center;
-  background-color: #1E1E1E;
   border: none;
 }
 
@@ -130,13 +130,11 @@
 
 .login-button {
   width: 110px;
-  margin-bottom: 40px;
+  margin-top: -15px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
-  position: fixed;
-  bottom: 0;
 }
 
 .login-button img {
@@ -152,13 +150,10 @@
 
 .logout-button {
   width: 110px;
-  margin-bottom: 40px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
   border: none;
-  position: fixed;
-  bottom: 0;
 }
 
 .logout-button img {
@@ -235,7 +230,7 @@ body{
   height: 100%;
   max-height: 100%;
   border-radius: 4px;
-  width: 10rem;
+  width: 11rem;
   display: flex;
 }
 

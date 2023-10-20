@@ -64,11 +64,11 @@ function Comment({ feedId, comment, refresh }) {
   };
 
   return (
-    <Card className="custom-card my-2">
-      <Card.Body className="d-flex justify-content-between align-items-start">
+    <Card className="custom-card my-2" style={{ border: 'none' }}>
+      <Card.Body className="d-flex justify-content-between align-items-start" style={{ padding: ' 8px 8px' }}>
         <div className="d-flex align-items-start">
           <Link to={`/profile/${comment.user_id}`}>
-            <Image src={comment.profile_image} roundedCircle alt={comment.user_id} width={48} height={48} className="me-2 border border-dark border-2" />
+            <Image src={comment.profile_image} roundedCircle alt={comment.user_id} width={36} height={36} className="me-2 border border-dark border-2" />
           </Link>
           <div className="comment-content">
             <Card.Title className="comment-username">{comment.nickname}

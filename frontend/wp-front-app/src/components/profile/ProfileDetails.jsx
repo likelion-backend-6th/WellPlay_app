@@ -539,7 +539,7 @@ function UserProfile(props) {
                 </div>}
             {showGameinfoList && (
             <div className="mt-4 connect-button">
-                <Button variant="primary" onClick={openLOLModal}>리그오브레전드</Button>
+                <Button variant="secondary" onClick={openLOLModal}>리그오브레전드</Button>
                     <Modal show={showLOLModal} onHide={closeLOLModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>리그오브레전드 계정 연동</Modal.Title>
@@ -562,7 +562,7 @@ function UserProfile(props) {
                         </Button>
                     </Modal.Body>
                     </Modal>
-                <Button variant="primary" onClick={openVALModal}>발로란트</Button>
+                <Button variant="secondary" onClick={openVALModal}>발로란트</Button>
                     <Modal show={showVALModal} onHide={closeVALModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>발로란트 계정 연동</Modal.Title>
@@ -591,7 +591,7 @@ function UserProfile(props) {
                         </Button>
                     </Modal.Body>
                     </Modal>
-                <Button variant="primary" onClick={openFCModal}>FC온라인</Button>
+                <Button variant="secondary" onClick={openFCModal}>FC온라인</Button>
                     <Modal show={showFCModal} onHide={closeFCModal} className="custom-modal">
                     <Modal.Header closeButton>
                         <Modal.Title>FC온라인 계정 연동</Modal.Title>

@@ -294,9 +294,6 @@ function UserProfile() {
                                 ))}
                             </ul>
                         </Modal.Body>
-                        <Modal.Footer>
-                            <button onClick={closeFollowerModal}>x</button>
-                        </Modal.Footer>
                     </Modal>
                 </div>}
             {showFollowingModal &&
@@ -318,27 +315,25 @@ function UserProfile() {
                                                 className="me-2 border border-dark border-2"
                                             />
                                         </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  <button onClick={closeFollowingModal}>x</button>
-                                </Modal.Footer>
-                              </Modal>
-                        </div>}
-                        {feeds && feeds.feed_count > 0 ? (
-                            <div>
-                                <Row className="my-4">
-                                    {feeds.feeds.map((feed, index) => (
-                                        <Feed key={index} feed={feed} refresh={fetchFeeds} />
-                                    ))}
-                                </Row>
-                            </div>
-                        ) : (
-                            <div></div>
-                        )}
+                                        {followingItem.to_user}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Modal.Body>
+                    </Modal>
+                </div>}
+            {feeds && feeds.feed_count > 0 ? (
+                <div style={{width: '30em'}}>
+                    <Row className="my-4">
+                        {feeds.feeds.map((feed, index) => (
+                            <Feed key={index} feed={feed} refresh={fetchFeeds}/>
+                        ))}
+                    </Row>
                 </div>
+            ) : (
+                <div></div>
+            )}
+        </div>
     )
 }
 
