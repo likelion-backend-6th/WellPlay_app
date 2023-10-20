@@ -43,16 +43,16 @@
     display: inline-block;
     width: auto; /* 또는 필요한 너비로 지정 */
     border-bottom: 0px solid transparent; /* 초기에는 밑줄이 보이지 않도록 설정 */
-  }
+}
   
-  .button-container button:hover {
+.button-container button:hover {
     box-shadow: 0px 15px 15px -15px rgba(255, 255, 255, 0.7);
-  }
+}
 
 .button-container {
     display: flex;
     justify-content: center;
-  }
+}
   
 .button-container button {
     white-space: nowrap;
@@ -63,7 +63,7 @@
     font-size: 16px;
     box-shadow: 0px 5px 5px -5px rgba(255, 255, 255, 0.7);
     transition: box-shadow 0.3s;
-  }
+}
 
 /* 선택된 버튼의 그림자 색상 변경 */
 .button-container button.selected {
