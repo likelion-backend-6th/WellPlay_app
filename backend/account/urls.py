@@ -24,4 +24,5 @@ urlpatterns = [
     path("riot_val_info/", riot_val_info),  # POST
     path("riot_val_info/<str:user_id>/", InfovalList.as_view()),  # GET
     path("activate/<str:uidb64>/<str:token>/", activate_account, name="activate"),
+    path("game_info_update/", InfoUpdateView),  # POST (UPDATE)
 ]
