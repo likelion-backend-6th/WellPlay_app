@@ -488,11 +488,11 @@ function UserProfile(props) {
             {showFollowerModal &&
                 <div className="modal-background">
                     <Modal show={showFollowerModal} onHide={closeFollowerModal} className="custom-modal">
-                        <Modal.Header closeButton>
+                        <Modal.Header closeButton className="follower-modal">
                             <Modal.Title>팔로워</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ul>
+                            <ul style={{ padding: "0px"}}>
                                 {follower.follower_list.map((followerItem) => (
                                     <li key={followerItem.id}>
                                         <Link to={`/profile/${followerItem.from_user}`}>
@@ -514,11 +514,11 @@ function UserProfile(props) {
             {showFollowingModal &&
                 <div>
                     <Modal show={showFollowingModal} onHide={closeFollowingModal} className="custom-modal">
-                        <Modal.Header closeButton>
+                        <Modal.Header closeButton className="follower-modal">
                             <Modal.Title>팔로잉</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <ul>
+                            <ul style={{ padding: "0px"}}>
                                 {following.following_list.map((followingItem) => (
                                     <li key={followingItem.id}>
                                         <Link to={`/profile/${followingItem.to_user}`}>
@@ -554,8 +554,7 @@ function UserProfile(props) {
                             onChange={handleModalInputChange}
                         />
                         </Form.Group>
-                        <Button
-                        variant="primary"
+                        <Button variant="danger"
                         onClick={handleConnectClick}
                         >
                             연동하기
@@ -584,7 +583,7 @@ function UserProfile(props) {
                         />
                         </Form.Group>
                         <Button
-                        variant="primary"
+                        variant="danger"
                         onClick={handleConnectVALClick}
                         >
                             연동하기
@@ -607,7 +606,7 @@ function UserProfile(props) {
                         />
                         </Form.Group>
                         <Button
-                        variant="primary"
+                        variant="danger"
                         onClick={handleConnectFCClick}
                         >
                             연동하기

@@ -250,6 +250,66 @@ body{
   color: #ffffff;
 }
 
+.modal-header {
+  margin: 8px 12px 12px 12px;
+  border-bottom: 2px dashed;
+}
+
+.follower-modal {
+  border: none;
+  margin: 8px 12px 0px 12px;
+  padding-bottom: 0px;
+}
+
+.modal-title {
+  font-size: 1.2em;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-body input {
+  margin: 1em 0em;
+  width: 75%;
+}
+
+.modal-body input::placeholder {
+  color: #ffffff;
+}
+
+.modal-body button {
+  background-color: #202020;
+  border: 1px solid #ffffff;
+}
+
+.modal-body li {
+  list-style-type: none;
+  margin-bottom: 1em;
+}
+
+.modal-body button:hover {
+  background-color: #EC6664;
+  border: none;
+}
+
+.modal-body button:active {
+  background-color: #EC6664;
+  border: none;
+}
+
+.form-control {
+  color: #ffffff;
+  background-color: #202020;
+}
+
+.form-control:focus {
+  color: #ffffff;
+  background-color: #202020;
+  border-color: #ffffff;
+  box-shadow: none;
+}
+
 .text-login {
   font-weight: 50;
   color: #ffffff;
