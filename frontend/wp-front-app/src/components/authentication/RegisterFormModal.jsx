@@ -54,7 +54,7 @@ function RegisterFormModal(props) {
                     } else if (err.response.data.password && err.response.data.password[0].includes("This password is")) {
                         setToaster({
                             type: "danger",
-                            message: "비밀번호가 적절하지 않습니다. 비밀번호는 8자 이상, 숫자로만 이루어지지 않게 해주세요!",
+                            message: "비밀번호가 적절하지 않습니다. 비밀번호는 8자 이상, 알파벳이나 특수문자를 포함해주세요!",
                             show: true,
                             title: "다른 비밀번호를 사용해주세요",
                         });
