@@ -12,6 +12,7 @@ function useUserActions() {
         logout,
         quit,
         edit,
+        changePassword,
         getProfile,
         getUserProfile,
         getFollower,
@@ -64,6 +65,14 @@ function useUserActions() {
                 user: data.user,
             }),
         );
+    }
+
+    function changePassword(data) {
+        const accessToken = getAccessToken();
+        if (!accessToken) {
+            return Promise.reject('액세스 토큰이 없습니다.');
+        }
+        return axiosService.post(`${baseURL}/account/pwchange/`, data)
     }
 
     function register(data) {
