@@ -364,6 +364,8 @@ function UserProfile(props) {
                 })
             })
         setShowChangepwModal(false);
+        setModalOldPassword('')
+        setModalNewPassword('')
     }
 
     const handleShowFollowerList = () => {
@@ -421,6 +423,8 @@ function UserProfile(props) {
 
     const closeChangepw = () => {
         setShowChangepwModal(false);
+        setModalOldPassword('')
+        setModalNewPassword('')
     };
 
     const handleQuitClick = () => {
