@@ -204,6 +204,7 @@ CELERY_RESULT_SERIALIZER = "json"
 
 CORS_ALLOWED_ORIGINS = [
     os.getenv("FRONTEND_URL", "http://localhost:3000"),
+    "http://front.wellplay.life",
 ]
 
 CORS_URLS_REGEX = r"^.*$"  # 우선 url은 전부 열어놓을게요
