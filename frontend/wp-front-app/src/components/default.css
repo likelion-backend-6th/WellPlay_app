@@ -68,3 +68,16 @@
 .button-container button.selected {
     box-shadow: 0px 15px 15px -15px rgba(255, 255, 255, 0.7);
   }
+
+.close-button{
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #202020;
+  color: #FFF;
+  width: 15%;
+  text-decoration: none;
+  position: relative;
+  transition: all;
+}

@@ -466,3 +466,37 @@ class InfofcList(generics.ListAPIView):
             return Response(
                 {"error": "Infofc 모델을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND
             )
+
+
+@api_view(["POST"])
+def InfoUpdateView(request):
+    permission_classes = [
+        IsAuthenticated,
+    ]
+    game = request.data.get("game")
+    print(game)
+    user = request.user
+    if game == "infolol":
+        user.infolol.summoner_name = None
+        user.infolol.summoner_tier = None
+        user.infolol.summoner_rank = None
+        user.infolol.summoner_lp = None
+        user.infolol.summoner_win = None
+        user.infolol.summoner_loss = None
+        user.infolol.summoner_puuid = None
+        user.infolol.summoner_id = None
+        user.infolol.save()
+        return Response(True, status=status.HTTP_200_OK)
+    elif game == "infoval":
+        user.infoval.val_name = None
+        user.infoval.val_puuid = None
+        user.infoval.val_tag = None
+        user.infoval.save()
+        return Response(True, status=status.HTTP_200_OK)
+    elif game == "infofc":
+        user.infofc.fc_name = None
+        user.infofc.fc_id = None
+        user.infofc.fc_level = None
+        user.infofc.fc_division = None
+        user.infofc.save()
+        return Response(True, status=status.HTTP_200_OK)

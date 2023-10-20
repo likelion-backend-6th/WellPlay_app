@@ -23,6 +23,7 @@ function useUserActions() {
         apiGetVal,
         apiPostFc,
         apiGetFc,
+        apiDeleteGame,
     };
 
     function apiPostLol(data, axiosConfig) {
@@ -44,6 +45,14 @@ function useUserActions() {
 
     function apiGetVal(user_id, axiosConfig) {
         return axios.get(`${baseURL}/account/riot_val_info/${user_id}/`, axiosConfig);
+    }
+
+    function apiGetFc(user_id, axiosConfig) {
+        return axios.get(`${baseURL}/account/fc_name_info/${user_id}/`, axiosConfig);
+    }
+
+    function apiDeleteGame(data, axiosConfig){
+        return axiosService.post(`${baseURL}/account/game_info_update/`, data, axiosConfig);
     }
 
     function setUserData(data) {

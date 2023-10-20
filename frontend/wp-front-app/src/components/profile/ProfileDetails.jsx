@@ -15,7 +15,8 @@ import "../default.css"
 
 function UserProfile(props) {
     const {getProfile, getFollowing, getFollower,
-        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc } = useUserActions();
+        apiPostLol, apiGetLol, apiPostVal,
+        apiGetVal, apiPostFc, apiGetFc, apiDeleteGame} = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -117,6 +118,18 @@ function UserProfile(props) {
     const handleSaveModal = () => {
         closeModal();
         fetchProfile();
+    }
+
+    const handleDelete = (game_name) => {
+        const requestData = { game : game_name};
+        apiDeleteGame(requestData)
+        .then((response)=>{
+            if (response.data) {
+                setSuccessMessage(response.data.message);
+                alert('카드가 삭제되었습니다.');
+                window.location.reload();
+            }
+        })
     }
 
     const handleConnectClick = () => {
@@ -382,19 +395,29 @@ function UserProfile(props) {
 
             <div>
                 <div className='val-card-container'>
-                {userInfolol && userInfolol.summonerName && !userInfolol.tier && (
+                    {userInfolol && userInfolol.summonerName && !userInfolol.tier && (
                     <Card className="custom-card-style" style={{ width: '30rem' }}>
-                        <Card.Body>
-                        <img src={`/media/lol/unrank.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName}
+                        <Card.Body style={{ display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={`/media/lol/unrank.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName}
+                        </div>
+                        <button className="close-button" onClick={() => handleDelete('infolol')}>
+                            X
+                        </button>
                         </Card.Body>
                     </Card>
-                )}
+                    )}
                 </div>
                 <div className='val-card-container'>
                 {userInfolol && userInfolol.tier && (
                     <Card className="custom-card-style" style={{ width: '30rem' }}>
-                        <Card.Body>
-                        <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} {userInfolol.lp} {userInfolol.winrate}%
+                        <Card.Body style={{ display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={`/media/lol/${userInfolol.tier.toLowerCase()}.png`} style={{ width: '50px', height: '50px' }} /> {userInfolol.summonerName} {userInfolol.tier} {userInfolol.rank} {userInfolol.lp} {userInfolol.winrate}%
+                        </div>
+                        <button className="close-button" onClick={() => handleDelete('infolol')}>
+                            X
+                        </button>
                         </Card.Body>
                     </Card>
                 )}
@@ -402,8 +425,13 @@ function UserProfile(props) {
                 <div className='val-card-container'>
                 {userInfoval && userInfoval.val_tag && (
                     <Card className="custom-card-style" style={{ width: '30rem' }}>
-                        <Card.Body>
-                        <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                        <Card.Body style={{ display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={`/media/val/val.png`} style={{ width: '50px', height: '50px' }} /> {userInfoval.val_name} #{userInfoval.val_tag}
+                        </div>
+                        <button className="close-button" onClick={() => handleDelete('infoval')}>
+                            X
+                        </button>
                         </Card.Body>
                     </Card>
                 )}
@@ -411,8 +439,13 @@ function UserProfile(props) {
                 <div className='fc-card-container'>
                 {userInfofc && userInfofc.fc_division && (
                     <Card className="custom-card-style" style={{ width: '30rem' }}>
-                        <Card.Body>
-                        <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
+                        <Card.Body style={{ display: 'flex', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={`/media/fc/${userInfofc.fc_division}.png`} style={{ width: '50px', height: '50px' }} /> {userInfofc.fc_name} Lv.{userInfofc.fc_level}
+                        </div>
+                        <button className="close-button" onClick={() => handleDelete('infofc')}>
+                            X
+                        </button>
                         </Card.Body>
                     </Card>
                 )}
