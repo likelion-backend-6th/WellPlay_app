@@ -40,7 +40,6 @@ function useUserActions() {
 
     function apiGetLol(user_id, axiosConfig) {
         return axios.get(`${baseURL}/account/riot_summoner_info/${user_id}/`, axiosConfig);
-        return axios.get(`${baseURL}/account/riot_summoner_info/${user_id}/`, axiosConfig);
     }
 
     function apiGetVal(user_id, axiosConfig) {
