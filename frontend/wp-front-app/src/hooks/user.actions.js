@@ -10,6 +10,7 @@ function useUserActions() {
         login,
         register,
         logout,
+        quit,
         edit,
         getProfile,
         getUserProfile,
@@ -33,7 +34,7 @@ function useUserActions() {
     function apiPostVal(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/riot_val_info/`, data, axiosConfig);
     }
-    
+
     function apiPostFc(data, axiosConfig) {
         return axiosService.post(`${baseURL}/account/fc_name_info/`, data, axiosConfig);
     }
@@ -81,6 +82,11 @@ function useUserActions() {
     function logout() {
         localStorage.removeItem('auth');
         navigate('/');
+    }
+
+    function quit() {
+        axiosService.delete(`${baseURL}/account/quit/`)
+        window.location.replace('/')
     }
 
     function edit(data, userId) {

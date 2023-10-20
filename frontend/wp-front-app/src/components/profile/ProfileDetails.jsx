@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Image, Form, Spinner, Card, Modal, Row} from 'react-bootstrap';
+import {Button, Image, Form, Spinner, Card, Modal, Row, Dropdown, DropdownButton} from 'react-bootstrap';
 import axiosService from "../../helpers/axios";
 import {getUser, useUserActions} from '../../hooks/user.actions';
 import {serverUrl} from '../../config'
@@ -11,12 +11,15 @@ import FollowingList from "../follow/Following"
 import "../profile.css"
 import Feed from "../feeds/Feed";
 import "../default.css"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEllipsisV} from "@fortawesome/free-solid-svg-icons";
 
 
 function UserProfile(props) {
-    const {getProfile, getFollowing, getFollower,
-        apiPostLol, apiGetLol, apiPostVal,
-        apiGetVal, apiPostFc, apiGetFc, apiDeleteGame} = useUserActions();
+    const {
+        getProfile, getFollowing, getFollower, quit,
+        apiPostLol, apiGetLol, apiPostVal, apiGetVal, apiPostFc, apiGetFc, apiDeleteGame
+    } = useUserActions();
     const [profile, setProfile] = useState({});
     const [following, setFollowing] = useState({});
     const [follower, setFollower] = useState({});
@@ -25,6 +28,7 @@ function UserProfile(props) {
     const [showLOLModal, setShowLOLModal] = useState(false);
     const [showVALModal, setShowVALModal] = useState(false);
     const [showFCModal, setShowFCModal] = useState(false);
+    const [showQuitModal, setShowQuitModal] = useState(false);
 
     const [showFollowerList, setShowFollowerList] = useState(false);
     const [showFollowingList, setShowFollowingList] = useState(false);
@@ -367,6 +371,18 @@ function UserProfile(props) {
         setShowFollowingModal(false);
     };
 
+    const handleUserQuit = () => {
+        setShowQuitModal(true);
+    };
+
+    const closeUserQuit = () => {
+        setShowQuitModal(false);
+    };
+
+    const handleQuitClick = () => {
+        quit();
+    }
+
     return (
         <div className="profile-container" style={{ color: "white" }}>
             <div className="row">
@@ -388,7 +404,30 @@ function UserProfile(props) {
                             <h2><strong>{profile.nickname}</strong></h2>
                             <Button onClick={openModal}>프로필 편집</Button>
                         </div>
-                        <p style={{ color: '#808080', fontWeight: 'lighter' }} className="userid">@{user.user_id}</p>
+                        <DropdownButton
+                            title={<FontAwesomeIcon icon="fa-solid fa-gear"/>}
+                            id="menu-dropdown"
+                        >
+                            <Dropdown.Item>비밀번호 수정</Dropdown.Item>
+                            <Dropdown.Item onClick={handleUserQuit} onHide={closeUserQuit}>회원탈퇴</Dropdown.Item>
+                            <Modal show={showQuitModal} className="custom-modal">
+                                <Modal.Header closeButton>
+                                    <Modal.Title>회원탈퇴 확인</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    회원탈퇴를 하시면 작성하신 이야기, 사진, 영상들이 전부 삭제되고 복구가 불가능합니다. 정말 탈퇴하시겠습니까?
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button
+                                        variant="warning"
+                                        onClick={handleQuitClick}
+                                    >
+                                        탈퇴
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+                        </DropdownButton>
+                        <p style={{color: '#808080', fontWeight: 'lighter'}} className="userid">@{user.user_id}</p>
                     </div>
                 </div>
             </div>
@@ -473,14 +512,14 @@ function UserProfile(props) {
 
                 </div>
                 <div className={`button ${showGameinfoList ? 'active' : ''}`}
-                    onClick={() => {
-                        if (showGameinfoList) {
-                            handleHideGameinfoList();
-                        } else {
-                            handleShowGameinfoList();
-                        }
-                    }}
-                    style={{cursor: 'pointer', width: '75%'}}
+                     onClick={() => {
+                         if (showGameinfoList) {
+                             handleHideGameinfoList();
+                         } else {
+                             handleShowGameinfoList();
+                         }
+                     }}
+                     style={{cursor: 'pointer', width: '75%'}}
                 >
                     연동하기
                 </div>
@@ -509,7 +548,7 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showFollowingModal &&
                 <div>
@@ -535,7 +574,7 @@ function UserProfile(props) {
                                 ))}
                             </ul>
                         </Modal.Body>
-                      </Modal>
+                    </Modal>
                 </div>}
             {showGameinfoList && (
             <div className="mt-4 connect-button">
