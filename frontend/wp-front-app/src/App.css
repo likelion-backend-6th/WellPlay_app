@@ -149,7 +149,7 @@
 }
 
 .logout-button {
-  width: 110px;
+  width: 125px;
   display: flex;
   align-items: center;
   background-color: #1E1E1E;
@@ -250,7 +250,122 @@ body{
   color: #ffffff;
 }
 
+.modal-header {
+  margin: 8px 12px 12px 12px;
+  border-bottom: 2px dashed;
+}
+
+.follower-modal {
+  border: none;
+  margin: 8px 12px 0px 12px;
+  padding-bottom: 0px;
+}
+
+.modal-title {
+  font-size: 1.2em;
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-body input {
+  margin: 1em 0em;
+  width: 75%;
+}
+
+.modal-body input::placeholder {
+  color: #ffffff;
+}
+
+.modal-body button {
+  background-color: #202020;
+  border: 1px solid #ffffff;
+}
+
+.modal-body li {
+  list-style-type: none;
+  margin-bottom: 1em;
+}
+
+.modal-body button:hover {
+  background-color: #EC6664;
+  border: none;
+}
+
+.modal-body button:active {
+  background-color: #EC6664;
+  border: none;
+}
+
+.form-control {
+  color: #ffffff;
+  background-color: #202020;
+}
+
+.form-control:focus {
+  color: #ffffff;
+  background-color: #202020;
+  border-color: #ffffff;
+  box-shadow: none;
+}
+
 .text-login {
   font-weight: 50;
   color: #ffffff;
+}
+
+.text-sign {
+  margin-top: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 50;
+  color: #ffffff;
+}
+
+.text-sign button:hover {
+  background-color: #202020;
+}
+
+.login-modal {
+  margin: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  border: none;
+}
+
+.login-modal img {
+  margin-left: 170px;
+}
+
+.sign-button {
+  margin-left: 10px;
+  border: none !important;
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-login button {
+  background-color: #EC6664;
+  border: none;
+}
+
+.form-login .form-control {
+  margin: 3px;
+  width: 300px;
+}
+
+.loginform-button {
+  margin: 3px;
+  width: 300px;
+}
+
+.form-login .form-control::placeholder{
+  color: #757575;
 }
