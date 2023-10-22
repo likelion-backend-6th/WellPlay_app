@@ -69,14 +69,13 @@ function RegisterFormModal(props) {
 
     return (
         <Modal show={show} onHide={onHide} className="custom-modal">
-            <Modal.Header closeButton>
+            <Modal.Header closeButton className="register-modal">
                 <Modal.Title>
-                    <img src={`/media/nav/logo.png`} style={{width: '75px', height: '75px'}}/>
-                    회원가입
+                    <img src={`/media/nav/logo.png`} style={{width: '120px', height: '120px'}}/>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center', marginLeft: '70px' }}>
                     <img src={`/media/site/dog-bg.png`} style={{width: '50px', height: '50px', marginRight: '10px'}}/>
                     <p className="text-login" style={{display: 'inline-block', marginTop: '14px'}}>당신의 하이라이트를 공유하세요!</p>
                 </div>
@@ -86,8 +85,7 @@ function RegisterFormModal(props) {
                     validated={validated}
                     onSubmit={handleSubmit}
                 >
-                    <Form.Group className="mb-3">
-                        <Form.Label>Email</Form.Label>
+                    <Form.Group className="form-register">
                         <Form.Control
                             value={form.email}
                             onChange={(e) => setForm({...form, email: e.target.value})}
@@ -98,19 +96,13 @@ function RegisterFormModal(props) {
                         <Form.Control.Feedback type="invalid">
                             올바른 이메일 형식이 필요해요!
                         </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>ID</Form.Label>
                         <Form.Control
                             value={form.nickname}
                             onChange={(e) => setForm({...form, nickname: e.target.value})}
                             required
                             type="text"
-                            placeholder="사용자의 아이디입니다."
+                            placeholder="사용자의 닉네임입니다."
                         />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>비밀번호</Form.Label>
                         <Form.Control
                             value={form.password}
                             minLength="4"
@@ -119,10 +111,10 @@ function RegisterFormModal(props) {
                             type="password"
                             placeholder="8자 이상, 숫자로만 이루어지지 않게 정해주세요."
                         />
-                    </Form.Group>
-                    <Button variant="primary" type="submit">
+                        <Button  className="register-button" variant="danger" type="submit">
                         회원가입
-                    </Button>
+                        </Button>
+                    </Form.Group>
                 </Form>
             </Modal.Body>
         </Modal>
