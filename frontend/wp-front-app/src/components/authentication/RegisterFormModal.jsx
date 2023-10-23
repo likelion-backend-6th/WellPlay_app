@@ -58,7 +58,7 @@ function RegisterFormModal(props) {
                             show: true,
                             title: "다른 비밀번호를 사용해주세요",
                         });
-                        setForm({...form, nickname: ""}); // 필드 초기화
+                        setForm({...form, password: ""}); // 필드 초기화
                     } else {
                         setError(err.request.response);
                         setForm({...form, email: "", nickname: "", password: ""}); // 필드 초기화
@@ -91,7 +91,7 @@ function RegisterFormModal(props) {
                             onChange={(e) => setForm({...form, email: e.target.value})}
                             required
                             type="email"
-                            placeholder="로그인 및 인증에 사용됩니다"
+                            placeholder="이메일을 입력해주세요"
                         />
                         <Form.Control.Feedback type="invalid">
                             올바른 이메일 형식이 필요해요!
@@ -101,7 +101,7 @@ function RegisterFormModal(props) {
                             onChange={(e) => setForm({...form, nickname: e.target.value})}
                             required
                             type="text"
-                            placeholder="사용자의 닉네임입니다."
+                            placeholder="영문 아이디를 입력해주세요"
                         />
                         <Form.Control
                             value={form.password}
@@ -109,7 +109,7 @@ function RegisterFormModal(props) {
                             onChange={(e) => setForm({...form, password: e.target.value})}
                             required
                             type="password"
-                            placeholder="8자 이상, 숫자로만 이루어지지 않게 정해주세요."
+                            placeholder="비밀번호 8자 이상 입력"
                         />
                         <Button  className="register-button" variant="danger" type="submit">
                         회원가입
